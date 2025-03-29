@@ -6,7 +6,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <section id="about" class="min-h-screen flex items-center justify-center py-16">
+  <section id="about" class="min-h-screen flex items-center justify-center pb-16">
     <div class="max-w-4xl">
       <div class="flex flex-col lg:flex-row items-center gap-12">
        
