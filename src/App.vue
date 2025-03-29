@@ -4,7 +4,7 @@ import About from './components/About.vue'
 </script>
 
 <template>
-  <div class="min-h-screen bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300">
+  <div class=" bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300">
     <NavBar />
     <main class="px-4 py-8">
       <About />
