@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import NavBar from './components/NavBar.vue'
-
 </script>
 
 <template>
