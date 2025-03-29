@@ -15,10 +15,6 @@ const sections = [
   { id: 'writing', label: 'nav.writing' }
 ]
 
-const toggleLanguage = () => {
-  locale.value = locale.value === 'pt' ? 'en' : 'pt'
-}
-
 const scrollToSection = (id: string) => {
   const element = document.getElementById(id)
   element?.scrollIntoView({ behavior: 'smooth' })
