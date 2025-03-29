@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n'
 import Links from './Links.vue'
 
 const { t } = useI18n()
+
 </script>
 
 <template>
@@ -17,7 +18,7 @@ const { t } = useI18n()
           <p class="text-lg text-neutral-700 dark:text-neutral-300 mb-4">
             {{ t('about.description') }}
           </p>
-          <Links />
+          <Links/>
         </div>
         <div class="relative w-64 h-64 lg:w-80 lg:h-80 rounded-full overflow-hidden group order-1 lg:order-2">
           <img 
