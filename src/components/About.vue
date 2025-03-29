@@ -9,7 +9,7 @@ const { t } = useI18n()
   <section id="about" class="min-h-screen flex items-center justify-center py-16">
     <div class="max-w-4xl">
       <div class="flex flex-col lg:flex-row items-center gap-12">
-        <!-- Texto -->
+       
         <div class="flex-1 text-center lg:text-left order-2 lg:order-1">
           <h2 class="text-3xl lg:text-4xl font-bold mb-6 text-neutral-900 dark:text-white">
             {{ t('about.title') }}
@@ -19,8 +19,6 @@ const { t } = useI18n()
           </p>
           <Links />
         </div>
-
-        <!-- Imagem com efeito -->
         <div class="relative w-64 h-64 lg:w-80 lg:h-80 rounded-full overflow-hidden group order-1 lg:order-2">
           <img 
             src="https://github.com/stherzada.png" 

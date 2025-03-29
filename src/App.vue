@@ -6,7 +6,7 @@ import About from './components/About.vue'
 <template>
   <div class=" bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300">
     <NavBar />
-    <main class="px-4 py-8">
+    <main class="px-4 ">
       <About />
     </main>
   </div>
