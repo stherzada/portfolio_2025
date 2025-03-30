@@ -1,12 +1,36 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDark, useToggle } from '@vueuse/core'
 import { Sun, Moon, Menu, X } from 'lucide-vue-next'
 
 const { t, locale } = useI18n()
-const isDark = useDark()
+const isDark = useDark({
+  selector: 'html',
+  attribute: 'class',
+  valueDark: 'dark',
+  valueLight: 'light',
+  storageKey: 'theme',
+  storage: localStorage,
+})
 const toggleDark = useToggle(isDark)
+
+const setLanguage = (lang: 'en' | 'pt') => {
+  locale.value = lang
+  localStorage.setItem('language', lang)
+}
+
+onMounted(() => {
+  const savedTheme = localStorage.getItem('theme')
+  const savedLanguage = localStorage.getItem('language') || 'en'
+  locale.value = savedLanguage as 'en' | 'pt'
+
+  if (!savedTheme) {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    isDark.value = prefersDark
+  }
+})
+
 const isMenuOpen = ref(false)
 
 const sections = [
@@ -43,13 +67,13 @@ const scrollToSection = (id: string) => {
 
     <div class="flex gap-3 ml-auto">
       <div class="flex items-center gap-1 text-neutral-700 dark:text-neutral-300">
-        <button @click="locale = 'pt'"
+        <button @click="setLanguage('pt')"
           class="px-2 py-1 transition duration-200 hover:text-neutral-900 dark:hover:text-white hover-underline"
           :class="{ 'font-bold text-neutral-900 dark:text-white': locale === 'pt', 'opacity-50': locale !== 'pt' }">
           PT
         </button>
         <span class="opacity-50">/</span>
-        <button @click="locale = 'en'"
+        <button @click="setLanguage('en')"
           class="px-2 py-1 transition duration-200 hover:text-neutral-900 dark:hover:text-white hover-underline"
           :class="{ 'font-bold text-neutral-900 dark:text-white': locale === 'en', 'opacity-50': locale !== 'en' }">
           EN
