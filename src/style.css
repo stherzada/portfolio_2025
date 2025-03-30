@@ -13,3 +13,16 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.hover-underline {
+  @apply relative inline-block;
+}
+
+.hover-underline::after {
+  content: '';
+  @apply absolute -bottom-1 left-0 w-0 h-0.5 bg-neutral-900 dark:bg-white transition-all duration-300 ease-in-out;
+}
+
+.hover-underline:hover::after {
+  @apply w-full;
+}
+

@@ -29,7 +29,9 @@ const messages = {
             viewOnGithub: 'View on GitHub →'
         },
         blog: {
-            minRead: 'min read'
+            minRead: 'min read',
+            noArticles: 'No articles found',
+            readMore: 'Read more about the article'
         }
     },
     pt: {
@@ -61,7 +63,9 @@ const messages = {
             loading: 'Carregando projetos...'
         },
         blog: {
-            minRead: 'min de leitura'
+            minRead: 'min de leitura',
+            noArticles: 'Nenhum artigo encontrado',
+            readMore: 'Ver mais sobre o artigo'
         }
     }
 }

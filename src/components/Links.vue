@@ -45,11 +45,9 @@ const links: Link[] = [
 <template>
     <div class="flex flex-wrap justify-center lg:justify-start gap-4 mt-4">
         <a v-for="link in links" :key="link.href" :href="link.href" target="_blank"
-            class="flex items-center gap-2 text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors duration-200 relative group"
+            class="flex items-center gap-2 text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors duration-200 hover-underline"
             :aria-label="link.alt">
             <component :is="link.icon" class="w-5 h-5" />
-            <span
-                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neutral-900 dark:bg-white transition-all duration-300 ease-in-out group-hover:w-full" />
         </a>
     </div>
 </template>

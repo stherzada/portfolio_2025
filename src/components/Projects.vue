@@ -2,24 +2,21 @@
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Star, GitFork, Loader2 } from 'lucide-vue-next'
-import { fetchPinnedRepos } from '../services/github'
+import { fetchPinnedRepos, type Repository } from '../services/github'
 
 const { t } = useI18n()
-
-interface Repository {
-    name: string
-    description: string
-    home?: string
-    url: string
-    stars: number
-    forks: number
-    languages: string[]
-    tags: string[]
-}
 
 const pinnedRepos = ref<Repository[]>([])
 const isLoading = ref(true)
 const error = ref<string | null>(null)
+
+const formatDate = (date: string): string => {
+    return new Date(date).toLocaleDateString('pt-BR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    })
+}
 
 onMounted(async () => {
     try {
@@ -35,8 +32,8 @@ onMounted(async () => {
 <template>
     <section id="projects" class="min-h-screen">
         <div class="max-w-4xl mx-auto px-4">
-            <h2 class="md:text-left text-center text-3xl lg:text-4xl font-bold mb-8 text-neutral-900 dark:text-white">
-                {{ t('projects.projects') }}
+            <h2 class="text-3xl lg:text-4xl font-bold mb-8 text-neutral-900 dark:text-white">
+                {{ t('nav.projects') }}
             </h2>
 
             <div v-if="isLoading" class="flex justify-center">
@@ -55,22 +52,26 @@ onMounted(async () => {
                             <div>
                                 <h3 class="text-2xl font-bold">
                                     <a :href="repo.url" target="_blank" rel="noopener noreferrer"
-                                        class="text-neutral-900 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors inline-block relative group">
+                                        class="text-neutral-900 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors hover-underline">
                                         {{ repo.name }}
-                                        <span
-                                            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neutral-900 dark:bg-white transition-all duration-300 ease-in-out group-hover:w-full"></span>
                                     </a>
                                 </h3>
                                 <p class="mt-2 text-neutral-700 dark:text-neutral-300">
                                     {{ repo.description }}
                                 </p>
+                                <div v-if="repo.homepage" class="mt-2">
+                                    <a :href="repo.homepage" target="_blank" rel="noopener noreferrer"
+                                        class="text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">
+                                        {{ new URL(repo.homepage).hostname }}
+                                    </a>
+                                </div>
                             </div>
                             <div class="flex items-center gap-4 text-sm text-neutral-600 dark:text-neutral-400">
-                                <span class="flex items-center gap-1">
+                                <span class="flex items-center gap-1" :title="t('projects.stars')">
                                     <Star class="w-4 h-4" />
                                     {{ repo.stars }}
                                 </span>
-                                <span class="flex items-center gap-1">
+                                <span class="flex items-center gap-1" :title="t('projects.forks')">
                                     <GitFork class="w-4 h-4" />
                                     {{ repo.forks }}
                                 </span>
@@ -90,10 +91,8 @@ onMounted(async () => {
                         </div>
                         <div class="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
                             <a :href="repo.url" target="_blank" rel="noopener noreferrer"
-                                class="text-sm text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors inline-block relative group">
+                                class="text-sm text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors hover-underline">
                                 {{ t('projects.viewOnGithub') }}
-                                <span
-                                    class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neutral-900 dark:bg-white transition-all duration-300 ease-in-out group-hover:w-full"></span>
                             </a>
                         </div>
                     </div>

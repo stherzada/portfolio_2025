@@ -36,29 +36,23 @@ const scrollToSection = (id: string) => {
 
     <div class="hidden lg:flex lg:gap-6">
       <a v-for="section in sections" :key="section.id" @click="scrollToSection(section.id)"
-        class="cursor-pointer text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white font-medium transition duration-200 relative group">
+        class="cursor-pointer text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white font-medium transition duration-200 hover-underline">
         {{ t(section.label) }}
-        <span
-          class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neutral-900 dark:bg-white transition-all duration-300 ease-in-out group-hover:w-full"></span>
       </a>
     </div>
 
     <div class="flex gap-3 ml-auto">
       <div class="flex items-center gap-1 text-neutral-700 dark:text-neutral-300">
         <button @click="locale = 'pt'"
-          class="px-2 py-1 transition duration-200 hover:text-neutral-900 dark:hover:text-white relative group"
+          class="px-2 py-1 transition duration-200 hover:text-neutral-900 dark:hover:text-white hover-underline"
           :class="{ 'font-bold text-neutral-900 dark:text-white': locale === 'pt', 'opacity-50': locale !== 'pt' }">
           PT
-          <span
-            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neutral-900 dark:bg-white transition-all duration-300 ease-in-out group-hover:w-full"></span>
         </button>
         <span class="opacity-50">/</span>
         <button @click="locale = 'en'"
-          class="px-2 py-1 transition duration-200 hover:text-neutral-900 dark:hover:text-white relative group"
+          class="px-2 py-1 transition duration-200 hover:text-neutral-900 dark:hover:text-white hover-underline"
           :class="{ 'font-bold text-neutral-900 dark:text-white': locale === 'en', 'opacity-50': locale !== 'en' }">
           EN
-          <span
-            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neutral-900 dark:bg-white transition-all duration-300 ease-in-out group-hover:w-full"></span>
         </button>
       </div>
 
@@ -78,10 +72,8 @@ const scrollToSection = (id: string) => {
   ]">
     <div class="flex flex-col gap-4 p-6 pt-20">
       <a v-for="section in sections" :key="section.id" @click="scrollToSection(section.id)"
-        class="cursor-pointer text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white font-medium transition duration-200 relative group md:text-lg text-2xl">
+        class="cursor-pointer text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white font-medium transition duration-200 hover-underline md:text-lg text-2xl">
         {{ t(section.label) }}
-        <span
-          class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neutral-900 dark:bg-white transition-all duration-300 ease-in-out group-hover:w-full"></span>
       </a>
     </div>
   </div>
