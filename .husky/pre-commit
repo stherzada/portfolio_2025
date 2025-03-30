@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Verificando build antes do commit..."
+
+# Salva o estado atual do diretório de trabalho
+git stash -q --keep-index
+
+# Tenta fazer o build
+npm run verify-build
+
+# Guarda o status do build
+BUILD_STATUS=$?
+
+# Restaura o estado do diretório de trabalho
+git stash pop -q
+
+# Se o build falhou, impede o commit
+if [ $BUILD_STATUS -ne 0 ]; then
+  echo "❌ Build falhou! Corrija os erros antes de commitar."
+  exit 1
+fi
+
+echo "✅ Build passou! Prosseguindo com o commit..."
+exit 0 
