@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Star, GitFork, Loader2 } from 'lucide-vue-next'
 import { fetchPinnedRepos, type Repository } from '../services/github'
+import ScrambleText from './ScrambleText.vue'
 
 const { t } = useI18n()
 
@@ -30,10 +31,10 @@ onMounted(async () => {
 </script>
 
 <template>
-    <section id="projects" class="min-h-screen">
-        <div class="max-w-4xl mx-auto px-4">
-            <h2 class="md:text-left text-center text-3xl lg:text-4xl font-bold mb-8 text-neutral-900 dark:text-white">
-                {{ t('projects.projects') }}
+    <section id="projects" class="flex items-center justify-center ">
+        <div class=" md:mx-8 mx-4 md:max-w-4xl w-full">
+            <h2 class="text-3xl lg:text-4xl font-bold mb-8 text-neutral-900 dark:text-white text-center">
+                <ScrambleText :text="t('projects.projects')" />
             </h2>
 
             <div v-if="isLoading" class="flex justify-center">
