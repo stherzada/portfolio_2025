@@ -2,7 +2,6 @@ import { createI18n } from 'vue-i18n'
 
 const messages = {
     en: {
-        hello: 'Hello World',
         nav: {
             home: 'Home',
             about: 'About',
@@ -29,13 +28,13 @@ const messages = {
             viewOnGithub: 'View on GitHub →'
         },
         blog: {
+            title: 'My Blog',
             minRead: 'min read',
             noArticles: 'No articles found',
             readMore: 'Read more about the article'
         }
     },
     pt: {
-        hello: 'Olá Mundo',
         nav: {
             home: 'Início',
             about: 'Sobre',
@@ -63,6 +62,7 @@ const messages = {
             loading: 'Carregando projetos...'
         },
         blog: {
+            title: 'Meu Blog',
             minRead: 'min de leitura',
             noArticles: 'Nenhum artigo encontrado',
             readMore: 'Ver mais sobre o artigo'

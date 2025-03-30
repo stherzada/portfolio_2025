@@ -40,8 +40,8 @@ onMounted(async () => {
 <template>
     <section id="writing" class="my-10">
         <div class="max-w-4xl mx-auto px-4">
-            <h2 class="text-3xl lg:text-4xl font-bold mb-8 text-neutral-900 dark:text-white">
-                {{ t('nav.writing') }}
+            <h2 class="md:text-left text-center text-3xl lg:text-4xl font-bold mb-8 text-neutral-900 dark:text-white">
+                {{ t('blog.title') }}
             </h2>
 
             <div v-if="isLoading" class="flex justify-center">
