@@ -20,6 +20,9 @@ const messages = {
                 github: 'Github',
                 linkedin: 'LinkedIn'
             }
+        },
+        footer: {
+            rights: 'All rights reserved.'
         }
     },
     pt: {
@@ -41,6 +44,9 @@ const messages = {
                 github: 'Github',
                 linkedin: 'LinkedIn'
             }
+        },
+        footer: {
+            rights: 'Todos os direitos reservados.'
         }
     }
 }
