@@ -11,7 +11,7 @@ const messages = {
         },
         about: {
             title: 'Sthefany Sther',
-            description: 'Currently working as a Software Developer at Deco, where I combine my technical expertise with my passion for people management and data analysis. I believe in the power of technology to transform businesses while keeping people at the heart of innovation.',
+            description: 'Currently a Software Developer at Deco, where I combine my technical expertise with my passion for people management and data analysis. I believe in the power of technology to transform businesses while keeping people at the heart of innovation.',
             links: {
                 email: 'Email',
                 twitter: 'Twitter',
