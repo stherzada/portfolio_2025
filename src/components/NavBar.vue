@@ -14,21 +14,28 @@ const isDark = useDark({
   storage: localStorage,
 })
 const toggleDark = useToggle(isDark)
+const isInitialized = ref(false)
 
 const setLanguage = (lang: 'en' | 'pt') => {
+  if (!isInitialized.value) return
   locale.value = lang
   localStorage.setItem('language', lang)
 }
 
 onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
-  const savedLanguage = localStorage.getItem('language') || 'en'
-  locale.value = savedLanguage as 'en' | 'pt'
+  // Define inglês como padrão se não houver linguagem salva
+  const savedLanguage = localStorage.getItem('language')
+  locale.value = savedLanguage ? (savedLanguage as 'en' | 'pt') : 'en'
 
+  // Verifica o tema
+  const savedTheme = localStorage.getItem('theme')
   if (!savedTheme) {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
     isDark.value = prefersDark
   }
+
+  // Marca como inicializado após definir os valores iniciais
+  isInitialized.value = true
 })
 
 const isMenuOpen = ref(false)
@@ -49,7 +56,7 @@ const scrollToSection = (id: string) => {
 </script>
 
 <template>
-  <nav
+  <nav v-show="isInitialized"
     class="sticky top-0 inset-x-0 px-6 py-3 flex justify-between items-center bg-white dark:bg-neutral-900 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-neutral-900/60 z-50">
     <button @click="isMenuOpen = !isMenuOpen"
       class="lg:hidden text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white"
