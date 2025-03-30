@@ -27,6 +27,9 @@ const messages = {
         projects: {
             projects: 'My projects',
             viewOnGithub: 'View on GitHub →'
+        },
+        blog: {
+            minRead: 'min read'
         }
     },
     pt: {
@@ -54,7 +57,11 @@ const messages = {
         },
         projects: {
             projects: 'Meus projetos',
-            viewOnGithub: 'Ver no GitHub →'
+            viewOnGithub: 'Ver no GitHub →',
+            loading: 'Carregando projetos...'
+        },
+        blog: {
+            minRead: 'min de leitura'
         }
     }
 }
