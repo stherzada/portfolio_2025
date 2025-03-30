@@ -6,7 +6,7 @@ const messages = {
             home: 'Home',
             about: 'About',
             projects: 'Projects',
-            writing: 'Writing'
+            writing: 'Blog'
         },
         about: {
             title: 'Sthefany Sther',
