@@ -81,7 +81,7 @@ onMounted(async () => {
 
             <div v-else-if="error" class="text-center text-red-500 animate-fade-in">
                 {{ error }}
-                <button @click="fetchReposWithRetry"
+                <button type="button" @click="() => fetchReposWithRetry()"
                     class="mt-4 text-sm text-neutral-700 dark:text-neutral-300 hover:underline">
                     {{ t('projects.tryAgain') }}
                 </button>
