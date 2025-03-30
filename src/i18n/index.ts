@@ -23,6 +23,10 @@ const messages = {
         },
         footer: {
             rights: 'All rights reserved.'
+        },
+        projects: {
+            projects: 'My projects',
+            viewOnGithub: 'View on GitHub →'
         }
     },
     pt: {
@@ -47,6 +51,10 @@ const messages = {
         },
         footer: {
             rights: 'Todos os direitos reservados.'
+        },
+        projects: {
+            projects: 'Meus projetos',
+            viewOnGithub: 'Ver no GitHub →'
         }
     }
 }
