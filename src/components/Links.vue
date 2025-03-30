@@ -43,7 +43,7 @@ const links: Link[] = [
 </script>
 
 <template>
-    <div class="flex flex-wrap justify-center lg:justify-start gap-4 mt-6">
+    <div class="flex flex-wrap justify-center lg:justify-start gap-4 mt-4">
         <a v-for="link in links" :key="link.href" :href="link.href" target="_blank"
             class="flex items-center gap-2 text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors duration-200 relative group"
             :aria-label="link.alt">
