@@ -25,13 +25,22 @@ const messages = {
         },
         projects: {
             projects: 'My projects',
-            viewOnGithub: 'View on GitHub →'
+            viewOnGithub: 'View on GitHub →',
+            searchPlaceholder: 'Search projects by name, description, language or tags...',
+            noResults: 'No projects found for your search',
+            noProjects: 'No projects available',
+            tryAgain: 'Try again',
+            stars: 'Stars',
+            forks: 'Forks',
+            loading: 'Loading projects...',
+            clearSearch: 'Clear search'
         },
         blog: {
             title: 'My Blog',
             minRead: 'min read',
             noArticles: 'No articles found',
-            readMore: 'Read more about the article'
+            readMore: 'Read more about the article',
+            tryAgain: 'Try again'
         }
     },
     pt: {
@@ -59,13 +68,21 @@ const messages = {
         projects: {
             projects: 'Meus projetos',
             viewOnGithub: 'Ver no GitHub →',
-            loading: 'Carregando projetos...'
+            searchPlaceholder: 'Buscar projetos por nome, descrição, linguagem ou tags...',
+            noResults: 'Nenhum projeto encontrado para sua busca',
+            noProjects: 'Nenhum projeto disponível',
+            tryAgain: 'Tentar novamente',
+            stars: 'Estrelas',
+            forks: 'Forks',
+            loading: 'Carregando projetos...',
+            clearSearch: 'Limpar busca'
         },
         blog: {
             title: 'Meu Blog',
             minRead: 'min de leitura',
             noArticles: 'Nenhum artigo encontrado',
-            readMore: 'Ver mais sobre o artigo'
+            readMore: 'Ver mais sobre o artigo',
+            tryAgain: 'Tentar novamente'
         }
     }
 }

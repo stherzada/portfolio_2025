@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { defineAsyncComponent } from 'vue'
 import NavBar from './components/NavBar.vue'
 import About from './components/About.vue'
-import Projects from './components/Projects.vue'
 import Footer from './components/Footer.vue'
-import Blog from './components/Blog.vue'
+
+// Lazy loading para componentes grandes
+const Projects = defineAsyncComponent(() => import('./components/Projects.vue'))
+const Blog = defineAsyncComponent(() => import('./components/Blog.vue'))
 </script>
 
 <template>
