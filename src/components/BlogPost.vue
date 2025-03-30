@@ -10,7 +10,6 @@ interface Props {
     reading_time_minutes: number
     readable_publish_date: string
     cover_image: string | null
-    tag_list: string[]
 }
 
 defineProps<Props>()

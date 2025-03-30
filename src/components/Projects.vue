@@ -10,7 +10,13 @@ const pinnedRepos = ref<Repository[]>([])
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 
-
+const getHostname = (url: string): string => {
+    try {
+        return new URL(url).hostname
+    } catch {
+        return url
+    }
+}
 
 onMounted(async () => {
     try {
@@ -56,7 +62,7 @@ onMounted(async () => {
                                 <div v-if="repo.homepage" class="mt-2">
                                     <a :href="repo.homepage" target="_blank" rel="noopener noreferrer"
                                         class="text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">
-                                        {{ new globalThis.URL(repo.homepage).hostname }}
+                                        {{ getHostname(repo.homepage) }}
                                     </a>
                                 </div>
                             </div>
