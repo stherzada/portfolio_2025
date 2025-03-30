@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDark, useToggle } from '@vueuse/core'
-import { Sun, Moon, Menu, X } from 'lucide-vue-next'
+import { Sun, Moon, Menu, X, ArrowUp } from 'lucide-vue-next'
 
 const { t, locale } = useI18n()
 const isDark = useDark({
@@ -22,20 +22,32 @@ const setLanguage = (lang: 'en' | 'pt') => {
   localStorage.setItem('language', lang)
 }
 
+const showScrollTop = ref(false)
+
+const checkScroll = () => {
+  showScrollTop.value = window.scrollY > 500
+}
+
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
 onMounted(() => {
-  // Define inglês como padrão se não houver linguagem salva
   const savedLanguage = localStorage.getItem('language')
   locale.value = savedLanguage ? (savedLanguage as 'en' | 'pt') : 'en'
 
-  // Verifica o tema
   const savedTheme = localStorage.getItem('theme')
   if (!savedTheme) {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
     isDark.value = prefersDark
   }
 
-  // Marca como inicializado após definir os valores iniciais
+  window.addEventListener('scroll', checkScroll)
   isInitialized.value = true
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', checkScroll)
 })
 
 const isMenuOpen = ref(false)
@@ -108,4 +120,11 @@ const scrollToSection = (id: string) => {
       </a>
     </div>
   </div>
+
+  <!-- Botão de voltar ao topo -->
+  <button v-show="showScrollTop" @click="scrollToTop"
+    class="fixed bottom-6 right-6 p-2 bg-white dark:bg-neutral-900 rounded-full shadow-lg text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-all duration-300 opacity-70 hover:opacity-100 z-50"
+    aria-label="Voltar ao topo">
+    <ArrowUp class="h-5 w-5" />
+  </button>
 </template>
