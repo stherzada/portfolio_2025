@@ -1,0 +1,42 @@
+# Configurações globais para todos os robôs
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /projects
+Allow: /writing
+Allow: /sitemap.xml
+Allow: /*.jpg$
+Allow: /*.png$
+Allow: /*.svg$
+Allow: /*.ico$
+Allow: /*.webp$
+
+# Não permitir acesso a arquivos específicos
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /*.js$
+Disallow: /*.css$
+Disallow: /*.config.*$
+Disallow: /node_modules/
+
+# Permitir crawling de assets importantes
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /sitemap.xml
+Allow: /manifest.json
+
+# Configurações específicas para Googlebot
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Configurações específicas para Bingbot
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Localização do sitemap
+Sitemap: https://stherzada.dev/sitemap.xml 

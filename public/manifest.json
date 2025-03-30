@@ -1,0 +1,39 @@
+{
+    "name": "Sthefany Sther - Portfolio",
+    "short_name": "Sther Portfolio",
+    "description": "Portfolio de Sthefany Sther, Desenvolvedora de Software especializada em gestão e análise de dados",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "icons": [
+        {
+            "src": "/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "orientation": "portrait",
+    "lang": "pt-BR",
+    "dir": "ltr",
+    "categories": ["portfolio", "development", "technology"],
+    "shortcuts": [
+        {
+            "name": "Projetos",
+            "url": "/#projects",
+            "description": "Ver meus projetos"
+        },
+        {
+            "name": "Blog",
+            "url": "/#writing",
+            "description": "Ler meus artigos"
+        }
+    ]
+} 
