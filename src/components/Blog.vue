@@ -24,13 +24,11 @@ const formatDate = (date: string) => {
 onMounted(async () => {
     try {
         const fetchedArticles = await fetchArticles()
-        console.log('Artigos buscados:', fetchedArticles) // Debug
         articles.value = fetchedArticles.map(article => ({
             ...article,
             readable_publish_date: formatDate(article.published_at)
         }))
     } catch (e) {
-        console.error('Erro ao buscar artigos:', e) // Debug
         error.value = e instanceof Error ? e.message : 'Erro desconhecido'
     } finally {
         isLoading.value = false

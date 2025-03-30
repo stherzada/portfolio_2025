@@ -41,7 +41,7 @@ const stopScramble = () => {
     scrambledText.value = props.text
 }
 
-// Observa mudanças no texto
+
 watch(() => props.text, (newText) => {
     scrambledText.value = newText
 })
