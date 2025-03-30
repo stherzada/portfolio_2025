@@ -49,7 +49,7 @@ const fetchArticlesWithRetry = async (retries = 3) => {
     // Tenta usar cache primeiro
     const cached = getCachedArticles()
     if (cached) {
-        articles.value = cached.map(article => ({
+        articles.value = cached.map((article: Article) => ({
             ...article,
             readable_publish_date: formatDate(article.published_at)
         }))
@@ -60,7 +60,7 @@ const fetchArticlesWithRetry = async (retries = 3) => {
     for (let i = 0; i < retries; i++) {
         try {
             const fetchedArticles = await fetchArticles()
-            const formattedArticles = fetchedArticles.map(article => ({
+            const formattedArticles = fetchedArticles.map((article: Article) => ({
                 ...article,
                 readable_publish_date: formatDate(article.published_at)
             }))
@@ -98,7 +98,7 @@ onMounted(async () => {
 
             <div v-else-if="error" class="text-center text-red-500 animate-fade-in">
                 {{ error }}
-                <button @click="fetchArticlesWithRetry"
+                <button @click="() => fetchArticlesWithRetry()"
                     class="mt-4 text-sm text-neutral-700 dark:text-neutral-300 hover:underline">
                     {{ t('blog.tryAgain') }}
                 </button>

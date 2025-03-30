@@ -15,7 +15,7 @@ let lastNameInterval: number | null = null
 const scrambleText = (text: string, iteration: number) => {
     return text
         .split('')
-        .map((letter, index) => {
+        .map((_, index) => {
             if (index < iteration) {
                 return text[index]
             }
