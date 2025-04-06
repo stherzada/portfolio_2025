@@ -3,6 +3,8 @@
 Este projeto é um site de portfólio pessoal desenvolvido com Vue 3, TypeScript e
 Vite, apresentando informações sobre a minha pessoa.
 
+![Nico Robin One Piece](https://wifflegif.com/gifs/51584-nico-robin-one-piece-gif)
+
 ## ✨ Características
 
 - 📱 **Design Responsivo**: Interface adaptada para dispositivos móveis e
