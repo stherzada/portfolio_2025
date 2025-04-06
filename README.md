@@ -3,7 +3,7 @@
 Este projeto é um site de portfólio pessoal desenvolvido com Vue 3, TypeScript e
 Vite, apresentando informações sobre a minha pessoa.
 
-![Nico Robin One Piece](https://media.tenor.com/2SxLgB8BVAkAAAAC/nico-robin-one-piece.gif)
+<img src="public/images/tumblr_mgkl3rgYoJ1s2axdno1_500.gif" alt="Nico Robin One Piece" width="400" />
 
 ## ✨ Características
 
