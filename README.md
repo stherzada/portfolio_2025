@@ -1,30 +1,31 @@
-# Portfolio 2025 - Sthefany Sther
+# 🌟 Portfolio 2025 - Sthefany Sther
 
 Este projeto é um site de portfólio pessoal desenvolvido com Vue 3, TypeScript e
 Vite, apresentando informações sobre a minha pessoa.
 
-## Características
+## ✨ Características
 
-- **Design Responsivo**: Interface adaptada para dispositivos móveis e desktop;
-- **Modo Claro/Escuro**: Suporte para tema claro e escuro com detecção
+- 📱 **Design Responsivo**: Interface adaptada para dispositivos móveis e
+  desktop;
+- 🌓 **Modo Claro/Escuro**: Suporte para tema claro e escuro com detecção
   automática da preferência do sistema;
-- **Internacionalização**: Suporte para português e inglês;
-- **Carregamento Otimizado**: Componentes principais carregados assincronamente
-  para melhor performance;
-- **SEO-friendly**: Estrutura otimizada para mecanismos de busca
+- 🌎 **Internacionalização**: Suporte para português e inglês;
+- ⚡ **Carregamento Otimizado**: Componentes principais carregados
+  assincronamente para melhor performance;
+- 🔍 **SEO-friendly**: Estrutura otimizada para mecanismos de busca
 
-## Tecnologias Utilizadas
+## 🛠️ Tecnologias Utilizadas
 
-- **Vue 3**: Framework JavaScript progressivo com Composition API;
-- **TypeScript**: Tipagem estática para melhor manutenção do código;
-- **Vite**: Ferramenta de build rápida e moderna;
-- **Tailwind CSS**: Framework CSS utilitário para estilização rápida e
+- 🟢 **Vue 3**: Framework JavaScript progressivo com Composition API;
+- 🔷 **TypeScript**: Tipagem estática para melhor manutenção do código;
+- ⚡ **Vite**: Ferramenta de build rápida e moderna;
+- 🎨 **Tailwind CSS**: Framework CSS utilitário para estilização rápida e
   consistente;
-- **Vue I18n**: Plugin de internacionalização para suporte multi-idioma;
-- **VueUse**: Coleção de utilitários para Vue Composition API;
-- **Lucide Icons**: Biblioteca de ícones para interface.
+- 🌐 **Vue I18n**: Plugin de internacionalização para suporte multi-idioma;
+- 🧰 **VueUse**: Coleção de utilitários para Vue Composition API;
+- 🔍 **Lucide Icons**: Biblioteca de ícones para interface.
 
-## Estrutura do Projeto
+## 📂 Estrutura do Projeto
 
 ```
 portfolio_2025/
@@ -54,14 +55,14 @@ portfolio_2025/
 └── package.json              # Dependências e scripts
 ```
 
-## Executando o Projeto
+## 🚀 Executando o Projeto
 
-### Pré-requisitos
+### 📋 Pré-requisitos
 
-- Node.js (versão recomendada: 18+)
-- npm ou yarn
+- ✅ Node.js (versão recomendada: 18+)
+- ✅ npm ou yarn
 
-### Instalação
+### 💻 Instalação
 
 ```bash
 # Instalar dependências
@@ -70,7 +71,7 @@ npm install
 yarn
 ```
 
-### Scripts Disponíveis
+### 📜 Scripts Disponíveis
 
 ```bash
 # Iniciar servidor de desenvolvimento
@@ -89,14 +90,10 @@ npm run preview
 yarn preview
 ```
 
-## Recursos e Seções
+## 📌 Recursos e Seções
 
-- **NavBar**: Navegação principal com troca de idioma e tema
-- **About**: Informações sobre mim.
-- **Projects**: Lista de projetos com pesquisa, filtros e cards informativos.
-- **Blog**: Artigos e publicações com prévia
-- **Footer**: Rodapé com informações de copyright e links adicionais
-
-## Licença
-
-Todos os direitos reservados.
+- 🧭 **NavBar**: Navegação principal com troca de idioma e tema
+- 👤 **About**: Informações sobre mim.
+- 📂 **Projects**: Lista de projetos com pesquisa, filtros e cards informativos.
+- 📝 **Blog**: Artigos e publicações com prévia
+- 🏁 **Footer**: Rodapé com informações de copyright e links adicionais
