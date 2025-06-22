@@ -10,7 +10,7 @@ const messages = {
         },
         about: {
             title: 'Sthefany Sther',
-            description: 'Currently a Software Developer at Deco, where I combine my technical expertise with my passion for people management and data analysis. I believe in the power of technology to transform businesses while keeping people at the heart of innovation.',
+            description: "I'm Software Developer, where I combine my technical expertise with my passion for people management and data analysis. I believe in the power of technology to transform businesses while keeping people at the heart of innovation.",
             links: {
                 email: 'Email',
                 twitter: 'Twitter',
@@ -52,7 +52,7 @@ const messages = {
         },
         about: {
             title: 'Sthefany Sther',
-            description: 'Atualmente trabalho como Desenvolvedora de Software na Deco, onde combino minha experiência técnica com minha paixão por gestão de pessoas e análise de dados. Acredito no poder da tecnologia para transformar negócios, mantendo as pessoas no centro da inovação.',
+            description: 'Sou desenvolvedora de software, onde combino minha experiência técnica com minha paixão por gestão de pessoas e análise de dados. Acredito no poder da tecnologia para transformar negócios, mantendo as pessoas no centro da inovação.',
             links: {
                 email: 'Email',
                 twitter: 'Twitter',
