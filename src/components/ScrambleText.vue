@@ -62,12 +62,10 @@ const stopScramble = () => {
     scrambledText.value = props.text
 }
 
-// Limpa o intervalo quando o componente é desmontado
 onUnmounted(() => {
     if (interval) clearInterval(interval)
 })
 
-// Observa mudanças no texto e atualiza imediatamente
 watch(() => props.text, (newText) => {
     scrambledText.value = newText
     if (isHovering.value) startScramble()
