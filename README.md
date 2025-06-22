@@ -1,12 +1,12 @@
 # 🌟 Portfólio
 
-Oiee, bem-vindo(a) ao meu cantinho digital. Este projeto é meu portfólio pessoal
+Oiee, bem-vindo(a) ao meu cantinho. Este projeto é meu portfólio pessoal
 onde compartilho um pouco sobre minha jornada como desenvolvedora, meus projetos
 e paixões. Foi desenvolvido com _**Vue 3**_ , _**TypeScript**_ e _**Vite**_, este site reflete não só
 minhas habilidades técnicas, mas também um pouco da minha personalidade com seus _easter eggs_.
 
 Quando não estou codando, você provavelmente me encontrará falando de One Piece
-(sim, já estou em dia com o anime!), explorando o universo geek ou mergulhando
+(sim, já estou em dia com o anime), explorando o universo geek ou mergulhando
 em alguma nova tecnologia. A cultura geek é parte fundamental de quem eu sou, e
 isso se reflete na forma como abordo desafios e crio algumas soluções.
 
@@ -103,10 +103,3 @@ npm run preview
 yarn preview
 ```
 
-## 📌 Recursos e Seções
-
-- 🧭 **NavBar**: Navegação principal com troca de idioma e tema
-- 👤 **About**: Informações sobre mim.
-- 📂 **Projects**: Lista de projetos com pesquisa, filtros e cards informativos.
-- 📝 **Blog**: Artigos e publicações com prévia
-- 🏁 **Footer**: Rodapé com informações de copyright e links adicionais
