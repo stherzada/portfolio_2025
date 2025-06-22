@@ -13,7 +13,6 @@ const isLoading = ref(true)
 const error = ref<string | null>(null)
 const searchQuery = ref('')
 
-// Computed property para filtrar repositórios
 const filteredRepos = computed(() => {
     if (!searchQuery.value) return pinnedRepos.value
 
