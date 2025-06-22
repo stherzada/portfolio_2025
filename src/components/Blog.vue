@@ -21,9 +21,8 @@ const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('en-US', options)
 }
 
-// Cache dos artigos
 const CACHE_KEY = 'blog_articles'
-const CACHE_DURATION = 1000 * 60 * 5 // 5 minutos
+const CACHE_DURATION = 1000 * 60 * 5 
 
 const getCachedArticles = () => {
     const cached = localStorage.getItem(CACHE_KEY)
@@ -46,7 +45,6 @@ const cacheArticles = (data: Article[]) => {
 }
 
 const fetchArticlesWithRetry = async (retries = 3) => {
-    // Tenta usar cache primeiro
     const cached = getCachedArticles()
     if (cached) {
         articles.value = cached.map((article: Article) => ({
@@ -56,7 +54,6 @@ const fetchArticlesWithRetry = async (retries = 3) => {
         return
     }
 
-    // Se não tem cache, faz a requisição
     for (let i = 0; i < retries; i++) {
         try {
             const fetchedArticles = await fetchArticles()
