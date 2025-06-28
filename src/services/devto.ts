@@ -41,8 +41,15 @@ interface DevToArticle {
 }
 
 export async function fetchArticles(): Promise<Article[]> {
-    try {
-        const response = await fetch('https://dev.to/api/articles?username=stherzada')
+    
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 10000)
+
+        const response = await fetch('https://dev.to/api/articles?username=stherzada', {
+            signal: controller.signal
+        })
+
+        clearTimeout(timeoutId)
 
         if (!response.ok) {
             throw new Error('Erro ao buscar artigos')
@@ -63,8 +70,4 @@ export async function fetchArticles(): Promise<Article[]> {
             social_image: article.social_image,
             tags: article.tag_list
         }))
-    } catch (error) {
-        console.error('Erro ao buscar artigos do Dev.to:', error)
-        throw error
-    }
-} 
+    } 

@@ -5,6 +5,7 @@ import { Star, GitFork, Loader2, RotateCcw } from 'lucide-vue-next'
 import { fetchPinnedRepos, type Repository } from '../services/github'
 import ScrambleText from './ScrambleText.vue'
 import SearchBar from './SearchBar.vue'
+import { useLocalStorageCache, createCacheKey } from '../utils/cache'
 
 const { t } = useI18n()
 
@@ -15,7 +16,6 @@ const searchQuery = ref('')
 
 const filteredRepos = computed(() => {
     if (!searchQuery.value) return pinnedRepos.value
-
     const query = searchQuery.value.toLowerCase()
     return pinnedRepos.value.filter(repo => {
         const searchableText = [
@@ -30,34 +30,30 @@ const filteredRepos = computed(() => {
 })
 
 const getHostname = (url: string): string => {
-    try {
-        return new URL(url).hostname
-    } catch {
-        return url
-    }
+    return new URL(url).hostname
 }
 
-const fetchReposWithRetry = async (retries = 3) => {
-    for (let i = 0; i < retries; i++) {
-        try {
-            const repos = await fetchPinnedRepos()
-            pinnedRepos.value = repos
-            return
-        } catch (e) {
-            if (i === retries - 1) throw e
-            await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
-        }
+const fetchWithRetry = useLocalStorageCache<Repository[]>(
+    createCacheKey.github('stherzada'),
+    fetchPinnedRepos,
+    {
+        duration: 1000 * 60 * 10,
+        retries: 2, 
+        retryDelay: 300
     }
-}
+)
 
-onMounted(async () => {
-    try {
-        await fetchReposWithRetry()
-    } catch (e) {
-        error.value = e instanceof Error ? e.message : 'Erro desconhecido'
-    } finally {
+const fetchReposWithRetry = async () => {
+        isLoading.value = true
+        error.value = null
+        const repos = await fetchWithRetry.fetchWithRetry()
+        pinnedRepos.value = repos
         isLoading.value = false
-    }
+    
+}
+
+onMounted(() => {
+    fetchReposWithRetry()
 })
 </script>
 
@@ -76,14 +72,6 @@ onMounted(async () => {
                     <Loader2 class="w-8 h-8 text-neutral-700 dark:text-neutral-300 animate-spin" />
                     <span class="text-neutral-700 dark:text-neutral-300">{{ t('projects.loading') }}</span>
                 </div>
-            </div>
-
-            <div v-else-if="error" class="text-center text-red-500 animate-fade-in">
-                {{ error }}
-                <button type="button" @click="() => fetchReposWithRetry()"
-                    class="mt-4 text-sm text-neutral-700 dark:text-neutral-300 hover:underline">
-                    {{ t('projects.tryAgain') }}
-                </button>
             </div>
 
             <div v-else-if="filteredRepos.length === 0"

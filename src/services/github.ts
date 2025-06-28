@@ -28,13 +28,20 @@ interface GitHubError {
 }
 
 export async function fetchPinnedRepos(): Promise<Repository[]> {
-    const response = await fetch('https://api.kremilly.com/github?user=stherzada')
+  
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 10000)
 
-    if (!response.ok) {
-        const error: GitHubError = await response.json()
-        throw new Error(error.message || 'Erro ao buscar repositórios')
-    }
+        const response = await fetch('https://api.kremilly.com/github?user=stherzada', {
+            signal: controller.signal
+        })
 
-    const data = await response.json()
-    return Array.isArray(data) ? data : [data]
+        clearTimeout(timeoutId)
+        if (!response.ok) {
+            const error: GitHubError = await response.json()
+            throw new Error(error.message || 'Erro ao buscar repositórios')
+        }
+        const data = await response.json()
+        return Array.isArray(data) ? data : [data]
+    
 } 

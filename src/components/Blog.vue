@@ -5,12 +5,13 @@ import { Loader2 } from 'lucide-vue-next'
 import BlogPost from './BlogPost.vue'
 import { fetchArticles, type Article } from '../services/devto'
 import ScrambleText from './ScrambleText.vue'
+import { useLocalStorageCache, createCacheKey } from '../utils/cache'
 
 const { t } = useI18n()
 
 const articles = ref<Article[]>([])
 const isLoading = ref(true)
-const error = ref<string | null>(null)
+
 
 const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = {
@@ -20,66 +21,30 @@ const formatDate = (date: string) => {
     }
     return new Date(date).toLocaleDateString('en-US', options)
 }
-
-const CACHE_KEY = 'blog_articles'
-const CACHE_DURATION = 1000 * 60 * 5 
-
-const getCachedArticles = () => {
-    const cached = localStorage.getItem(CACHE_KEY)
-    if (!cached) return null
-
-    const { data, timestamp } = JSON.parse(cached)
-    if (Date.now() - timestamp > CACHE_DURATION) {
-        localStorage.removeItem(CACHE_KEY)
-        return null
+const { fetchWithRetry } = useLocalStorageCache<Article[]>(
+    createCacheKey.blog('stherzada'),
+    fetchArticles,
+    {
+        duration: 1000 * 60 * 5, 
+        retries: 2, 
+        retryDelay: 300
     }
-
-    return data
-}
-
-const cacheArticles = (data: Article[]) => {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({
-        data,
-        timestamp: Date.now()
-    }))
-}
-
-const fetchArticlesWithRetry = async (retries = 3) => {
-    const cached = getCachedArticles()
-    if (cached) {
-        articles.value = cached.map((article: Article) => ({
+)
+const fetchArticlesWithRetry = async () => {
+        isLoading.value = true
+        const fetchedArticles = await fetchWithRetry()
+        const formattedArticles = fetchedArticles.map((article: Article) => ({
             ...article,
             readable_publish_date: formatDate(article.published_at)
         }))
-        return
-    }
-
-    for (let i = 0; i < retries; i++) {
-        try {
-            const fetchedArticles = await fetchArticles()
-            const formattedArticles = fetchedArticles.map((article: Article) => ({
-                ...article,
-                readable_publish_date: formatDate(article.published_at)
-            }))
-            articles.value = formattedArticles
-            cacheArticles(formattedArticles)
-            return
-        } catch (e) {
-            if (i === retries - 1) throw e
-            await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
-        }
-    }
+        articles.value = formattedArticles
+        isLoading.value = false
 }
 
-onMounted(async () => {
-    try {
-        await fetchArticlesWithRetry()
-    } catch (e) {
-        error.value = e instanceof Error ? e.message : 'Erro desconhecido'
-    } finally {
-        isLoading.value = false
-    }
+onMounted(() => {
+    fetchArticlesWithRetry()
 })
+
 </script>
 
 <template>
@@ -92,15 +57,6 @@ onMounted(async () => {
             <div v-if="isLoading" class="flex justify-center">
                 <Loader2 class="w-8 h-8 text-neutral-700 dark:text-neutral-300 animate-spin" />
             </div>
-
-            <div v-else-if="error" class="text-center text-red-500 animate-fade-in">
-                {{ error }}
-                <button @click="() => fetchArticlesWithRetry()"
-                    class="mt-4 text-sm text-neutral-700 dark:text-neutral-300 hover:underline">
-                    {{ t('blog.tryAgain') }}
-                </button>
-            </div>
-
             <div v-else-if="articles.length === 0"
                 class="text-center text-neutral-700 dark:text-neutral-300 animate-fade-in">
                 {{ t('blog.noArticles') }}
