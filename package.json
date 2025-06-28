@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
@@ -34,10 +37,5 @@
     "vite": "^6.2.0",
     "vite-plugin-compression": "^0.5.1",
     "vue-tsc": "^2.2.4"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run verify-build"
-    }
   }
 }
