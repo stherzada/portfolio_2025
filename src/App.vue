@@ -1,10 +1,10 @@
 <script setup lang="ts">
+
 import { defineAsyncComponent } from 'vue'
 import NavBar from './components/NavBar.vue'
 import About from './components/About.vue'
 import Footer from './components/Footer.vue'
 
-// Lazy loading para componentes grandes
 const Projects = defineAsyncComponent(() => import('./components/Projects.vue'))
 const Blog = defineAsyncComponent(() => import('./components/Blog.vue'))
 </script>

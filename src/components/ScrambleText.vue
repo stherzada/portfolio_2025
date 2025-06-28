@@ -41,7 +41,7 @@ const startScramble = () => {
         scrambledText.value = originalText
             .split('')
             .map((letter, index) => {
-                if (letter === ' ') return ' ' // Preserva espaços
+                if (letter === ' ') return ' '
                 if (index < iteration) return letter
                 return getRandomLetter(letter)
             })
@@ -56,11 +56,7 @@ const startScramble = () => {
     }, props.scrambleSpeed)
 }
 
-const stopScramble = () => {
-    isHovering.value = false
-    clearInterval(interval as number)
-    scrambledText.value = props.text
-}
+
 
 onUnmounted(() => {
     if (interval) clearInterval(interval)
@@ -81,8 +77,7 @@ onMounted(() => {
 
 <template>
     <span class="inline-block cursor-pointer select-none transition-colors duration-300"
-        :class="{ 'hover:text-neutral-900 dark:hover:text-white': !isHovering }" @mouseenter="startScramble"
-        @mouseleave="stopScramble">
+        :class="{ 'hover:text-neutral-900 dark:hover:text-white': !isHovering }" @mouseenter="startScramble">
         {{ scrambledText }}
     </span>
 </template>
