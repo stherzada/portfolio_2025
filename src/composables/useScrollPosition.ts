@@ -46,12 +46,7 @@ export function useScrollPosition() {
    
   }
 
-  const clearScrollPosition = () => {
-      localStorage.removeItem(SCROLL_POSITION_KEY)
-  }
-
-  const handleScroll = () => {
-   
+  const handleScroll = () => {   
     if (scrollTimeout) {
       clearTimeout(scrollTimeout)
     }
@@ -89,7 +84,5 @@ export function useScrollPosition() {
 
   return {
     saveScrollPosition,
-    restoreScrollPosition,
-    clearScrollPosition
-  }
+    restoreScrollPosition  }
 } 
