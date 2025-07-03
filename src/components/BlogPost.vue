@@ -32,7 +32,7 @@ defineProps<Props>()
                 {{ description }}
             </p>
 
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-3">
                 <div class="flex items-center justify-between text-sm text-neutral-600 dark:text-neutral-400">
                     <div class="flex items-center gap-2">
                         <span>{{ readable_publish_date }}</span>
