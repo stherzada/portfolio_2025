@@ -13,7 +13,7 @@ useScrollPosition()
 </script>
 
 <template>
-  <div class=" bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300">
+  <div>
     <NavBar />
     <main>
       <About />

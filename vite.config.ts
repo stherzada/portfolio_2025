@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath } from 'url'
 import { dirname, resolve } from 'path'
+import tailwindcss from '@tailwindcss/vite'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -9,6 +10,7 @@ const __dirname = dirname(__filename)
 export default defineConfig({
   plugins: [
     vue(),
+    tailwindcss(),
   ],
   resolve: {
     alias: {
@@ -17,7 +19,6 @@ export default defineConfig({
   },
   build: {
     cssCodeSplit: true,
-    cssMinify: 'lightningcss',
     rollupOptions: {
       output: {
         manualChunks: {

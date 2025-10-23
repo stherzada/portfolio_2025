@@ -25,20 +25,3 @@
     </svg>
   </div>
 </template>
-
-<style scoped>
-.circle-svg .circle-stroke {
-  filter: none;
-  transition: filter 0.3s;
-}
-.circle-hover-group:hover .circle-stroke {
-  filter: none;
-}
-.animate-spin-slow {
-  animation: spin-slow 12s linear infinite;
-}
-@keyframes spin-slow {
-  from { transform: rotate(0deg);}
-  to { transform: rotate(360deg);}
-}
-</style> 

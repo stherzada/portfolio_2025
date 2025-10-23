@@ -58,9 +58,9 @@ onMounted(() => {
 </script>
 
 <template>
-    <section id="projects" class="flex items-center justify-center py-16">
+    <section id="projects" class="flex items-center justify-center py-4">
         <div class="md:mx-8 mx-4 md:max-w-4xl w-full">
-            <h2 class="text-3xl lg:text-4xl font-bold mb-8 text-neutral-900 dark:text-white text-center">
+            <h2 class="text-3xl lg:text-4xl font-bold mb-8 text-center text-primary">
                 <ScrambleText :text="t('projects.projects')" :scramble-speed="60" :iteration-speed="3" />
             </h2>
 
@@ -69,46 +69,45 @@ onMounted(() => {
 
             <div v-if="isLoading" class="flex justify-center">
                 <div class="flex flex-col items-center gap-4">
-                    <Loader2 class="w-8 h-8 text-neutral-700 dark:text-neutral-300 animate-spin" />
-                    <span class="text-neutral-700 dark:text-neutral-300">{{ t('projects.loading') }}</span>
+                    <Loader2 class="w-8 h-8 animate-spin loading-icon" />
+                    <span class="text-primary">{{ t('projects.loading') }}</span>
                 </div>
             </div>
 
             <div v-else-if="filteredRepos.length === 0"
-                class="text-center text-neutral-700 dark:text-neutral-300 animate-fade-in flex flex-col items-center gap-6 mt-16">
+                class="text-center animate-fade-out flex flex-col items-center gap-6 mt-16">
                 <span class="text-6xl" role="img" aria-label="Emoji triste">😔</span>
-                <p class="text-lg">{{ searchQuery ? t('projects.noResults') : t('projects.noProjects') }}</p>
+                <p class="text-lg text-primary">{{ searchQuery ? t('projects.noResults') : t('projects.noProjects') }}</p>
                 <button v-if="searchQuery" @click="searchQuery = ''"
-                    class="px-6 py-3 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-full text-neutral-900 dark:text-white transition-all duration-300 transform hover:scale-105 flex items-center gap-3 group border border-neutral-200 dark:border-neutral-700">
-                    <RotateCcw class="w-5 h-5 transition-transform duration-300 group-hover:rotate-180" />
+                    class="px-6 py-3 rounded-full transition-all duration-300 ease-in-out flex items-center gap-3 group text-primary card cursor-pointer shadow-sm shadow-shadow-primary">
+                    <RotateCcw class="w-5 h-5 arrow-rotate" />
                     <span>{{ t('projects.clearSearch') }}</span>
                 </button>
             </div>
 
             <div v-else class="grid gap-6 animate-fade-in">
-                <article v-for="(repo, index) in filteredRepos" :key="repo.url"
-                    class="bg-white dark:bg-neutral-800 rounded-lg p-6 transition-all duration-300 hover:shadow-lg border border-neutral-200 dark:border-neutral-700 transform hover:-translate-y-1"
-                    :style="{ animationDelay: `${index * 100}ms` }">
+                <article v-for="repo in filteredRepos" :key="repo.url"
+                    class="rounded-lg p-6 transition-all duration-300 hover:shadow-lg transform card">
                     <div class="flex flex-col">
                         <div class="flex items-start justify-between mb-4">
                             <div>
                                 <h3 class="text-2xl font-bold">
                                     <a :href="repo.url" target="_blank" rel="noopener noreferrer"
-                                        class="text-neutral-900 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors hover-underline">
+                                        class="link-underline text-primary">
                                         {{ repo.name }}
                                     </a>
                                 </h3>
-                                <p class="mt-2 text-neutral-700 dark:text-neutral-300">
+                                <p class="mt-2">
                                     {{ repo.description }}
                                 </p>
                                 <div v-if="repo.homepage" class="mt-2">
                                     <a :href="repo.homepage" target="_blank" rel="noopener noreferrer"
-                                        class="text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">
+                                        class="text-sm link-underline text-primary">
                                         {{ getHostname(repo.homepage) }}
                                     </a>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-4 text-sm text-neutral-600 dark:text-neutral-400">
+                            <div class="flex items-center gap-4 text-sm text-primary">
                                 <span class="flex items-center gap-1" :title="t('projects.stars')">
                                     <Star class="w-4 h-4" />
                                     {{ repo.stars }}
@@ -121,19 +120,19 @@ onMounted(() => {
                         </div>
                         <div class="flex flex-wrap gap-2 mt-4">
                             <span v-for="tag in repo.tags" :key="tag"
-                                class="px-3 py-1 text-sm bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-full">
+                                class="px-3 py-1 text-sm rounded-full text-primary">
                                 {{ tag }}
                             </span>
                         </div>
                         <div class="flex flex-wrap gap-2 mt-4">
                             <span v-for="lang in repo.languages" :key="lang"
-                                class="px-3 py-1 text-sm bg-neutral-50 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 rounded-full border border-neutral-200 dark:border-neutral-700 font-medium">
+                                class="px-3 py-1 text-sm rounded-full font-medium text-primary">
                                 {{ lang }}
                             </span>
                         </div>
-                        <div class="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
+                        <div class="mt-4 pt-4 card-divider">
                             <a :href="repo.url" target="_blank" rel="noopener noreferrer"
-                                class="text-sm text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors hover-underline">
+                                class="text-sm hover-underline text-primary">
                                 {{ t('projects.viewOnGithub') }}
                             </a>
                         </div>
@@ -143,48 +142,3 @@ onMounted(() => {
         </div>
     </section>
 </template>
-
-<style scoped>
-.animate-fade-in {
-    opacity: 0;
-    animation: fadeIn 0.5s ease-in-out forwards;
-}
-
-article {
-    opacity: 0;
-    animation: fadeIn 0.5s ease-in-out forwards;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Adiciona smooth scroll */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Melhora a acessibilidade do foco */
-:focus {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-}
-
-/* Adiciona prefers-reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-
-    .animate-fade-in,
-    article {
-        animation: none;
-        opacity: 1;
-    }
-}
-</style>

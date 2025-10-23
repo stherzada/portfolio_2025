@@ -12,10 +12,10 @@ const { t } = useI18n()
         <div class="md:mx-8 mx-4 md:max-w-4xl w-full">
             <div class="flex flex-col lg:flex-row items-center gap-12">
                 <div class="flex-1 text-center lg:text-left order-2 lg:order-1">
-                    <h2 class="text-3xl lg:text-4xl font-bold mb-6 text-neutral-900 dark:text-white">
+                    <h2 class="text-3xl lg:text-4xl font-bold mb-6 text-primary">
                         <ScrambleText text="Sthefany Sther" :delay="500" />
                     </h2>
-                    <p class="text-lg text-neutral-700 dark:text-neutral-300 mb-4">
+                    <p class="text-lg mb-4 text-primary">
                         {{ t('about.description') }}
                     </p>
                     <Links />
@@ -29,15 +29,3 @@ const { t } = useI18n()
         </div>
     </section>
 </template>
-
-<style scoped>
-.group:hover img {
-    filter: grayscale(0);
-}
-
-@media (max-width: 1024px) {
-    img {
-        filter: grayscale(0) !important;
-    }
-}
-</style>

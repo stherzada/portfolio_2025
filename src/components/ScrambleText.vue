@@ -24,7 +24,7 @@ let interval: number | null = null
 const getRandomLetter = (originalLetter: string) => {
     if (props.preserveCase) {
         const isUpperCase = originalLetter === originalLetter.toUpperCase()
-        const randomLetter = letters[Math.floor(Math.random() * (isUpperCase ? letters.length : 26))]
+        const randomLetter = letters[Math.floor(Math.random() * (isUpperCase ? letters.length : 26))] as string
         return isUpperCase ? randomLetter.toUpperCase() : randomLetter.toLowerCase()
     }
     return letters[Math.floor(Math.random() * letters.length)]
@@ -76,8 +76,8 @@ onMounted(() => {
 </script>
 
 <template>
-    <span class="inline-block cursor-pointer select-none transition-colors duration-300"
-        :class="{ 'hover:text-neutral-900 dark:hover:text-white': !isHovering }" @mouseenter="startScramble">
+    <span class="text-primary inline-block cursor-pointer select-none transition-colors duration-300"
+        :class="{ 'hover:text-primary': !isHovering }" @mouseenter="startScramble">
         {{ scrambledText }}
     </span>
 </template>

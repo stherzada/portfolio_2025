@@ -58,43 +58,14 @@ const links: Link[] = [
 <template>
     <nav class="flex flex-wrap justify-center lg:justify-start gap-4 mt-4" aria-label="Links de redes sociais">
         <a v-for="link in links" :key="link.href" :href="link.href" :title="link.title" :rel="link.rel" target="_blank"
-            class="link-underline flex items-center gap-2 p-2 rounded-lg transition-all duration-200 text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white"
+            class="link-underline flex items-center gap-2 p-2 rounded-lg transition-all duration-200"
             :aria-label="link.alt">
             <component :is="link.icon" class="w-5 h-5" aria-hidden="true" />
-            <span class="sr-only">{{ link.alt }}</span>
         </a>
     </nav>
 </template>
 
 <style scoped>
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
 
-.link-underline {
-    position: relative;
-}
-
-.link-underline::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: 0;
-    left: 0;
-    background-color: currentColor;
-    transition: width 0.3s ease-in-out;
-}
-
-.link-underline:hover::after {
-    width: 100%;
-}
+ 
 </style>

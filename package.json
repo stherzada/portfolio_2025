@@ -11,31 +11,27 @@
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "verify-build": "vue-tsc -b && vite build --mode production",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
-    "@vueuse/core": "^13.0.0",
-    "lucide-vue-next": "^0.485.0",
-    "vue": "^3.5.13",
-    "vue-i18n": "^11.1.2",
-    "vue-router": "^4.5.0"
+    "@tailwindcss/vite": "^4.1.16",
+    "@vueuse/core": "^14.0.0",
+    "lucide-vue-next": "^0.546.0",
+    "vue": "^3.5.22",
+    "vue-i18n": "^11.1.12",
+    "vue-router": "^4.6.3"
   },
   "devDependencies": {
-    "@types/node": "^22.13.14",
-    "@vitejs/plugin-vue": "^5.2.1",
-    "@vue/tsconfig": "^0.7.0",
-    "autoprefixer": "^10.4.21",
-    "cssnano": "^7.0.6",
-    "cssnano-preset-advanced": "^7.0.6",
+    "@types/node": "^24.9.1",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/tsconfig": "^0.8.1",
     "husky": "^9.1.7",
-    "lightningcss": "^1.29.3",
-    "postcss": "^8.5.3",
-    "postcss-import": "^16.1.0",
-    "tailwindcss": "^3.4.17",
-    "terser": "^5.39.0",
-    "typescript": "~5.7.2",
-    "vite": "^6.2.0",
+    "lightningcss": "^1.30.2",
+    "tailwindcss": "^4.1.16",
+    "terser": "^5.44.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.12",
     "vite-plugin-compression": "^0.5.1",
-    "vue-tsc": "^2.2.4"
+    "vue-tsc": "^3.1.1"
   }
 }
