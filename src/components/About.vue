@@ -22,7 +22,7 @@ const { t } = useI18n()
                 </div>
                 <div class="relative w-64 h-64 lg:w-80 lg:h-80 rounded-3xl overflow-hidden group order-1 lg:order-2">
                     <AnimatedCircle />
-                    <img src="../assets/photo-no-bg.png" alt="Sthefany Sther"
+                    <img src="/src/assets/photo-no-bg.png" alt="Sthefany Sther"
                         class="w-full h-full object-cover transition-all duration-300 ease-in-out filter grayscale hover:grayscale-0 lg:grayscale lg:hover:grayscale-0 relative z-20" />
                 </div>
             </div>
