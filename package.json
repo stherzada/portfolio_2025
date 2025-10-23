@@ -14,6 +14,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.76.1",
     "@tailwindcss/vite": "^4.1.16",
     "@vueuse/core": "^14.0.0",
     "lucide-vue-next": "^0.546.0",

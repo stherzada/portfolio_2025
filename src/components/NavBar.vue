@@ -1,11 +1,20 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { Menu, X, ArrowUp } from 'lucide-vue-next'
 import ThemeToggle from './ThemeToggle.vue'
 
 const { t, locale } = useI18n()
+const route = useRoute()
+const router = useRouter()
 const isInitialized = ref(false)
+
+const isBlogPage = computed(() => route.path === '/blog')
+
+const navigateToHome = () => {
+  router.push('/')
+}
 
 const setLanguage = (lang: 'en' | 'pt') => {
   if (!isInitialized.value) return
@@ -64,10 +73,18 @@ const scrollToSection = (id: string) => {
     </button>
 
     <div class="hidden lg:flex lg:gap-6">
-      <a v-for="section in sections" :key="section.id" @click="scrollToSection(section.id)"
-        class="text-primary cursor-pointer font-medium transition duration-200 link-underline">
-        {{ t(section.label) }}
-      </a>
+      <template v-if="isBlogPage">
+        <a @click="navigateToHome"
+          class="text-primary cursor-pointer font-medium transition duration-200 link-underline">
+          {{ t('nav.home') }}
+        </a>
+      </template>
+      <template v-else>
+        <a v-for="section in sections" :key="section.id" @click="scrollToSection(section.id)"
+          class="text-primary cursor-pointer font-medium transition duration-200 link-underline">
+          {{ t(section.label) }}
+        </a>
+      </template>
     </div>
 
     <div class="flex gap-3 ml-auto">
@@ -95,10 +112,18 @@ const scrollToSection = (id: string) => {
     isMenuOpen ? 'translate-x-0' : 'translate-x-full'
   ]">
     <div class="flex flex-col gap-4 p-6 pt-20">
-      <a v-for="section in sections" :key="section.id" @click="scrollToSection(section.id)"
-        class="text-primary cursor-pointer font-medium transition duration-200 md:text-lg text-2xl">
-        {{ t(section.label) }}
-      </a>
+      <template v-if="isBlogPage">
+        <a @click="navigateToHome"
+          class="text-primary cursor-pointer font-medium transition duration-200 md:text-lg text-2xl">
+          {{ t('nav.home') }}
+        </a>
+      </template>
+      <template v-else>
+        <a v-for="section in sections" :key="section.id" @click="scrollToSection(section.id)"
+          class="text-primary cursor-pointer font-medium transition duration-200 md:text-lg text-2xl">
+          {{ t(section.label) }}
+        </a>
+      </template>
     </div>
   </div>
 
