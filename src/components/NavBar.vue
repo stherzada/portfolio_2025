@@ -52,25 +52,6 @@ const scrollToSection = (id: string) => {
 
 </script>
 
-<style scoped>
-.navbar {
-  background-color: rgba(var(--color-base-100), 1);
-}
-
-.mobile-menu {
-  background-color: var(--color-base-100);
-}
-
-
-.scroll-top-button {
-  background-color: var(--color-base-300);
-  color: var(--color-base-content);
-}
-
-.scroll-top-button:hover {
-  color: var(--color-primary);
-}
-</style>
 
 <template>
   <nav v-show="isInitialized"
@@ -92,13 +73,13 @@ const scrollToSection = (id: string) => {
     <div class="flex gap-3 ml-auto">
       <div class="flex items-center gap-1 language-selector">
         <button @click="setLanguage('pt')"
-          class="text-primary px-2 py-1 transition duration-200 link-underline"
+          class="text-primary px-2 py-1 transition duration-200 link-underline cursor-pointer"
           :class="{ 'font-bold active': locale === 'pt', 'opacity-50': locale !== 'pt' }">
           PT
         </button>
         <span class="opacity-50">/</span>
         <button @click="setLanguage('en')"
-          class="text-primary px-2 py-1 transition duration-200 link-underline"
+          class="text-primary px-2 py-1 transition duration-200 link-underline cursor-pointer"
           :class="{ 'font-bold active': locale === 'en', 'opacity-50': locale !== 'en' }">
           EN
         </button>
@@ -127,3 +108,4 @@ const scrollToSection = (id: string) => {
     <ArrowUp class="h-5 w-5" />
   </button>
 </template>
+

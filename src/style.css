@@ -299,3 +299,8 @@ html {
       background-position: 200% center;
   }
 }
+
+.theme-toggle-button {
+  background-color: var(--color-base-200);
+  color: var(--color-base-content);
+}
