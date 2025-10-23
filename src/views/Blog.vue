@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import supabase from '../supabase'
 import { store } from '../store'
+import { onMounted } from 'vue'
 import type { Post } from '../types'
 
 const fetchPosts = async () => {
@@ -20,7 +21,9 @@ const getWordCount = (text: string): number => {
     return text ? text.trim().split(/\s+/).filter(Boolean).length : 0;
 }
 
-fetchPosts()
+onMounted(async () => {
+    await fetchPosts()
+})
 </script>
 
 <template>
