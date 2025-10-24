@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import type { Post } from '../types'
 import { ref, onMounted, watch } from 'vue'
 import { createSlug } from '../utils/slug'
-import { fetchPostByTitle } from '../services/blog'
+import { fetchPostBySlug } from '../services/blog'
 import { useI18n } from 'vue-i18n'
 import { formatDateWithI18n } from '../utils/dateFormat'
 import { formatReadingTime } from '../utils/readingTime'
@@ -22,41 +22,37 @@ const fetchPost = async (slug: string) => {
     loading.value = true
     error.value = null
 
-    const decodedSlug = decodeURIComponent(slug)
-
-    if (decodedSlug.includes(' ')) {
-      const newSlug = createSlug(decodedSlug)
+    if (slug.includes(' ')) {
+      const newSlug = createSlug(slug)
       router.replace(`/blog/${newSlug}`)
       return
     }
 
-    const normalizedTitle = decodedSlug.replace(/-/g, ' ')
-
-    const found = store.posts.find((post: Post) =>
-      post.title.toLowerCase() === normalizedTitle.toLowerCase()
-    )
-    if (found) {
-      post.value = found
-      return found
+    if (store.posts.length > 0) {
+      const found = store.posts.find((post: Post) => post.slug === slug)
+      if (found) {
+        post.value = found
+        return found
+      }
     }
 
-    const data = await fetchPostByTitle(normalizedTitle)
+    const data = await fetchPostBySlug(slug)
     post.value = data
   } catch (err) {
-    console.error('Unexpected error:', err)
-    error.value = 'Erro inesperado ao carregar o post.'
+    console.error('Error fetching post:', err)
+    error.value = 'Post não encontrado ou erro ao carregar.'
   } finally {
     loading.value = false
   }
 }
 
 onMounted(() => {
-  fetchPost(route.params.title as string)
+  fetchPost(route.params.slug as string)
 })
 
-watch(() => route.params.title, (newTitle) => {
-  if (newTitle) {
-    fetchPost(newTitle as string)
+watch(() => route.params.slug, (newSlug) => {
+  if (newSlug) {
+    fetchPost(newSlug as string)
   }
 })
 </script>
@@ -71,7 +67,7 @@ watch(() => route.params.title, (newTitle) => {
       <div v-else-if="error" class="text-center">
         <h1 class="text-2xl font-bold text-red-500 mb-4">Erro</h1>
         <p class="text-lg text-red-500 mb-4">{{ error }}</p>
-        <button @click="fetchPost(route.params.title as string)"
+        <button @click="fetchPost(route.params.slug as string)"
           class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 transition-colors">
           Tentar Novamente
         </button>

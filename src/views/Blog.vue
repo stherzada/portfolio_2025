@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { store } from '../store'
 import { onMounted, ref, computed } from 'vue'
-import { createSlug } from '../utils/slug'
 import { fetchPosts } from '../services/blog'
 import { useI18n } from 'vue-i18n'
 import { formatReadingTime } from '../utils/readingTime'
 import { formatDateWithI18n } from '../utils/dateFormat'
-import { Clock } from 'lucide-vue-next'
+import { Clock, Calendar } from 'lucide-vue-next'
 
 const currentPage = ref(1)
 const postsPerPage = ref(5)
@@ -20,7 +19,6 @@ const fetchPostsData = async (page: number = 1) => {
         const { posts, total } = await fetchPosts(page, postsPerPage.value)
         store.posts = posts
         totalPosts.value = total
-        console.log(posts)
     } catch (error) {
         console.error('Error fetching posts:', error)
         store.posts = []
@@ -59,7 +57,7 @@ onMounted(async () => {
      
             <div v-else class="flex flex-col gap-4 w-full max-w-2xl card rounded-lg p-4">
                 <div v-for="post in store.posts" :key="post.id" 
-                     @click="$router.push(`/blog/${createSlug(post.title)}`)"
+                     @click="$router.push(`/blog/${post.slug}`)"
                      class=" cursor-pointer  transition-colors">
                      <div v-if="post.image_path" class="mb-4 overflow-hidden rounded-lg">
                         <img :src="post.image_path" :alt="post.title" class="w-full h-48 object-cover rounded-lg" />

@@ -23,25 +23,6 @@ export const fetchPosts = async (page: number = 1, postsPerPage: number = 5) => 
   }
 }
 
-/**
- * Busca um post específico por título
- * @param title - Título do post para buscar
- * @returns Promise com dados do post
- */
-export const fetchPostByTitle = async (title: string) => {
-  const { data, error } = await supabase
-    .from('posts')
-    .select("*")
-    .ilike('title', title)
-    .single()
-
-  if (error) {
-    console.error('Error fetching post:', error)
-    throw new Error('Erro ao carregar o post')
-  }
-
-  return data as Post
-}
 
 /**
  * Busca um post específico por ID
@@ -62,3 +43,59 @@ export const fetchPostById = async (id: string) => {
 
   return data as Post
 }
+
+/**
+ * Lista todos os posts para debug
+ * @returns Promise com lista de todos os posts
+ */
+export const fetchAllPosts = async () => {
+  const { data, error } = await supabase
+    .from('posts')
+    .select("id, title, slug")
+
+  if (error) {
+    console.error('Error fetching all posts:', error)
+    throw new Error('Erro ao carregar posts')
+  }
+
+  return data
+}
+
+/**
+ * Busca um post por slug ou por título (fallback)
+ * @param slug - Slug do post para buscar
+ * @returns Promise com dados do post
+ */
+export const fetchPostBySlug = async (slug: string) => {  
+    const { data: allPosts, error: allPostsError } = await supabase
+      .from('posts')
+      .select("*")
+
+    if (allPostsError) {
+      throw new Error(`Post não encontrado: ${allPostsError.message}`)
+    }
+
+    if (!allPosts || allPosts.length === 0) {
+      throw new Error('Nenhum post encontrado no banco de dados')
+    }
+
+    
+    const searchTitle = slug.replace(/-/g, ' ').toLowerCase()
+
+    const matchingPost = allPosts.find(post => {
+      const postTitle = post.title.toLowerCase()
+      const postSlug = (post.slug || '').toLowerCase()
+      
+      
+      return postTitle.includes(searchTitle) || 
+             postSlug.includes(searchTitle) ||
+             searchTitle.includes(postTitle.replace(/[^a-z0-9\s]/g, ''))
+    })
+
+    if (matchingPost) {
+      return matchingPost as Post
+    }
+
+    throw new Error(`Post não encontrado com slug ou título: ${slug}`)
+  }
+

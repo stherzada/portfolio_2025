@@ -14,14 +14,14 @@ const router = createRouter({
       component: () => import('@/views/Blog.vue'),
     },
     {
+      path: '/blog/:slug',
+      name: 'BlogPost',
+      component: () => import('@/views/BlogPost.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: () => import('@/views/NotFound.vue'),
-    },
-    {
-      path: '/blog/:title',
-      name: 'BlogPost',
-      component: () => import('@/views/BlogPost.vue'),
     },
   ],
 })
