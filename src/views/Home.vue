@@ -7,7 +7,6 @@ import { useScrollPosition } from '../composables/useScrollPosition'
 
 const Projects = defineAsyncComponent(() => import('../components/Projects.vue'))
 
-
 useScrollPosition()
 </script>
 

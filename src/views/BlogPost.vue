@@ -15,6 +15,7 @@ const post = ref<Post | null>(null)
 const error = ref<string | null>(null)
 const loading = ref(false)
 
+
 const fetchPost = async (slug: string) => {
   try {
     loading.value = true
@@ -39,7 +40,9 @@ const fetchPost = async (slug: string) => {
 }
 
 onMounted(() => {
-  fetchPost(route.params.slug as string)
+  if (!post.value) {
+    fetchPost(route.params.slug as string)
+  }
 })
 
 </script>
