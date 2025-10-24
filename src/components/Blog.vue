@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { ArrowRight, Calendar, Star } from 'lucide-vue-next'
+import { ArrowRight, Calendar, Star, Clock } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
 import { fetchPosts } from '../services/blog'
 import type { Post } from '../types/Post';
 import { createSlug } from '../utils/slug'
+import { formatReadingTime } from '../utils/readingTime'
+import { formatDateWithI18n } from '../utils/dateFormat'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const featuredPost = ref<Post | undefined>(undefined)
 
 onMounted(async () => {
@@ -19,14 +21,6 @@ onMounted(async () => {
     console.error('Erro ao carregar post em destaque:', error)
   }
 })
-
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('pt-BR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
 </script>
 
 <template>
@@ -63,7 +57,11 @@ const formatDate = (dateString: string) => {
                         <div class="flex items-center gap-4 text-sm text-primary">
                             <div class="flex items-center gap-1">
                                 <Calendar class="h-4 w-4" />
-                                {{ formatDate(featuredPost.created_at) }}
+                                {{ formatDateWithI18n(featuredPost.created_at, locale) }}
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <Clock class="h-4 w-4" />
+                                {{ formatReadingTime(featuredPost.content || '') }}
                             </div>
                         </div>
                         

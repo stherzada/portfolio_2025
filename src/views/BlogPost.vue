@@ -6,10 +6,13 @@ import { ref, onMounted, watch } from 'vue'
 import { createSlug } from '../utils/slug'
 import { fetchPostByTitle } from '../services/blog'
 import { useI18n } from 'vue-i18n'
+import { formatDateWithI18n } from '../utils/dateFormat'
+import { formatReadingTime } from '../utils/readingTime'
+import { Clock } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const post = ref<Post | null>(null)
 const error = ref<string | null>(null)
 const loading = ref(false)
@@ -59,10 +62,10 @@ watch(() => route.params.title, (newTitle) => {
 </script>
 
 <template>
-  <div class="container mx-auto">
+  <div class="container mx-auto px-4 py-8 md:py-16">
     <main class="flex flex-col items-center justify-center">
       <div v-if="loading" class="text-center">
-        <p class="text-lg text-primary">{{ t('blog.loadingPost') }}</p>
+        <p class="text-lg text-primary">{{ t('blog.loading') }}</p>
       </div>
 
       <div v-else-if="error" class="text-center">
@@ -74,15 +77,20 @@ watch(() => route.params.title, (newTitle) => {
         </button>
       </div>
 
-      <div v-else-if="post" class="text-center m">
-        <div v-if="post.image_path" class="mb-4 overflow-hidden rounded-lg">
-          <img :src="post.image_path" :alt="post.title" class="w-full h-48 object-cover rounded-lg" />
+      <div v-else-if="post" class="w-full max-w-4xl">
+        <div v-if="post.image_path" class="mb-6 overflow-hidden rounded-lg">
+          <img :src="post.image_path" :alt="post.title" class="w-full h-48 md:h-64 object-cover rounded-lg" />
         </div>
-        <h1 class="text-4xl font-bold text-primary">{{ post.title }}</h1>
-        <p class="text-lg text-primary">{{ post.description }}</p>
-        <p class="text-lg text-primary">{{ post.created_at ? new Date(post.created_at).toLocaleDateString() : '' }}</p>
+        <div class="text-center mb-8 flex items-center gap-2 flex-col">
+          <h1 class="text-2xl md:text-4xl font-bold text-primary mb-4 leading-tight">{{ post.title }}</h1>
+          <p class="text-sm md:text-lg text-primary opacity-75">{{ formatDateWithI18n(post.created_at, locale) }}</p>
+          <div class="flex items-center gap-1 text-sm md:text-lg text-primary opacity-75">
+            <Clock class="h-4 w-4" />
+            {{ formatReadingTime(post.content || '') }}
+          </div>
+        </div>
         <article v-html="post.content"
-          class="prose prose-lg prose-gray max-w-none prose-headings:text-primary prose-a:text-blue-600 prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded">
+          class="prose prose-sm md:prose-lg prose-gray max-w-none prose-headings:text-primary prose-a:text-blue-600 prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-p:leading-relaxed prose-li:leading-relaxed">
         </article>
       </div>
 

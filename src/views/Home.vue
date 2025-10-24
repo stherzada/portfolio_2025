@@ -2,6 +2,7 @@
 
 import { defineAsyncComponent } from 'vue'
 import About from '../components/About.vue'
+import Blog from '../components/Blog.vue'
 import { useScrollPosition } from '../composables/useScrollPosition'
 
 const Projects = defineAsyncComponent(() => import('../components/Projects.vue'))
@@ -15,6 +16,5 @@ useScrollPosition()
       <About />
       <Blog />
       <Projects />
-     
     </main>
 </template>

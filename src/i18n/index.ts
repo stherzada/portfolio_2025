@@ -38,7 +38,7 @@ const messages = {
         blog: {
             title: 'My Blog',
             visitMyBlog: 'Visit my blog ( •̀ ω •́ )✧',
-            loadingPost: 'Loading post...',
+            loading: 'Loading post...',
             description: 'Here you can find my thoughts and ideas about technology, programming, and other topics.',
             featuredPost: 'Featured Post',
             readMore: 'Read more'
@@ -80,7 +80,7 @@ const messages = {
         },
         blog: {
             visitMyBlog: 'Venha conhecer meu blog ( •̀ ω •́ )✧',
-            loadingPost: 'Carregando post...',
+            loading: 'Carregando post...',
             description: 'Aqui você pode encontrar meus pensamentos e ideias sobre tecnologia, programação e outros temas.',
             featuredPost: 'Post em Destaque',
             readMore: 'Ler mais'
