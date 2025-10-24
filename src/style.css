@@ -404,10 +404,79 @@ html {
 }
 
 
-/* Mobile reading improvements */
+/* Mobile improvements */
 @media (max-width: 768px) {
+  /* Navbar mobile improvements */
+  .navbar {
+    padding: 0.75rem 1rem !important;
+  }
+  
+  /* Mobile menu improvements */
+  .mobile-menu {
+    width: 280px !important;
+    padding: 1.5rem !important;
+    padding-top: 5rem !important;
+  }
+  
+  /* Blog page mobile improvements */
+  .container {
+    padding: 0 1rem !important;
+  }
+  
+  /* Blog title mobile */
+  h1 {
+    font-size: 2rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  /* Blog cards mobile */
+  .card {
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .card img {
+    height: 200px !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  .card h2 {
+    font-size: 1.125rem !important;
+    line-height: 1.3 !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .card p {
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* Card metadata mobile */
+  .card-divider {
+    padding-top: 0.75rem !important;
+  }
+  
+  .card-divider div {
+    font-size: 0.75rem !important;
+  }
+  
+  /* Pagination mobile */
+  .flex.items-center.gap-2 {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+  
+  .flex.items-center.gap-2 button {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* Prose mobile improvements */
   .prose {
     font-size: 16px !important;
+    padding: 0 1rem !important;
   }
   
   .prose h1 {
@@ -428,5 +497,54 @@ html {
   
   .prose th, .prose td {
     padding: 0.5rem !important;
+  }
+  
+  /* Scroll button mobile */
+  .scroll-top-button {
+    bottom: 1rem !important;
+    right: 1rem !important;
+    padding: 0.75rem !important;
+  }
+  
+  /* Language selector mobile */
+  .language-selector button {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.875rem !important;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.5rem 0.75rem !important;
+  }
+  
+  .mobile-menu {
+    width: 100vw !important;
+    right: 0 !important;
+  }
+  
+  h1 {
+    font-size: 1.75rem !important;
+  }
+  
+  .card {
+    padding: 0.75rem !important;
+  }
+  
+  .card img {
+    height: 180px !important;
+  }
+  
+  .card h2 {
+    font-size: 1rem !important;
+  }
+  
+  .card p {
+    font-size: 0.8rem !important;
+  }
+  
+  .prose {
+    padding: 0 0.75rem !important;
   }
 }
