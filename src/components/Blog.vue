@@ -4,7 +4,6 @@ import { ArrowRight, Calendar, Star, Clock } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
 import { fetchPosts } from '../services/blog'
 import type { Post } from '../types/Post';
-import { createSlug } from '../utils/slug'
 import { formatReadingTime } from '../utils/readingTime'
 import { formatDateWithI18n } from '../utils/dateFormat'
 
@@ -66,7 +65,7 @@ onMounted(async () => {
                         </div>
                         
                         <router-link 
-                            :to="`/blog/${createSlug(featuredPost.title)}`" 
+                            :to="`/blog/${featuredPost.slug}`" 
                             class="link-underline flex items-center gap-2"
                         >
                             {{ t('blog.readMore') }} <ArrowRight class="h-4 w-4" />

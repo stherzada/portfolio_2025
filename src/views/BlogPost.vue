@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import store from '../store'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import type { Post } from '../types'
-import { ref, onMounted, watch } from 'vue'
-import { createSlug } from '../utils/slug'
+import { ref, onMounted } from 'vue'
 import { fetchPostBySlug } from '../services/blog'
 import { useI18n } from 'vue-i18n'
 import { formatDateWithI18n } from '../utils/dateFormat'
@@ -11,7 +10,6 @@ import { formatReadingTime } from '../utils/readingTime'
 import { Clock } from 'lucide-vue-next'
 
 const route = useRoute()
-const router = useRouter()
 const { t, locale } = useI18n()
 const post = ref<Post | null>(null)
 const error = ref<string | null>(null)
@@ -21,12 +19,6 @@ const fetchPost = async (slug: string) => {
   try {
     loading.value = true
     error.value = null
-
-    if (slug.includes(' ')) {
-      const newSlug = createSlug(slug)
-      router.replace(`/blog/${newSlug}`)
-      return
-    }
 
     if (store.posts.length > 0) {
       const found = store.posts.find((post: Post) => post.slug === slug)
@@ -50,11 +42,6 @@ onMounted(() => {
   fetchPost(route.params.slug as string)
 })
 
-watch(() => route.params.slug, (newSlug) => {
-  if (newSlug) {
-    fetchPost(newSlug as string)
-  }
-})
 </script>
 
 <template>

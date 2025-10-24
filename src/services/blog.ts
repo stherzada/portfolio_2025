@@ -74,32 +74,18 @@ export const fetchPostBySlug = async (slug: string) => {
     const { data: allPosts, error: allPostsError } = await supabase
       .from('posts')
       .select("*")
-
+      .eq('slug', slug)
+      .single()
     if (allPostsError) {
       throw new Error(`Post não encontrado: ${allPostsError.message}`)
     }
 
-    if (!allPosts || allPosts.length === 0) {
+    if (!allPosts) {
       throw new Error('Nenhum post encontrado no banco de dados')
     }
 
-    
-    const searchTitle = slug.replace(/-/g, ' ').toLowerCase()
-
-    const matchingPost = allPosts.find(post => {
-      const postTitle = post.title.toLowerCase()
-      const postSlug = (post.slug || '').toLowerCase()
-      
-      
-      return postTitle.includes(searchTitle) || 
-             postSlug.includes(searchTitle) ||
-             searchTitle.includes(postTitle.replace(/[^a-z0-9\s]/g, ''))
-    })
-
-    if (matchingPost) {
-      return matchingPost as Post
-    }
-
-    throw new Error(`Post não encontrado com slug ou título: ${slug}`)
+    return allPosts as Post
   }
+
+
 
