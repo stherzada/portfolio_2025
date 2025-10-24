@@ -11,7 +11,7 @@ export const getWordCount = (text: string): number => {
 /**
  * Calcula o tempo de leitura baseado no número de palavras
  * @param text - Texto para calcular o tempo de leitura
- * @param wordsPerMinute - Palavras por minuto (padrão: 200 para português)
+ * @param wordsPerMinute - Palavras por minuto 
  * @returns Tempo de leitura em minutos
  */
 export const getReadingTime = (text: string, wordsPerMinute: number = 200): number => {
@@ -22,7 +22,7 @@ export const getReadingTime = (text: string, wordsPerMinute: number = 200): numb
 /**
  * Formata o tempo de leitura para exibição
  * @param text - Texto para calcular o tempo
- * @param wordsPerMinute - Palavras por minuto (padrão: 200 para português)
+ * @param wordsPerMinute - Palavras por minuto 
  * @returns String formatada do tempo de leitura
  */
 export const formatReadingTime = (text: string, wordsPerMinute: number = 200): string => {

@@ -2,7 +2,6 @@
  * Formata uma data baseada no idioma atual do i18n
  * @param dateString - String da data ou objeto Date
  * @param locale - Idioma ('pt' ou 'en')
- * @param options - Opções de formatação do Intl.DateTimeFormat
  * @returns Data formatada no idioma especificado
  */
 export const formatDate = (
@@ -73,6 +72,7 @@ export const formatDateTime = (dateString: string | Date): string => {
  * @param locale - Idioma ('pt' ou 'en')
  * @returns Data relativa formatada
  */
+
 export const formatRelativeDate = (dateString: string | Date, locale: 'pt' | 'en' = 'pt'): string => {
   const date = typeof dateString === 'string' ? new Date(dateString) : dateString
   const now = new Date()
@@ -116,6 +116,7 @@ export const formatRelativeDate = (dateString: string | Date, locale: 'pt' | 'en
  * @param options - Opções de formatação
  * @returns Data formatada no idioma especificado
  */
+
 export const formatDateByLocale = (
   dateString: string | Date,
   locale: string = 'pt-BR',
@@ -127,34 +128,6 @@ export const formatDateByLocale = (
 ): string => {
   const date = typeof dateString === 'string' ? new Date(dateString) : dateString
   return date.toLocaleDateString(locale, options)
-}
-
-/**
- * Verifica se uma data é hoje
- * @param dateString - String da data ou objeto Date
- * @returns true se a data for hoje
- */
-export const isToday = (dateString: string | Date): boolean => {
-  const date = typeof dateString === 'string' ? new Date(dateString) : dateString
-  const today = new Date()
-  
-  return date.getDate() === today.getDate() &&
-         date.getMonth() === today.getMonth() &&
-         date.getFullYear() === today.getFullYear()
-}
-
-/**
- * Verifica se uma data é recente (últimos 7 dias)
- * @param dateString - String da data ou objeto Date
- * @returns true se a data for dos últimos 7 dias
- */
-export const isRecent = (dateString: string | Date): boolean => {
-  const date = typeof dateString === 'string' ? new Date(dateString) : dateString
-  const now = new Date()
-  const diffInMs = now.getTime() - date.getTime()
-  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
-  
-  return diffInDays <= 7
 }
 
 /**
@@ -178,16 +151,3 @@ export const formatDateWithI18n = (
   return formatDate(dateString, locale, options)
 }
 
-/**
- * Formata uma data relativa usando o idioma atual do i18n
- * @param dateString - String da data ou objeto Date
- * @param currentLocale - Idioma atual do i18n
- * @returns Data relativa formatada no idioma atual
- */
-export const formatRelativeDateWithI18n = (
-  dateString: string | Date,
-  currentLocale: string
-): string => {
-  const locale = currentLocale === 'pt' ? 'pt' : 'en'
-  return formatRelativeDate(dateString, locale)
-}

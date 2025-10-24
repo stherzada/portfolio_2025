@@ -1,6 +1,7 @@
 import supabase from '../supabase'
 import type { Post } from '../types'
 
+/** TODO: Refatorar para melhorar cache e performance */
 export const fetchPosts = async (page: number = 1, postsPerPage: number = 5) => {
   const from = (page - 1) * postsPerPage
   const to = from + postsPerPage - 1
@@ -66,6 +67,9 @@ export const fetchAllPosts = async () => {
  * @param slug - Slug do post para buscar
  * @returns Promise com dados do post
  */
+
+
+/** TODO: Refatorar para melhorar a busca por slug */
 export const fetchPostBySlug = async (slug: string) => {  
     const { data: allPosts, error: allPostsError } = await supabase
       .from('posts')

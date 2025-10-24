@@ -119,7 +119,6 @@ export function useLocalStorageCache<T>(
 
 
 export const createCacheKey = {
-    blog: (username?: string) => `blog_articles${username ? `_${username}` : ''}`,
     github: (username?: string) => `github_repos${username ? `_${username}` : ''}`,
     user: (userId: string) => `user_${userId}`,
     project: (projectId: string) => `project_${projectId}`,
