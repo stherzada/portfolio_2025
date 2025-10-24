@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { Menu, X, ArrowUp } from 'lucide-vue-next'
+import { Menu, X, ArrowUp, ArrowLeft } from 'lucide-vue-next'
 import ThemeToggle from './ThemeToggle.vue'
 
 const { t, locale } = useI18n()
@@ -11,9 +11,14 @@ const router = useRouter()
 const isInitialized = ref(false)
 
 const isBlogPage = computed(() => route.path === '/blog')
+const isBlogPostPage = computed(() => route.path.startsWith('/blog/') && route.path !== '/blog')
 
 const navigateToHome = () => {
   router.push('/')
+}
+
+const navigateToBlog = () => {
+  router.push('/blog')
 }
 
 const setLanguage = (lang: 'en' | 'pt') => {
@@ -73,7 +78,16 @@ const scrollToSection = (id: string) => {
     </button>
 
     <div class="hidden lg:flex lg:gap-6">
-      <template v-if="isBlogPage">
+      <template v-if="isBlogPostPage">
+        <button @click="navigateToBlog"
+          class="text-primary cursor-pointer font-medium transition duration-200 link-underline">
+          <span class="flex items-center gap-2">
+            <ArrowLeft class="h-4 w-4" />
+            {{ t('nav.writing') }}
+          </span>
+        </button>
+      </template>
+      <template v-else-if="isBlogPage">
         <a @click="navigateToHome"
           class="text-primary cursor-pointer font-medium transition duration-200 link-underline">
           {{ t('nav.home') }}
@@ -112,7 +126,16 @@ const scrollToSection = (id: string) => {
     isMenuOpen ? 'translate-x-0' : 'translate-x-full'
   ]">
     <div class="flex flex-col gap-4 p-6 pt-20">
-      <template v-if="isBlogPage">
+      <template v-if="isBlogPostPage">
+        <button @click="navigateToBlog"
+          class="text-primary cursor-pointer font-medium transition duration-200 md:text-lg text-2xl">
+          <span class="flex items-center gap-2">
+            <ArrowLeft class="h-5 w-5" />
+            {{ t('nav.writing') }}
+          </span>
+        </button>
+      </template>
+      <template v-else-if="isBlogPage">
         <a @click="navigateToHome"
           class="text-primary cursor-pointer font-medium transition duration-200 md:text-lg text-2xl">
           {{ t('nav.home') }}

@@ -300,6 +300,25 @@ html {
   }
 }
 
+.rainbow-icon {
+  transition: all 0.3s ease;
+
+}
+
+.rainbow-icon:hover {
+  animation: rainbow-color 3s linear infinite;
+}
+
+@keyframes rainbow-color {
+  0% { color: #ff0000; }
+  16% { color: #ff00ff; }
+  33% { color: #0000ff; }
+  50% { color: #00ffff; }
+  67% { color: #00ff00; }
+  83% { color: #ffff00; }
+  100% { color: #ff0000; }
+}
+
 .theme-toggle-button {
   background-color: var(--color-base-200);
   color: var(--color-base-content);

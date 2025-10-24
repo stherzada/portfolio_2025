@@ -2,9 +2,8 @@ export interface Post {
   id: string
   title: string
   description: string
-  content: string
+  image_path?: string;
   created_at: string
   updated_at?: string
-  author?: string
-  tags?: string[]
+  content?: string
 }

@@ -1,73 +1,80 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Loader2 } from 'lucide-vue-next'
-import BlogPost from './BlogPost.vue'
-import { fetchArticles, type Article } from '../services/devto'
-import ScrambleText from './ScrambleText.vue'
-import { useLocalStorageCache, createCacheKey } from '../utils/cache'
+import { ArrowRight, Calendar, Star } from 'lucide-vue-next'
+import { ref, onMounted } from 'vue'
+import { fetchPosts } from '../services/blog'
+import type { Post } from '../types/Post';
+import { createSlug } from '../utils/slug'
 
 const { t } = useI18n()
+const featuredPost = ref<Post | undefined>(undefined)
 
-const articles = ref<Article[]>([])
-const isLoading = ref(true)
-
-
-const formatDate = (date: string) => {
-    const options: Intl.DateTimeFormatOptions = {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
+onMounted(async () => {
+  try {
+    const { posts } = await fetchPosts(1, 1)
+    if (posts.length > 0) {
+      featuredPost.value = posts[0]
     }
-    return new Date(date).toLocaleDateString('en-US', options)
-}
-const { fetchWithRetry } = useLocalStorageCache<Article[]>(
-    createCacheKey.blog('stherzada'),
-    fetchArticles,
-    {
-        duration: 1000 * 60 * 5, 
-        retries: 2, 
-        retryDelay: 300
-    }
-)
-const fetchArticlesWithRetry = async () => {
-        isLoading.value = true
-        const fetchedArticles = await fetchWithRetry()
-        const formattedArticles = fetchedArticles.map((article: Article) => ({
-            ...article,
-            readable_publish_date: formatDate(article.published_at)
-        }))
-        articles.value = formattedArticles
-        isLoading.value = false
-}
-
-onMounted(() => {
-    fetchArticlesWithRetry()
+  } catch (error) {
+    console.error('Erro ao carregar post em destaque:', error)
+  }
 })
 
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('pt-BR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+}
 </script>
 
 <template>
     <section id="writing" class="flex items-center justify-center py-16">
         <div class="md:mx-8 mx-4 md:max-w-4xl w-full">
-            <h2 class="text-3xl lg:text-4xl font-bold mb-8 text-center text-primary">
-                <ScrambleText :text="t('blog.title')" :scramble-speed="60" :iteration-speed="3" />
-            </h2>
+            <router-link to="/blog" class="flex items-center justify-center">
+                <h2 class="text-3xl lg:text-4xl font-bold mb-8 text-center text-primary flex items-center justify-center gap-2">
+                    <span class="text-primary flex items-center gap-2">
+                    <span class="link-underline">{{ t('blog.visitMyBlog') }}</span>
+                    <ArrowRight class="h-6 w-6 align-middle mt-3 rainbow-icon" />
+                    </span>
+                </h2>
+            </router-link>
 
-            <div v-if="isLoading" class="flex justify-center">
-                <Loader2 class="w-8 h-8 animate-spin text-primary" />
-            </div>
-            <div v-else-if="articles.length === 0"
-                class="text-center animate-fade-in text-primary">
-                {{ t('blog.noArticles') }}
-            </div>
-
-            <div v-else class="grid gap-6 animate-fade-in">
-                <BlogPost v-for="(article, index) in articles" :key="article.canonical_url" :title="article.title"
-                    :description="article.description" :canonical_url="article.canonical_url"
-                    :reading_time_minutes="article.reading_time_minutes"
-                    :readable_publish_date="article.readable_publish_date" :cover_image="article.cover_image"
-                    :style="{ animationDelay: `${index * 100}ms` }" />
+            <div v-if="featuredPost" class="mt-12">
+                <div class=" card rounded-2xl p-8 border transition-all duration-300 hover:shadow-lg">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-2 h-2 bg-primary rounded-full"></div>
+                        <Star class="h-4 w-4 rainbow-icon" />
+                        <span class="text-sm font-medium text-primary">{{ t('blog.featuredPost') }}
+                
+                        </span>
+                    </div>
+                    <img :src="featuredPost.image_path" :alt="featuredPost.title" class="w-full h-48 object-cover rounded-lg" />
+                    <h3 class="text-2xl lg:text-3xl font-bold text-primary my-4 hover:text-secondary">
+                        <span class="link-underline">{{ featuredPost.title }}</span>
+                    </h3>
+                    
+                    <p class="text-primary mb-6 leading-relaxed">
+                        {{ featuredPost.description }}
+                    </p>
+                    
+                    <div class="flex items-center justify-between card-divider pt-4">
+                        <div class="flex items-center gap-4 text-sm text-primary">
+                            <div class="flex items-center gap-1">
+                                <Calendar class="h-4 w-4" />
+                                {{ formatDate(featuredPost.created_at) }}
+                            </div>
+                        </div>
+                        
+                        <router-link 
+                            :to="`/blog/${createSlug(featuredPost.title)}`" 
+                            class="link-underline flex items-center gap-2"
+                        >
+                            {{ t('blog.readMore') }} <ArrowRight class="h-4 w-4" />
+                        </router-link>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

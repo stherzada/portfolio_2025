@@ -8,7 +8,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-    <section id="about" class="min-h-screen flex items-center justify-center">
+    <section id="about" class=" flex items-center justify-center py-16">
         <div class="md:mx-8 mx-4 md:max-w-4xl w-full">
             <div class="flex flex-col lg:flex-row items-center gap-12">
                 <div class="flex-1 text-center lg:text-left order-2 lg:order-1">
