@@ -3,7 +3,7 @@
 Oiee, bem-vindo(a) ao meu cantinho. Este projeto é meu portfólio pessoal
 onde compartilho um pouco sobre minha jornada como desenvolvedora, meus projetos
 e paixões. Foi desenvolvido com _**Vue 3**_ , _**TypeScript**_ e _**Vite**_, este site reflete não só
-minhas habilidades técnicas, mas também um pouco da minha personalidade com seus _easter eggs_.
+minhas habilidades técnicas, mas também um pouco da minha personalidade com _easter eggs_.
 
 Quando não estou codando, você provavelmente me encontrará falando de One Piece
 (sim, já estou em dia com o anime), explorando o universo geek ou mergulhando
