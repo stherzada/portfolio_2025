@@ -55,14 +55,14 @@ onMounted(async () => {
             </div>
             
      
-            <div v-else class="flex flex-col gap-4 w-full max-w-2xl card rounded-lg p-4">
+            <div v-else class="flex flex-col gap-6 w-full max-w-2xl">
                 <div v-for="post in store.posts" :key="post.id" 
                      @click="$router.push(`/blog/${post.slug}`)"
-                     class=" cursor-pointer  transition-colors">
+                     class="card rounded-lg p-4 cursor-pointer transition-colors hover:shadow-lg">
                      <div v-if="post.image_path" class="mb-4 overflow-hidden rounded-lg">
                         <img :src="post.image_path" :alt="post.title" class="w-full h-48 object-cover rounded-lg" />
                     </div>
-                    <h2 class="text-xl font-semibold text-primary mb-2">{{ post.title }}</h2>
+                    <h2 class="text-xl font-semibold text-primary mb-2"> <span class="link-underline">{{ post.title }}</span></h2>
                     <p class="text-primary mb-5">{{ post.description }}</p>
                 
                     <div class="flex justify-between text-sm text-primary card-divider pt-4">
