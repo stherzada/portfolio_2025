@@ -29,7 +29,6 @@ onMounted(async () => {
                 <h2 class="text-3xl lg:text-4xl font-bold mb-8 text-center text-primary flex items-center justify-center gap-2">
                     <span class="text-primary flex items-center gap-2">
                     <span class="link-underline">{{ t('blog.visitMyBlog') }}</span>
-                    <ArrowRight class="h-6 w-6 align-middle mt-3 rainbow-icon" />
                     </span>
                 </h2>
             </router-link>
@@ -45,7 +44,9 @@ onMounted(async () => {
                     </div>
                     <img :src="featuredPost.image_path" :alt="featuredPost.title" class="w-full h-48 object-cover rounded-lg" />
                     <h3 class="text-2xl lg:text-3xl font-bold text-primary my-4 hover:text-secondary">
-                        <span class="link-underline">{{ featuredPost.title }}</span>
+                        <router-link :to="`/blog/${featuredPost.slug}`">
+                            <span class="link-underline">{{ featuredPost.title }}</span>
+                        </router-link>
                     </h3>
                     
                     <p class="text-primary mb-6 leading-relaxed">

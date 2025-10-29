@@ -55,7 +55,7 @@ onMounted(() => {
       </div>
 
       <div v-else-if="error" class="text-center">
-        <h1 class="text-2xl font-bold text-red-500 mb-4">Erro</h1>
+        <h1 class="text-2xl font-bold text-red-500">Erro</h1>
         <p class="text-lg text-red-500 mb-4">{{ error }}</p>
         <button @click="fetchPost(route.params.slug as string)"
           class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 transition-colors">
@@ -68,7 +68,7 @@ onMounted(() => {
           <img :src="post.image_path" :alt="post.title" class="w-full h-48 md:h-64 object-cover rounded-lg" />
         </div>
         <div class="text-center mb-8 flex items-center gap-2 flex-col">
-          <h1 class="text-2xl md:text-4xl font-bold text-primary mb-4 leading-tight">{{ post.title }}</h1>
+          <h1 class="text-2xl md:text-4xl font-bold text-primary leading-tight">{{ post.title }}</h1>
           <p class="text-sm md:text-lg text-primary opacity-75">{{ formatDateWithI18n(post.created_at, locale) }}</p>
           <div class="flex items-center gap-1 text-sm md:text-lg text-primary opacity-75">
             <Clock class="h-4 w-4" />

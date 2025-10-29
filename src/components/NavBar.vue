@@ -136,7 +136,7 @@ const scrollToSection = (id: string) => {
   </div>
 
   <button v-show="showScrollTop" @click="scrollToTop"
-    class="text-primary scroll-top-button fixed bottom-6 right-6 p-2 rounded-full shadow-lg transition-all duration-300 opacity-70 hover:opacity-100 z-50"
+    class="text-primary scroll-top-button fixed bottom-6 right-6 p-2 rounded-full shadow-lg transition-all duration-300 opacity-70 hover:opacity-100 z-50 cursor-pointer"
     aria-label="Voltar ao topo">
     <ArrowUp class="h-5 w-5" />
   </button>

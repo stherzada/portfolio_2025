@@ -132,7 +132,7 @@ onMounted(() => {
                         </div>
                         <div class="mt-4 pt-4 card-divider">
                             <a :href="repo.url" target="_blank" rel="noopener noreferrer"
-                                class="text-sm hover-underline text-primary">
+                                class="text-sm link-underline text-primary">
                                 {{ t('projects.viewOnGithub') }}
                             </a>
                         </div>
