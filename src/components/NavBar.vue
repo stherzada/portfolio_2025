@@ -73,10 +73,10 @@ const scrollToSection = (id: string) => {
     <button @click="isBlogPostPage ? navigateToBlog() : isBlogPage ? navigateToHome() : (isMenuOpen = !isMenuOpen)"
       class="text-primary lg:hidden"
       :aria-label="isBlogPostPage ? 'Voltar ao blog' : isBlogPage ? 'Ir para home' : 'Toggle menu'">
-      <ArrowLeft v-if="isBlogPostPage" class="h-6 w-6" aria-hidden="true" />
-      <Home v-else-if="isBlogPage" class="h-6 w-6" aria-hidden="true" />
-      <Menu v-else-if="!isMenuOpen" class="h-6 w-6" aria-hidden="true" />
-      <X v-else class="h-6 w-6" aria-hidden="true" />
+      <ArrowLeft v-if="isBlogPostPage" class="h-6 w-6 cursor-pointer" aria-hidden="true" />
+      <Home v-else-if="isBlogPage" class="h-6 w-6 cursor-pointer" aria-hidden="true" />
+      <Menu v-else-if="!isMenuOpen" class="h-6 w-6 cursor-pointer" aria-hidden="true" />
+      <X v-else class="h-6 w-6 cursor-pointer" aria-hidden="true" />
     </button>
 
     <div class="hidden lg:flex lg:gap-6">
