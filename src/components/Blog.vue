@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { ArrowRight, Calendar, Star, Clock } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
-import { fetchPosts } from '../services/blog'
+import { fetchPostsAll  } from '../services/blog'
 import type { Post } from '../types/Post';
 import { formatReadingTime } from '../utils/readingTime'
 import { formatDateWithI18n } from '../utils/dateFormat'
@@ -11,14 +11,8 @@ const { t, locale } = useI18n()
 const featuredPost = ref<Post | undefined>(undefined)
 
 onMounted(async () => {
-  try {
-    const { posts } = await fetchPosts(1, 1)
-    if (posts.length > 0) {
-      featuredPost.value = posts[0]
-    }
-  } catch (error) {
-    console.error('Erro ao carregar post em destaque:', error)
-  }
+    const { posts } = await fetchPostsAll(1, 1)
+    featuredPost.value = posts[0]
 })
 </script>
 

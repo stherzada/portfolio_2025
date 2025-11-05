@@ -1,44 +1,28 @@
 <script setup lang="ts">
 import { store } from '../store'
-import { onMounted, ref, computed } from 'vue'
-import { fetchPosts } from '../services/blog'
+import { onMounted, ref } from 'vue'
+import {fetchPostsAll } from '../services/blog'
 import { useI18n } from 'vue-i18n'
 import { formatReadingTime } from '../utils/readingTime'
 import { formatDateWithI18n } from '../utils/dateFormat'
 import { Clock, Calendar } from 'lucide-vue-next'
 
 const currentPage = ref(1)
-const postsPerPage = ref(5)
+const postsPerPage = ref(10)
 const totalPosts = ref(0)
-const isLoading = ref(false)
+const isLoading = ref(true)
 const { t, locale } = useI18n()
 
-const fetchPostsData = async (page: number = 1) => {
-    isLoading.value = true
-    try {
-        const { posts, total } = await fetchPosts(page, postsPerPage.value)
-        store.posts = posts
-        totalPosts.value = total
-    } catch (error) {
-        console.error('Error fetching posts:', error)
-        store.posts = []
-        totalPosts.value = 0
-    } finally {
-        isLoading.value = false
-    }
-}
-
-const goToPage = (page: number) => {
+const fetchPostsData = async (page: number = 1, postsPerPage: number = 10) => {
+    const posts = await fetchPostsAll(page, postsPerPage)
+    store.posts = posts.posts
+    totalPosts.value = posts.total || 0
     currentPage.value = page
-    fetchPostsData(page)
+    isLoading.value = false
 }
-
-const totalPages = computed(() => {
-    return Math.ceil(totalPosts.value / postsPerPage.value)
-})
 
 onMounted(async () => {
-    await fetchPostsData(1)
+    await fetchPostsData(currentPage.value, postsPerPage.value)
 })
 </script>
 
@@ -78,21 +62,21 @@ onMounted(async () => {
                 </div>
             </div>
             
-            <div v-if="totalPages > 1" class="mt-6 md:mt-8 flex flex-col md:flex-row items-center gap-3 md:gap-2">
+            <div v-if="Math.ceil(totalPosts / postsPerPage) > 1" class="mt-6 md:mt-8 flex flex-col md:flex-row items-center gap-3 md:gap-2">
                 <button 
-                    @click="goToPage(currentPage - 1)"
-                    :disabled="currentPage === 1"
+                    @click="fetchPostsData(currentPage - 1, postsPerPage)"
+                    :disabled="currentPage - 1 < 1"
                     class="px-4 py-2 text-sm border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors">
                     Anterior
                 </button>
                 
                 <span class="px-4 py-2 text-sm text-gray-600">
-                    Página {{ currentPage }} de {{ totalPages }}
+                    Página {{ currentPage }} 
                 </span>
                 
                 <button 
-                    @click="goToPage(currentPage + 1)"
-                    :disabled="currentPage === totalPages"
+                    @click="fetchPostsData(currentPage + 1, postsPerPage)"
+                    :disabled="currentPage + 1 > Math.ceil(totalPosts / postsPerPage)"
                     class="px-4 py-2 text-sm border border-primary rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary transition-colors">
                     Próxima
                 </button>
