@@ -14,26 +14,26 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.76.1",
-    "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.1.16",
-    "@vueuse/core": "^14.0.0",
+    "@supabase/supabase-js": "^2.108.2",
+    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/vite": "^4.3.1",
+    "@vueuse/core": "^14.3.0",
     "lucide-vue-next": "^0.546.0",
-    "vue": "^3.5.22",
-    "vue-i18n": "^11.1.12",
-    "vue-router": "^4.6.3"
+    "vue": "^3.5.39",
+    "vue-i18n": "^11.4.6",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
-    "@types/node": "^24.9.1",
-    "@vitejs/plugin-vue": "^6.0.1",
+    "@types/node": "^24.13.2",
+    "@vitejs/plugin-vue": "^6.0.7",
     "@vue/tsconfig": "^0.8.1",
     "husky": "^9.1.7",
-    "lightningcss": "^1.30.2",
-    "tailwindcss": "^4.1.16",
-    "terser": "^5.44.0",
+    "lightningcss": "^1.32.0",
+    "tailwindcss": "^4.3.1",
+    "terser": "^5.48.0",
     "typescript": "~5.9.3",
-    "vite": "^7.1.12",
+    "vite": "^7.3.6",
     "vite-plugin-compression": "^0.5.1",
-    "vue-tsc": "^3.1.1"
+    "vue-tsc": "^3.3.5"
   }
 }

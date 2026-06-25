@@ -2,7 +2,7 @@
 <script setup lang="ts">
 
 import { useTheme, ThemeAnimationType } from '../composables/useTheme'
-import { onMounted } from 'vue'
+import { onMounted, type ComponentPublicInstance } from 'vue'
 import { Sun, Moon } from 'lucide-vue-next'
 
 const { buttonRef, toggleSwitchTheme, isDarkMode } = useTheme({
@@ -19,6 +19,10 @@ const { buttonRef, toggleSwitchTheme, isDarkMode } = useTheme({
   duration: 500,
 })
 
+const setButtonRef = (el: Element | ComponentPublicInstance | null) => {
+  buttonRef.value = el instanceof HTMLElement ? el : null
+}
+
 onMounted(() => {
   const savedTheme = localStorage.getItem('theme')
   if (savedTheme === 'dark') {
@@ -29,7 +33,7 @@ onMounted(() => {
 
 <template>
   <button
-    ref="buttonRef"
+    :ref="setButtonRef"
     @click="toggleSwitchTheme"
     aria-label="Toggle theme"
     class="theme-toggle-button p-2 rounded transition-all duration-300 ease-out hover:scale-110 active:scale-95 cursor-pointer relative overflow-hidden"
