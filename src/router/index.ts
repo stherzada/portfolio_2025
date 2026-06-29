@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { fetchPostBySlug } from "@/services/blog";
 import { useMeta } from "@/composables/useMeta";
+import supabase from "@/supabase";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -58,11 +59,58 @@ const router = createRouter({
       },
     },
     {
+      path: "/admin/login",
+      name: "AdminLogin",
+      component: () => import("@/views/admin/Login.vue"),
+    },
+    {
+      path: "/admin",
+      name: "AdminDashboard",
+      component: () => import("@/views/admin/Dashboard.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/admin/posts/new",
+      name: "AdminPostNew",
+      component: () => import("@/views/admin/PostEditor.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/admin/posts/:id/edit",
+      name: "AdminPostEdit",
+      component: () => import("@/views/admin/PostEditor.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
       path: "/:pathMatch(.*)*",
       name: "NotFound",
       component: () => import("@/views/NotFound.vue"),
     },
   ],
+});
+
+router.beforeEach(async (to, _from, next) => {
+  const requiresAuth = to.matched.some((r) => r.meta.requiresAuth);
+  const isLoginRoute = to.name === "AdminLogin";
+
+  if (!requiresAuth && !isLoginRoute) {
+    next();
+    return;
+  }
+
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (requiresAuth && !session) {
+    next({ name: "AdminLogin" });
+    return;
+  }
+
+  if (isLoginRoute && session) {
+    next({ name: "AdminDashboard" });
+    return;
+  }
+
+  next();
 });
 
 export default router;

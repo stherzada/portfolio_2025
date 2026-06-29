@@ -25,6 +25,7 @@ export default defineConfig({
           'vue-vendor': ['vue', 'vue-router', 'vue-i18n'],
           'utils': ['@vueuse/core'],
           'icons': ['lucide-vue-next'],
+          'tiptap-vendor': ['@tiptap/vue-3', '@tiptap/starter-kit', '@tiptap/extension-image'],
         },
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name ?? ''
