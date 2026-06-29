@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { PenLine, Trash2, Plus, LogOut } from 'lucide-vue-next'
 import { fetchPostsAll } from '@/services/blog'
@@ -17,6 +17,8 @@ const route = useRoute()
 const posts = ref<Post[]>([])
 const total = ref(0)
 const page = ref(1)
+const PAGE_SIZE = 20
+const totalPages = computed(() => Math.ceil(total.value / PAGE_SIZE))
 const loading = ref(true)
 const showSavedToast = ref(route.query.saved === '1')
 
@@ -24,9 +26,10 @@ let toastTimer: ReturnType<typeof setTimeout> | null = null
 
 const loadPosts = async () => {
   loading.value = true
-  const result = await fetchPostsAll(page.value, 20)
+  const result = await fetchPostsAll(page.value, PAGE_SIZE)
   posts.value = result.posts
   total.value = result.total ?? 0
+  if (posts.value.length === 0 && page.value > 1) page.value--
   loading.value = false
 }
 
@@ -49,6 +52,8 @@ const formatDate = (dateStr: string) => {
     year: 'numeric',
   })
 }
+
+watch(page, loadPosts)
 
 onMounted(() => {
   loadPosts()
@@ -137,6 +142,30 @@ onUnmounted(() => {
           </button>
         </div>
       </div>
+    </div>
+
+    <div v-if="totalPages > 1" class="flex items-center justify-center gap-3 mt-8">
+      <button
+        @click="page--"
+        :disabled="page === 1"
+        class="px-3 py-1.5 rounded-lg text-sm border border-[var(--color-base-300)]
+               text-primary hover:bg-[var(--color-base-200)] transition-colors
+               disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+      >
+        ← Anterior
+      </button>
+      <span class="text-sm text-[var(--color-base-content-secondary)]">
+        {{ page }} / {{ totalPages }}
+      </span>
+      <button
+        @click="page++"
+        :disabled="page === totalPages"
+        class="px-3 py-1.5 rounded-lg text-sm border border-[var(--color-base-300)]
+               text-primary hover:bg-[var(--color-base-200)] transition-colors
+               disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+      >
+        Próxima →
+      </button>
     </div>
   </div>
 </template>

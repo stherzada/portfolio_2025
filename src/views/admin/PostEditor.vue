@@ -105,6 +105,10 @@ watch(
 )
 
 const handleSubmit = async () => {
+  if (isEditMode.value && !form.id) {
+    error.value = 'Post não encontrado. Recarregue a página.'
+    return
+  }
   isSaving.value = true
   error.value = ''
   try {
@@ -159,7 +163,7 @@ onUnmounted(() => {
         <p v-if="error" class="text-red-500 text-sm">{{ error }}</p>
         <button
           type="button"
-          :disabled="isSaving"
+          :disabled="isSaving || isLoading"
           @click="handleSubmit"
           class="px-4 py-2 bg-primary text-[var(--color-base-100)] rounded-lg
                  font-medium text-sm transition-opacity disabled:opacity-60 cursor-pointer"
