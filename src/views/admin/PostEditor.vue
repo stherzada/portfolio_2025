@@ -7,6 +7,7 @@ import Image from '@tiptap/extension-image'
 import { useDebounceFn } from '@vueuse/core'
 import { ArrowLeft, ImagePlus } from 'lucide-vue-next'
 import EditorToolbar from '@/components/admin/EditorToolbar.vue'
+import ThemeToggle from '@/components/ThemeToggle.vue'
 import { fetchPostById } from '@/services/blog'
 import { createPost, updatePost, uploadImage, type PostInput } from '@/services/admin'
 import { slugify } from '@/utils/slugify'
@@ -161,11 +162,12 @@ onUnmounted(() => {
       </div>
       <div class="flex items-center gap-3">
         <p v-if="error" class="text-red-500 text-sm">{{ error }}</p>
+        <ThemeToggle />
         <button
           type="button"
           :disabled="isSaving || isLoading"
           @click="handleSubmit"
-          class="px-4 py-2 bg-primary text-[var(--color-base-100)] rounded-lg
+          class="px-4 py-2 bg-[var(--color-primary)] text-[var(--color-base-100)] rounded-lg
                  font-medium text-sm transition-opacity disabled:opacity-60 cursor-pointer"
         >
           {{ isSaving ? 'Salvando...' : 'Salvar' }}

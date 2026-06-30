@@ -8,6 +8,7 @@ import { useAuth } from '@/composables/useAuth'
 import { useI18n } from 'vue-i18n'
 import store from '@/store'
 import type { Post } from '@/types'
+import ThemeToggle from '@/components/ThemeToggle.vue'
 
 const { t } = useI18n()
 const { signOut } = useAuth()
@@ -76,7 +77,7 @@ onUnmounted(() => {
       <div class="flex items-center gap-3">
         <router-link
           :to="{ name: 'AdminPostNew' }"
-          class="flex items-center gap-2 px-4 py-2 bg-primary text-[var(--color-base-100)]
+          class="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-[var(--color-base-100)]
                  rounded-lg font-medium text-sm transition-opacity hover:opacity-90 cursor-pointer"
         >
           <Plus class="w-4 h-4" />
@@ -91,6 +92,7 @@ onUnmounted(() => {
           <LogOut class="w-4 h-4" />
           Sair
         </button>
+        <ThemeToggle />
       </div>
     </header>
 

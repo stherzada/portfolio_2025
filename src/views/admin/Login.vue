@@ -57,7 +57,7 @@ const handleLogin = async () => {
         <button
           type="submit"
           :disabled="loading"
-          class="w-full py-2 bg-primary text-[var(--color-base-100)] rounded-lg
+          class="w-full py-2 bg-[var(--color-primary)] text-[var(--color-base-100)] rounded-lg
                  font-medium transition-opacity disabled:opacity-60 cursor-pointer mt-2"
         >
           {{ loading ? 'Entrando...' : 'Entrar' }}
