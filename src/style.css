@@ -95,6 +95,10 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Inter Variable', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   padding: 0;
@@ -107,6 +111,7 @@ body {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
 }
 
 * {

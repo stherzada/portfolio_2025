@@ -216,7 +216,7 @@ const scrollToSection = (id: string) => {
   flex-direction: row;
   flex-wrap: nowrap;
   width: max-content;
-  max-width: calc(100vw - 1.5rem);
+  max-width: 100%;
   flex-shrink: 0;
 }
 
