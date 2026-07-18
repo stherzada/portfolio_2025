@@ -530,9 +530,33 @@ html {
 }
 
 /* Additional prose styles for desktop */
+/* Force the site's type system onto post content even when the stored
+   HTML carries its own inline font-family (common with WYSIWYG output) —
+   Inter for body copy, IBM Plex Mono for in-content headings, matching
+   every other heading on the site. */
 .prose {
   font-size: 18px;
   line-height: 1.7;
+  font-family: 'Inter Variable', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.prose p,
+.prose li,
+.prose span,
+.prose strong,
+.prose em,
+.prose a,
+.prose blockquote {
+  font-family: 'Inter Variable', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif !important;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  font-family: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace !important;
 }
 
 .prose h1 {
