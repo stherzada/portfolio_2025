@@ -36,17 +36,17 @@ onMounted(() => {
     :ref="setButtonRef"
     @click="toggleSwitchTheme"
     aria-label="Toggle theme"
-    class="theme-toggle-button p-2 rounded transition-all duration-300 ease-out hover:scale-110 active:scale-95 cursor-pointer relative overflow-hidden"
+    class="theme-toggle-button w-9 h-9 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ease-out hover:scale-110 active:scale-95 cursor-pointer relative overflow-hidden"
   >
       <div class="relative z-10 transition-transform duration-500" :class="isDarkMode ? 'rotate-0' : 'rotate-360'">
         <Sun
           v-if="isDarkMode"
-          class="h-6 w-6 transition-colors duration-300"
+          class="h-[18px] w-[18px] transition-colors duration-300"
           stroke-width="2"
         />
         <Moon
           v-else
-          class="h-6 w-6 transition-colors duration-300"
+          class="h-[18px] w-[18px] transition-colors duration-300"
           stroke-width="2"
         />
       </div>

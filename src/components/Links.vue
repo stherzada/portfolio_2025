@@ -56,16 +56,25 @@ const links: Link[] = [
 </script>
 
 <template>
-    <nav class="flex flex-wrap justify-center lg:justify-start gap-4 mt-4" aria-label="Links de redes sociais">
+    <nav class="flex flex-wrap justify-center lg:justify-start gap-2 mt-4" aria-label="Links de redes sociais">
         <a v-for="link in links" :key="link.href" :href="link.href" :title="link.title" :rel="link.rel" target="_blank"
-            class="link-underline flex items-center gap-2 p-2 rounded-lg transition-all duration-200"
+            v-magnetic="{ strength: 0.4 }"
+            class="social-chip flex items-center gap-2 pl-2.5 pr-3 py-2 rounded-full transition-colors duration-200 border"
             :aria-label="link.alt">
-            <component :is="link.icon" class="w-5 h-5" aria-hidden="true" />
+            <component :is="link.icon" class="w-4 h-4" aria-hidden="true" />
+            <span class="font-mono text-xs tracking-wide uppercase">{{ link.alt }}</span>
         </a>
     </nav>
 </template>
 
 <style scoped>
+.social-chip {
+    color: var(--color-primary);
+    border-color: var(--color-base-300);
+}
 
- 
+.social-chip:hover {
+    background-color: var(--color-base-100);
+    border-color: var(--color-primary);
+}
 </style>

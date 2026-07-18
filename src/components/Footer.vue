@@ -8,11 +8,21 @@ const currentYear = computed(() => new Date().getFullYear())
 </script>
 
 <template>
-    <footer class="py-8">
-        <div class="flex flex-col items-center justify-center">
-            <p class="text-center">© {{ currentYear }} <span class="rainbow-text">Sthefany Sther</span>. {{
+    <footer class="py-12 mt-8 border-t footer-border">
+        <div class="flex flex-col items-center justify-center gap-6 text-center">
+            <p class="text-sm text-muted">© {{ currentYear }} <span class="rainbow-text">Sthefany Sther</span>. {{
                 t('footer.rights') }}</p>
             <Links />
         </div>
     </footer>
 </template>
+
+<style scoped>
+.footer-border {
+    border-color: var(--color-base-300);
+}
+
+.text-muted {
+    color: var(--color-neutral);
+}
+</style>

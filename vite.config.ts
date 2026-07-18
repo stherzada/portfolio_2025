@@ -26,6 +26,8 @@ export default defineConfig({
           'utils': ['@vueuse/core'],
           'icons': ['lucide-vue-next'],
           'tiptap-vendor': ['@tiptap/vue-3', '@tiptap/starter-kit', '@tiptap/extension-image'],
+          'three-vendor': ['three'],
+          'gsap-vendor': ['gsap'],
         },
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name ?? ''

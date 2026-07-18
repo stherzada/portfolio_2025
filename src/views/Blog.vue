@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { store } from '../store'
-import { onMounted, ref } from 'vue'
-import {fetchPostsAll } from '../services/blog'
+import { onMounted, ref, computed } from 'vue'
+import { fetchPostsAll } from '../services/blog'
 import { useI18n } from 'vue-i18n'
 import { formatReadingTime } from '../utils/readingTime'
 import { formatDateWithI18n } from '../utils/dateFormat'
-import { Clock, Calendar } from 'lucide-vue-next'
+import { Clock, Calendar, ArrowLeft, ArrowRight } from 'lucide-vue-next'
 
 const currentPage = ref(1)
 const postsPerPage = ref(10)
 const totalPosts = ref(0)
 const isLoading = ref(true)
 const { t, locale } = useI18n()
+
+const totalPages = computed(() => Math.ceil(totalPosts.value / postsPerPage.value))
 
 const fetchPostsData = async (page: number = 1, postsPerPage: number = 10) => {
     const posts = await fetchPostsAll(page, postsPerPage)
@@ -27,61 +29,87 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="container mx-auto px-4">
-        <main class="flex flex-col items-center justify-center">
-            <div class="my-8 md:my-10 text-center">
-                <h1 class="text-2xl md:text-4xl font-bold text-primary">Stherzada Blog ( •̀ ω •́ )✧</h1>
-                <p class="text-sm md:text-lg text-primary mt-2 md:mt-4">{{ t('blog.description') }}</p>
+    <div class="px-4">
+        <main class="md:mx-8 mx-auto  w-full pb-16">
+            <div class="mb-10">
+                <p class="eyebrow mb-3">/{{ t('nav.writing') }}</p>
+                <h1 class="font-mono font-semibold text-3xl lg:text-4xl tracking-tight text-primary mb-3">
+                    {{ t('blog.title') }}
+                </h1>
+                <p class="text-lg text-primary max-w-xl">{{ t('blog.description') }}</p>
             </div>
-            
-            <div v-if="isLoading" class="text-center py-8">
-                <p class="text-primary">{{ t('blog.loading') }}</p>
+
+            <div v-if="isLoading" class="flex justify-center py-16">
+                <span class="font-mono text-sm text-muted">{{ t('blog.loading') }}</span>
             </div>
-            
-     
-            <div v-else class="flex flex-col gap-4 md:gap-6 w-full max-w-2xl">
-                <div v-for="post in store.posts" :key="post.id" 
-                     @click="$router.push(`/blog/${post.slug}`)"
-                     class="card rounded-lg p-3 md:p-4 cursor-pointer transition-colors hover:shadow-lg">
-                     <div v-if="post.image_path" class="mb-3 md:mb-4 overflow-hidden rounded-lg">
-                        <img :src="post.image_path" :alt="post.title" class="w-full h-40 md:h-48 object-cover rounded-lg" />
+
+            <div v-else class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <article v-for="(post, index) in store.posts" :key="post.id"
+                    v-reveal="{ delay: Math.min(index, 8) * 0.05 }"
+                    @click="$router.push(`/blog/${post.slug}`)"
+                    class="post-card rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg flex flex-col">
+                    <div v-if="post.image_path" class="overflow-hidden">
+                        <img :src="post.image_path" :alt="post.title"
+                            class="w-full h-40 md:h-48 object-cover transition-transform duration-500 hover:scale-105" />
                     </div>
-                    <h2 class="text-lg md:text-xl font-semibold text-primary mb-2"> <span class="link-underline">{{ post.title }}</span></h2>
-                    <p class="text-sm md:text-base text-primary mb-4 md:mb-5">{{ post.description }}</p>
-                
-                    <div class="flex justify-between text-xs md:text-sm text-primary card-divider pt-3 md:pt-4">
-                        <div class="flex items-center gap-1">
-                                <Clock class="h-3 w-3 md:h-4 md:w-4" />
+                    <div class="p-5 flex flex-col flex-1">
+                        <h2 class="text-lg md:text-xl font-semibold text-primary mb-2">
+                            <span class="link-hover">{{ post.title }}</span>
+                        </h2>
+                        <p class="text-sm md:text-base text-primary mb-4 line-clamp-2">{{ post.description }}</p>
+
+                        <div class="mt-auto flex items-center gap-4 font-mono text-xs text-muted pt-3 card-divider">
+                            <span class="flex items-center gap-1">
+                                <Clock class="h-3.5 w-3.5" />
                                 {{ formatReadingTime(post.content || '') }}
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <Calendar class="h-3 w-3 md:h-4 md:w-4" />
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <Calendar class="h-3.5 w-3.5" />
                                 {{ formatDateWithI18n(post.created_at, locale) }}
-                            </div>
+                            </span>
+                        </div>
                     </div>
-                </div>
+                </article>
             </div>
-            
-            <div v-if="Math.ceil(totalPosts / postsPerPage) > 1" class="mt-6 md:mt-8 flex flex-col md:flex-row items-center gap-3 md:gap-2">
-                <button 
-                    @click="fetchPostsData(currentPage - 1, postsPerPage)"
-                    :disabled="currentPage - 1 < 1"
-                    class="px-4 py-2 text-sm border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors">
-                    Anterior
+
+            <div v-if="totalPages > 1" class="mt-10 flex items-center justify-center gap-4">
+                <button @click="fetchPostsData(currentPage - 1, postsPerPage)" :disabled="currentPage - 1 < 1"
+                    class="page-chip w-9 h-9 flex items-center justify-center rounded-full border transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                    :aria-label="t('blog.previous')">
+                    <ArrowLeft class="w-4 h-4" />
                 </button>
-                
-                <span class="px-4 py-2 text-sm text-gray-600">
-                    Página {{ currentPage }} 
+
+                <span class="font-mono text-xs text-muted">
+                    {{ t('blog.page', { current: currentPage, total: totalPages }) }}
                 </span>
-                
-                <button 
-                    @click="fetchPostsData(currentPage + 1, postsPerPage)"
-                    :disabled="currentPage + 1 > Math.ceil(totalPosts / postsPerPage)"
-                    class="px-4 py-2 text-sm border border-primary rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary transition-colors">
-                    Próxima
+
+                <button @click="fetchPostsData(currentPage + 1, postsPerPage)" :disabled="currentPage + 1 > totalPages"
+                    class="page-chip w-9 h-9 flex items-center justify-center rounded-full border transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                    :aria-label="t('blog.next')">
+                    <ArrowRight class="w-4 h-4" />
                 </button>
             </div>
-            
         </main>
     </div>
 </template>
+
+<style scoped>
+.text-muted {
+    color: var(--color-neutral);
+}
+
+.post-card {
+    background-color: var(--color-base-100);
+    border-color: var(--color-base-300);
+}
+
+.page-chip {
+    color: var(--color-primary);
+    border-color: var(--color-base-300);
+}
+
+.page-chip:not(:disabled):hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-base-100);
+}
+</style>
