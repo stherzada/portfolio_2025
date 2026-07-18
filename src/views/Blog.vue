@@ -29,7 +29,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="px-4">
+    <div class="px-8">
         <main class="mx-auto  w-full pb-16">
             <div class="mb-10">
                 <p class="eyebrow mb-3">/{{ t('nav.writing') }}</p>
