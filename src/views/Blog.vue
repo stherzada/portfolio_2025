@@ -46,7 +46,7 @@ onMounted(async () => {
                      <div v-if="post.image_path" class="mb-3 md:mb-4 overflow-hidden rounded-lg">
                         <img :src="post.image_path" :alt="post.title" class="w-full h-40 md:h-48 object-cover rounded-lg" />
                     </div>
-                    <h2 class="text-lg md:text-xl font-semibold text-primary mb-2"> <span class="link-underline">{{ post.title }}</span></h2>
+                    <h2 class="text-lg md:text-xl font-semibold text-primary mb-2"> <span class="link-hover">{{ post.title }}</span></h2>
                     <p class="text-sm md:text-base text-primary mb-4 md:mb-5">{{ post.description }}</p>
                 
                     <div class="flex justify-between text-xs md:text-sm text-primary card-divider pt-3 md:pt-4">

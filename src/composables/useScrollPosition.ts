@@ -7,7 +7,16 @@ interface ScrollPosition {
 }
 
 const SCROLL_POSITION_KEY = 'scroll_position'
-const SCROLL_POSITION_DURATION = 1000 * 60 * 30 
+const SCROLL_POSITION_DURATION = 1000 * 60 * 30
+
+/**
+ * Drops the saved scroll position so the next Home mount doesn't restore
+ * it. Call this before an intentional "go to top / go home" navigation —
+ * otherwise the restore-on-mount below would silently override it.
+ */
+export function clearSavedScrollPosition() {
+  localStorage.removeItem(SCROLL_POSITION_KEY)
+}
 
 export function useScrollPosition() {
   let scrollTimeout: number | null = null

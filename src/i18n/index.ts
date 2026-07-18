@@ -4,12 +4,12 @@ const messages = {
     en: {
         nav: {
             home: 'Home',
-            about: 'About',
             projects: 'Projects',
             writing: 'Blog'
         },
         about: {
             title: 'Sthefany Sther',
+            role: 'software engineer · people & data',
             description: "I'm Software Developer, where I combine my technical expertise with my passion for people management and data analysis. I believe in the power of technology to transform businesses while keeping people at the heart of innovation.",
             links: {
                 email: 'Email',
@@ -26,9 +26,9 @@ const messages = {
         projects: {
             projects: 'My projects',
             viewOnGithub: 'View on GitHub →',
-            searchPlaceholder: 'Search projects by name, description, language or tags...',
-            noResults: 'No projects found for your search',
-            noProjects: 'No projects available',
+            searchPlaceholder: 'Search by name, language, tags...',
+            noResults: 'No matches for "{query}"',
+            noProjects: 'No projects to show right now.',
             tryAgain: 'Try again',
             stars: 'Stars',
             forks: 'Forks',
@@ -37,7 +37,7 @@ const messages = {
         },
         blog: {
             title: 'My Blog',
-            visitMyBlog: 'Visit my blog ( •̀ ω •́ )✧',
+            visitMyBlog: '  Blog ( •̀ ω •́ )✧',
             loading: 'Loading post...',
             description: 'Here you can find my thoughts and ideas about technology, programming, and other topics.',
             featuredPost: 'Featured Post',
@@ -47,12 +47,12 @@ const messages = {
     pt: {
         nav: {
             home: 'Início',
-            about: 'Sobre',
             projects: 'Projetos',
             writing: 'Blog'
         },
         about: {
             title: 'Sthefany Sther',
+            role: 'desenvolvedora de software · pessoas & dados',
             description: 'Sou desenvolvedora de software, onde combino minha experiência técnica com minha paixão por gestão de pessoas e análise de dados. Acredito no poder da tecnologia para transformar negócios, mantendo as pessoas no centro da inovação.',
             links: {
                 email: 'Email',
@@ -69,9 +69,9 @@ const messages = {
         projects: {
             projects: 'Meus projetos',
             viewOnGithub: 'Ver no GitHub →',
-            searchPlaceholder: 'Buscar projetos por nome, descrição, linguagem ou tags...',
-            noResults: 'Nenhum projeto encontrado para sua busca',
-            noProjects: 'Nenhum projeto disponível',
+            searchPlaceholder: 'Buscar por nome, linguagem, tags...',
+            noResults: 'Nada encontrado para "{query}"',
+            noProjects: 'Nenhum projeto disponível no momento.',
             tryAgain: 'Tentar novamente',
             stars: 'Estrelas',
             forks: 'Forks',
@@ -79,7 +79,7 @@ const messages = {
             clearSearch: 'Limpar busca'
         },
         blog: {
-            visitMyBlog: 'Venha conhecer meu blog ( •̀ ω •́ )✧',
+            visitMyBlog: 'Blog ( •̀ ω •́ )✧',
             loading: 'Carregando post...',
             description: 'Aqui você pode encontrar meus pensamentos e ideias sobre tecnologia, programação e outros temas.',
             featuredPost: 'Post em Destaque',

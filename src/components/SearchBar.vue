@@ -13,12 +13,18 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <div class="relative mb-8 max-w-2xl mx-auto">
+    <div class="relative">
         <div class="relative">
             <input :value="modelValue" @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
                 type="text" :placeholder="placeholder"
-                class="search-input w-full px-4 py-3 pl-12 rounded-xl transition-all duration-500 ease-in-out" />
-            <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors duration-300" />
+                class="search-input w-full font-mono text-sm py-2.5 pl-10 pr-4 rounded-full" />
+            <Search class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
         </div>
     </div>
 </template>
+
+<style scoped>
+.text-muted {
+    color: var(--color-neutral);
+}
+</style>

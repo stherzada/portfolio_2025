@@ -21,13 +21,16 @@
     "@tiptap/starter-kit": "^3.27.1",
     "@tiptap/vue-3": "^3.27.1",
     "@vueuse/core": "^14.3.0",
+    "gsap": "^3.15.0",
     "lucide-vue-next": "^0.546.0",
+    "three": "^0.185.1",
     "vue": "^3.5.39",
     "vue-i18n": "^11.4.6",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@types/node": "^24.13.2",
+    "@types/three": "^0.185.1",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vue/tsconfig": "^0.8.1",
     "husky": "^9.1.7",
