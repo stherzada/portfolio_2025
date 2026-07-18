@@ -213,6 +213,15 @@ const scrollToSection = (id: string) => {
 .nav-pill {
   background-color: color-mix(in srgb, var(--color-base-100) 72%, transparent);
   border-color: var(--color-base-300);
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: max-content;
+  max-width: calc(100vw - 1.5rem);
+  flex-shrink: 0;
+}
+
+.nav-pill > * {
+  flex-shrink: 0;
 }
 
 .nav-link {

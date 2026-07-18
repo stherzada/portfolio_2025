@@ -36,12 +36,19 @@ const messages = {
             clearSearch: 'Clear search'
         },
         blog: {
-            title: 'My Blog',
+            title: 'My blog',
             visitMyBlog: '  Blog ( •̀ ω •́ )✧',
             loading: 'Loading post...',
             description: 'Here you can find my thoughts and ideas about technology, programming, and other topics.',
             featuredPost: 'Featured Post',
-            readMore: 'Read more'
+            readMore: 'Read more',
+            previous: 'Previous',
+            next: 'Next',
+            page: 'Page {current} of {total}',
+            postNotFound: 'Post not found.',
+            errorTitle: 'Something went wrong',
+            errorLoading: 'This post could not be loaded.',
+            retry: 'Try again'
         }
     },
     pt: {
@@ -79,12 +86,19 @@ const messages = {
             clearSearch: 'Limpar busca'
         },
         blog: {
+            title: 'Meu blog',
             visitMyBlog: 'Blog ( •̀ ω •́ )✧',
             loading: 'Carregando post...',
             description: 'Aqui você pode encontrar meus pensamentos e ideias sobre tecnologia, programação e outros temas.',
             featuredPost: 'Post em Destaque',
-            readMore: 'Ler mais'
-
+            readMore: 'Ler mais',
+            previous: 'Anterior',
+            next: 'Próxima',
+            page: 'Página {current} de {total}',
+            postNotFound: 'Post não encontrado.',
+            errorTitle: 'Algo deu errado',
+            errorLoading: 'Não foi possível carregar esse post.',
+            retry: 'Tentar novamente'
         }
     }
 }

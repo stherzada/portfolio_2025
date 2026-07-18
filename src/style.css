@@ -10,6 +10,7 @@
   src: url('/fonts/inter-latin-wght-normal.woff2') format('woff2-variations');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
 @font-face {
   font-family: 'Inter Variable';
   font-style: normal;
@@ -30,6 +31,7 @@
   src: url('/fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
 @font-face {
   font-family: 'IBM Plex Mono';
   font-style: normal;
@@ -38,6 +40,7 @@
   src: url('/fonts/ibm-plex-mono-latin-ext-400-normal.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
+
 @font-face {
   font-family: 'IBM Plex Mono';
   font-style: normal;
@@ -46,6 +49,7 @@
   src: url('/fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
 @font-face {
   font-family: 'IBM Plex Mono';
   font-style: normal;
@@ -54,6 +58,7 @@
   src: url('/fonts/ibm-plex-mono-latin-ext-500-normal.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
+
 @font-face {
   font-family: 'IBM Plex Mono';
   font-style: normal;
@@ -62,6 +67,7 @@
   src: url('/fonts/ibm-plex-mono-latin-600-normal.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
 @font-face {
   font-family: 'IBM Plex Mono';
   font-style: normal;
@@ -70,6 +76,7 @@
   src: url('/fonts/ibm-plex-mono-latin-ext-600-normal.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
+
 @font-face {
   font-family: 'IBM Plex Mono';
   font-style: normal;
@@ -78,6 +85,7 @@
   src: url('/fonts/ibm-plex-mono-latin-700-normal.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
 @font-face {
   font-family: 'IBM Plex Mono';
   font-style: normal;
@@ -127,7 +135,7 @@ body {
   --color-warning: #000000;
   --color-error: #000000;
   --color-base-content: #000000;
-  
+
   --color-primary-dark: #FFFFFF;
   --color-secondary-dark: #FFFFFF;
   --color-accent-dark: #FFFFFF;
@@ -136,19 +144,19 @@ body {
   --color-base-200-dark: #1A1A1A;
   --color-base-300-dark: #333333;
   --color-base-content-dark: #FFFFFF;
- 
+
   --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, #333333 100%);
   --gradient-accent: linear-gradient(135deg, var(--color-accent) 0%, #666666 100%);
   --gradient-neutral: linear-gradient(135deg, var(--color-neutral) 0%, var(--color-secondary) 100%);
-  
+
   --shadow-primary: 0 4px 14px 0 rgba(0, 0, 0, 0.25);
   --shadow-accent: 0 4px 14px 0 rgba(0, 0, 0, 0.25);
   --shadow-neutral: 0 4px 14px 0 rgba(0, 0, 0, 0.15);
-  
+
   --shadow-primary-dark: 0 4px 14px 0 rgba(255, 255, 255, 0.1);
   --shadow-accent-dark: 0 4px 14px 0 rgba(255, 255, 255, 0.1);
   --shadow-neutral-dark: 0 4px 14px 0 rgba(255, 255, 255, 0.05);
-  
+
   --border-radius: 12px;
   --border-radius-lg: 16px;
   --border-radius-xl: 24px;
@@ -172,7 +180,7 @@ body {
   --color-neutral-light: var(--color-neutral-light);
   --color-neutral-medium: var(--color-neutral-medium);
   --color-neutral-dark: var(--color-neutral-dark);
-  
+
   --shadow-primary: var(--shadow-primary-dark);
   --shadow-accent: var(--shadow-accent-dark);
   --shadow-neutral: var(--shadow-neutral-dark);
@@ -190,14 +198,27 @@ body {
 }
 
 @keyframes blink-cursor {
-  0%, 45% { opacity: 1; }
-  50%, 95% { opacity: 0; }
-  100% { opacity: 1; }
+
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  50%,
+  95% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
+
 .hero-cursor {
   display: inline-block;
   animation: blink-cursor 1.1s steps(1, jump-none) infinite;
 }
+
 @media (prefers-reduced-motion: reduce) {
   .hero-cursor {
     animation: none;
@@ -301,10 +322,12 @@ body {
   animation-duration: 0.7s;
   animation-direction: reverse;
 }
+
 @keyframes rotate {
   0% {
     transform: rotate(0);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -314,15 +337,23 @@ body {
   filter: none;
   transition: filter 0.3s;
 }
+
 .circle-hover-group:hover .circle-stroke {
   filter: none;
 }
+
 .animate-spin-slow {
   animation: spin-slow 12s linear infinite;
 }
+
 @keyframes spin-slow {
-  from { transform: rotate(0deg);}
-  to { transform: rotate(360deg);}
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-fade-in {
@@ -337,13 +368,13 @@ article {
 
 @keyframes fadeIn {
   from {
-      opacity: 0;
-      transform: translateY(20px);
+    opacity: 0;
+    transform: translateY(20px);
   }
 
   to {
-      opacity: 1;
-      transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -351,8 +382,8 @@ article {
 
   .animate-fade-in,
   article {
-      animation: none;
-      opacity: 1;
+    animation: none;
+    opacity: 1;
   }
 }
 
@@ -368,13 +399,13 @@ article {
 
 @keyframes fadeIn {
   from {
-      opacity: 0;
-      transform: translateY(20px);
+    opacity: 0;
+    transform: translateY(20px);
   }
 
   to {
-      opacity: 1;
-      transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -391,8 +422,8 @@ html {
 
   .animate-fade-in,
   article {
-      animation: none;
-      opacity: 1;
+    animation: none;
+    opacity: 1;
   }
 }
 
@@ -402,7 +433,7 @@ html {
 
 @media (max-width: 1024px) {
   img {
-      filter: grayscale(0) !important;
+    filter: grayscale(0) !important;
   }
 }
 
@@ -413,13 +444,13 @@ html {
 
 .rainbow-text:hover {
   background: linear-gradient(to right,
-          #ff0000 0%,
-          #ff00ff 17%,
-          #0000ff 33%,
-          #00ffff 50%,
-          #00ff00 67%,
-          #ffff00 83%,
-          #ff0000 100%);
+      #ff0000 0%,
+      #ff00ff 17%,
+      #0000ff 33%,
+      #00ffff 50%,
+      #00ff00 67%,
+      #ffff00 83%,
+      #ff0000 100%);
   background-size: 200% auto;
   color: transparent;
   -webkit-background-clip: text;
@@ -430,7 +461,7 @@ html {
 
 @keyframes rainbow-move {
   to {
-      background-position: 200% center;
+    background-position: 200% center;
   }
 }
 
@@ -444,13 +475,33 @@ html {
 }
 
 @keyframes rainbow-color {
-  0% { color: #ff0000; }
-  16% { color: #ff00ff; }
-  33% { color: #0000ff; }
-  50% { color: #00ffff; }
-  67% { color: #00ff00; }
-  83% { color: #ffff00; }
-  100% { color: #ff0000; }
+  0% {
+    color: #ff0000;
+  }
+
+  16% {
+    color: #ff00ff;
+  }
+
+  33% {
+    color: #0000ff;
+  }
+
+  50% {
+    color: #00ffff;
+  }
+
+  67% {
+    color: #00ff00;
+  }
+
+  83% {
+    color: #ffff00;
+  }
+
+  100% {
+    color: #ff0000;
+  }
 }
 
 .theme-toggle-button {
@@ -501,7 +552,8 @@ html {
   margin-bottom: 1.25rem;
 }
 
-.prose ul, .prose ol {
+.prose ul,
+.prose ol {
   margin-bottom: 1.25rem;
   padding-left: 1.5rem;
 }
@@ -520,11 +572,32 @@ html {
   color: var(--color-base-content) !important;
 }
 
+.prose a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-base-300);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.prose a:hover {
+  text-decoration-color: var(--color-primary);
+}
+
+/* Inline code needs its own background to read against the page — it has
+   no surrounding <pre>, unlike fenced code blocks below. */
 .prose code {
   font-size: 0.875rem;
-  padding: 0.25rem 0.5rem;
-  color: var(--color-base-100);
+  padding: 0.2em 0.45em;
+  color: var(--color-primary);
+  background-color: var(--color-base-300);
   border-radius: 4px;
+}
+
+.prose pre code {
+  padding: 0;
+  background-color: transparent;
+  color: var(--color-base-100);
 }
 
 .prose img {
@@ -536,7 +609,8 @@ html {
   margin: 1.5rem 0;
 }
 
-.prose th, .prose td {
+.prose th,
+.prose td {
   padding: 0.75rem;
   border: 1px solid var(--color-base-300);
 }
@@ -544,106 +618,98 @@ html {
 
 /* Mobile improvements */
 @media (max-width: 768px) {
+
   /* Navbar mobile improvements */
   .navbar {
     padding: 0.75rem 1rem !important;
   }
-  
+
   /* Mobile menu improvements */
   .mobile-menu {
     width: 280px !important;
     padding: 1.5rem !important;
     padding-top: 5rem !important;
   }
-  
+
   /* Blog page mobile improvements */
   .container {
     padding: 0 1rem !important;
   }
-  
+
   /* Blog title mobile */
   h1 {
     font-size: 2rem !important;
     line-height: 1.2 !important;
     margin-bottom: 0.5rem !important;
   }
-  
+
   /* Blog cards mobile */
   .card {
     padding: 1rem !important;
     margin-bottom: 1rem !important;
   }
-  
+
   .card img {
     height: 200px !important;
     margin-bottom: 0.75rem !important;
   }
-  
+
   .card h2 {
     font-size: 1.125rem !important;
     line-height: 1.3 !important;
     margin-bottom: 0.5rem !important;
   }
-  
+
   .card p {
     font-size: 0.875rem !important;
     line-height: 1.5 !important;
     margin-bottom: 0.75rem !important;
   }
-  
+
   /* Card metadata mobile */
   .card-divider {
     padding-top: 0.75rem !important;
   }
-  
+
   .card-divider div {
     font-size: 0.75rem !important;
   }
-  
-  /* Pagination mobile */
-  .flex.items-center.gap-2 {
-    flex-direction: column !important;
-    gap: 0.75rem !important;
-  }
-  
-  .flex.items-center.gap-2 button {
-    padding: 0.5rem 1rem !important;
-    font-size: 0.875rem !important;
-  }
-  
+
+
   /* Prose mobile improvements */
   .prose {
     font-size: 16px !important;
     padding: 0 1rem !important;
   }
-  
+
   .prose h1 {
     font-size: 1.75rem !important;
   }
-  
+
   .prose h2 {
     font-size: 1.5rem !important;
   }
-  
+
   .prose h3 {
     font-size: 1.25rem !important;
   }
-  
+
   .prose table {
     font-size: 0.875rem !important;
   }
-  
-  .prose th, .prose td {
+
+  .prose th,
+  .prose td {
     padding: 0.5rem !important;
   }
-  
+
   /* Scroll button mobile */
   .scroll-top-button {
     bottom: 1rem !important;
     right: 1rem !important;
     padding: 0.75rem !important;
   }
-  
+
   /* Language selector mobile */
   .language-selector button {
     padding: 0.25rem 0.5rem !important;
@@ -656,32 +722,32 @@ html {
   .navbar {
     padding: 0.5rem 0.75rem !important;
   }
-  
+
   .mobile-menu {
     width: 100vw !important;
     right: 0 !important;
   }
-  
+
   h1 {
     font-size: 1.75rem !important;
   }
-  
+
   .card {
     padding: 0.75rem !important;
   }
-  
+
   .card img {
     height: 180px !important;
   }
-  
+
   .card h2 {
     font-size: 1rem !important;
   }
-  
+
   .card p {
     font-size: 0.8rem !important;
   }
-  
+
   .prose {
     padding: 0 0.75rem !important;
   }

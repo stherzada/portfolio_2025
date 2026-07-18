@@ -13,7 +13,7 @@ useKonami()
 </script>
 
 <template>
-  <div :class="isAdminRoute ? 'min-h-screen' : 'container mx-auto pt-20 md:pt-24'">
+  <div :class="isAdminRoute ? 'min-h-screen' : 'mx-auto pt-20 md:pt-24'">
     <NavBar v-if="!isAdminRoute" />
     <RouterView />
     <Footer v-if="!isAdminRoute" />

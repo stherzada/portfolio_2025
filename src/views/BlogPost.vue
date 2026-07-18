@@ -7,7 +7,7 @@ import { fetchPostBySlug } from '../services/blog'
 import { useI18n } from 'vue-i18n'
 import { formatDateWithI18n } from '../utils/dateFormat'
 import { formatReadingTime } from '../utils/readingTime'
-import { Clock } from 'lucide-vue-next'
+import { Clock, Calendar, RotateCcw } from 'lucide-vue-next'
 
 const route = useRoute()
 const { t, locale } = useI18n()
@@ -33,7 +33,7 @@ const fetchPost = async (slug: string) => {
     post.value = data
   } catch (err) {
     console.error('Error fetching post:', err)
-    error.value = 'Post não encontrado ou erro ao carregar.'
+    error.value = t('blog.errorLoading')
   } finally {
     loading.value = false
   }
@@ -48,41 +48,64 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-8 md:py-16">
+  <div class="px-4 py-8 md:py-12">
     <main class="flex flex-col items-center justify-center">
-      <div v-if="loading" class="text-center">
-        <p class="text-lg text-primary">{{ t('blog.loading') }}</p>
+      <div v-if="loading" class="text-center py-16">
+        <span class="font-mono text-sm text-muted">{{ t('blog.loading') }}</span>
       </div>
 
-      <div v-else-if="error" class="text-center">
-        <h1 class="text-2xl font-bold text-red-500">Erro</h1>
-        <p class="text-lg text-red-500 mb-4">{{ error }}</p>
+      <div v-else-if="error" class="text-center py-16 flex flex-col items-center gap-4">
+        <p class="eyebrow">{{ t('blog.errorTitle') }}</p>
+        <p class="text-lg text-primary">{{ error }}</p>
         <button @click="fetchPost(route.params.slug as string)"
-          class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 transition-colors">
-          Tentar Novamente
+          class="retry-chip px-4 py-2 rounded-full border transition-colors flex items-center gap-2 cursor-pointer group">
+          <RotateCcw class="w-3.5 h-3.5 arrow-rotate" />
+          <span class="font-mono text-xs uppercase tracking-wide">{{ t('blog.retry') }}</span>
         </button>
       </div>
 
-      <div v-else-if="post" class="w-full max-w-4xl">
-        <div v-if="post.image_path" class="mb-6 overflow-hidden rounded-lg">
-          <img :src="post.image_path" :alt="post.title" class="w-full h-48 md:h-64 object-cover rounded-lg" />
+      <div v-else-if="post" class="w-full max-w-3xl">
+        <div v-if="post.image_path" class="mb-8 overflow-hidden rounded-2xl">
+          <img :src="post.image_path" :alt="post.title" class="w-full h-48 md:h-72 object-cover" />
         </div>
-        <div class="text-center mb-8 flex items-center gap-2 flex-col">
-          <h1 class="text-2xl md:text-4xl font-bold text-primary leading-tight">{{ post.title }}</h1>
-          <p class="text-sm md:text-lg text-primary opacity-75">{{ formatDateWithI18n(post.created_at, locale) }}</p>
-          <div class="flex items-center gap-1 text-sm md:text-lg text-primary opacity-75">
-            <Clock class="h-4 w-4" />
-            {{ formatReadingTime(post.content || '') }}
+        <div class="mb-10">
+          <p class="eyebrow mb-3">/{{ t('nav.writing') }}</p>
+          <h1 class="font-mono font-semibold text-2xl md:text-4xl tracking-tight text-primary leading-tight mb-4">
+            {{ post.title }}
+          </h1>
+          <div class="flex items-center gap-4 font-mono text-xs text-muted">
+            <span class="flex items-center gap-1">
+              <Calendar class="h-3.5 w-3.5" />
+              {{ formatDateWithI18n(post.created_at, locale) }}
+            </span>
+            <span class="flex items-center gap-1">
+              <Clock class="h-3.5 w-3.5" />
+              {{ formatReadingTime(post.content || '') }}
+            </span>
           </div>
         </div>
-        <article v-html="post.content"
-          class="prose prose-sm md:prose-lg prose-gray max-w-none prose-headings:text-primary prose-a:text-blue-600 prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-p:leading-relaxed prose-li:leading-relaxed">
-        </article>
+        <article v-html="post.content" class="prose prose-sm md:prose-lg max-w-none"></article>
       </div>
 
-      <div v-else class="text-center">
-        <p class="text-lg text-primary">Post não encontrado.</p>
+      <div v-else class="text-center py-16">
+        <span class="text-lg text-primary">{{ t('blog.postNotFound') }}</span>
       </div>
     </main>
   </div>
 </template>
+
+<style scoped>
+.text-muted {
+    color: var(--color-neutral);
+}
+
+.retry-chip {
+    color: var(--color-primary);
+    border-color: var(--color-base-300);
+}
+
+.retry-chip:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-base-100);
+}
+</style>
