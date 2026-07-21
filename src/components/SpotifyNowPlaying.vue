@@ -22,8 +22,6 @@ async function fetchNowPlaying() {
         if (!response.ok) throw new Error(`Unexpected status ${response.status}`)
         nowPlaying.value = await response.json()
     } catch {
-        // Network hiccup or the endpoint isn't available (e.g. local `vite dev`
-        // without `vercel dev`) — just fall back to the offline state.
         nowPlaying.value = { isPlaying: false }
     }
 }
@@ -40,7 +38,7 @@ onUnmounted(() => {
 
 <template>
     <a v-if="nowPlaying.isPlaying" :href="nowPlaying.songUrl" target="_blank" rel="noopener"
-        class="spotify-card flex items-center gap-3 w-full max-w-xs px-3 py-2.5 rounded-2xl border transition-colors duration-200"
+        class="flex items-center gap-3 w-full max-w-xs px-3 py-2.5 rounded-2xl border transition-colors duration-200"
         title="Ouvindo agora no Spotify">
         <img v-if="nowPlaying.albumImageUrl" :src="nowPlaying.albumImageUrl" :alt="nowPlaying.title"
             class="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
@@ -64,14 +62,6 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.spotify-card {
-    background-color: var(--color-base-100);
-    border-color: var(--color-base-300);
-}
-
-a.spotify-card:hover {
-    border-color: var(--color-primary);
-}
 
 .text-muted {
     color: var(--color-neutral);
