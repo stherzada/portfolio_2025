@@ -5,6 +5,7 @@ import { ChevronDown } from 'lucide-vue-next'
 import Links from './Links.vue'
 import AnimatedCircle from './AnimatedCircle.vue'
 import ScrambleText from './ScrambleText.vue'
+import SpotifyNowPlaying from './SpotifyNowPlaying.vue'
 import { useReducedMotion } from '../composables/useReducedMotion'
 
 const { t } = useI18n()
@@ -50,11 +51,13 @@ const scrollToNext = () => {
                     </p>
                     <Links />
                 </div>
-                <div class="relative w-56 h-56 lg:w-72 lg:h-72 rounded-3xl overflow-hidden group order-1 lg:order-2"
-                    v-reveal="{ delay: 0.15 }">
-                    <AnimatedCircle />
-                    <img src="/src/assets/photo-no-bg.png" alt="Sthefany Sther"
-                        class="w-full h-full object-cover transition-all duration-300 ease-in-out filter grayscale hover:grayscale-0 lg:grayscale lg:hover:grayscale-0 relative z-20" />
+                <div class="flex flex-col items-center gap-5 order-1 lg:order-2" v-reveal="{ delay: 0.15 }">
+                    <div class="relative w-56 h-56 lg:w-72 lg:h-72 rounded-3xl overflow-hidden group">
+                        <AnimatedCircle />
+                        <img src="/src/assets/photo-no-bg.png" alt="Sthefany Sther"
+                            class="w-full h-full object-cover transition-all duration-300 ease-in-out filter grayscale hover:grayscale-0 lg:grayscale lg:hover:grayscale-0 relative z-20" />
+                    </div>
+                    <SpotifyNowPlaying />
                 </div>
             </div>
         </div>
