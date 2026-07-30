@@ -6,12 +6,14 @@ interface Store {
   posts: Post[]
   currentUser: User | null
   isAuthenticated: boolean
+  isAdmin: boolean
 }
 
 const store = reactive<Store>({
   posts: [],
   currentUser: null,
   isAuthenticated: false,
+  isAdmin: false,
 })
 
 export { store }

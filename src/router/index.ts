@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { fetchPostBySlug } from "@/services/blog";
 import { useMeta } from "@/composables/useMeta";
+import { useAuth } from "@/composables/useAuth";
 import supabase from "@/supabase";
 
 const router = createRouter({
@@ -98,6 +99,8 @@ router.beforeEach(async (to, _from, next) => {
     return;
   }
 
+  // getSession() é local (lê o JWT guardado) e barato — filtra quem não tem
+  // sessão nenhuma antes de gastar um RPC.
   const { data: { session } } = await supabase.auth.getSession();
 
   if (requiresAuth && !session) {
@@ -105,9 +108,26 @@ router.beforeEach(async (to, _from, next) => {
     return;
   }
 
+  // Sessão válida não é permissão. checkIsAdmin() chama o RPC `is_admin`,
+  // que é validado no servidor (RLS na tabela admin_users) — não dá para
+  // forjar isso no client. Sem isso, qualquer conta autenticada entrava.
+  if (requiresAuth && session) {
+    const { checkIsAdmin, signOut } = useAuth();
+    const isAdmin = await checkIsAdmin();
+    if (!isAdmin) {
+      await signOut();
+      next({ name: "AdminLogin", query: { denied: "1" } });
+      return;
+    }
+  }
+
   if (isLoginRoute && session) {
-    next({ name: "AdminDashboard" });
-    return;
+    const { checkIsAdmin } = useAuth();
+    const isAdmin = await checkIsAdmin();
+    if (isAdmin) {
+      next({ name: "AdminDashboard" });
+      return;
+    }
   }
 
   next();
