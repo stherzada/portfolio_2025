@@ -3,13 +3,15 @@ import { computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import NavBar from './components/NavBar.vue'
 import Footer from './components/Footer.vue'
+import TerminalOverlay from './components/TerminalOverlay.vue'
 import { useKonami } from './composables/useKonami'
+import { isTerminalOpen, useTerminalTrigger } from './composables/useTerminal'
 
 const route = useRoute()
 const isAdminRoute = computed(() => route.path.startsWith('/admin'))
 
-// Easter egg: Konami code triggers a particle burst on the home hero.
 useKonami()
+useTerminalTrigger()
 </script>
 
 <template>
@@ -17,5 +19,6 @@ useKonami()
     <NavBar v-if="!isAdminRoute" />
     <RouterView />
     <Footer v-if="!isAdminRoute" />
+    <TerminalOverlay v-if="isTerminalOpen" />
   </div>
 </template>

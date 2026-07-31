@@ -15,10 +15,6 @@ const KONAMI_SEQUENCE = [
   'a',
 ]
 
-/**
- * Listens for the Konami code anywhere on the page and, when completed,
- * triggers the straw-hat particle burst easter egg (see useParticleBurst).
- */
 export function useKonami() {
   let position = 0
 

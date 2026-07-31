@@ -49,6 +49,18 @@ const messages = {
             errorTitle: 'Something went wrong',
             errorLoading: 'This post could not be loaded.',
             retry: 'Try again'
+        },
+        terminal: {
+            windowTitle: 'guest\\@stherzada.dev: ~',
+            hint: 'Type "help" to see the available commands.',
+            help: 'Available commands: whoami, about, projects, blog, links, clear, sudo hire-me, exit',
+            navigatingAbout: 'Opening /about ...',
+            navigatingProjects: 'Opening /projects ...',
+            navigatingBlog: 'Opening /blog ...',
+            linksIntro: 'Find me at:',
+            hireMe: 'Permission granted. Opening email client...',
+            unknownCommand: 'command not found: {cmd} — type "help"',
+            closeHint: 'Press Esc or type "exit" to close.'
         }
     },
     pt: {
@@ -99,6 +111,18 @@ const messages = {
             errorTitle: 'Algo deu errado',
             errorLoading: 'Não foi possível carregar esse post.',
             retry: 'Tentar novamente'
+        },
+        terminal: {
+            windowTitle: 'guest\\@stherzada.dev: ~',
+            hint: 'Digite "help" para ver os comandos disponíveis.',
+            help: 'Comandos disponíveis: whoami, about, projects, blog, links, clear, sudo hire-me, exit',
+            navigatingAbout: 'Abrindo /about ...',
+            navigatingProjects: 'Abrindo /projects ...',
+            navigatingBlog: 'Abrindo /blog ...',
+            linksIntro: 'Me encontre em:',
+            hireMe: 'Permissão concedida. Abrindo cliente de email...',
+            unknownCommand: 'comando não encontrado: {cmd} — digite "help"',
+            closeHint: 'Pressione Esc ou digite "exit" para fechar.'
         }
     }
 }
