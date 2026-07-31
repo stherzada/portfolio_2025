@@ -2,18 +2,23 @@
 import store from '../store'
 import { useRoute } from 'vue-router'
 import type { Post } from '../types'
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { fetchPostBySlug } from '../services/blog'
 import { useI18n } from 'vue-i18n'
 import { formatDateWithI18n } from '../utils/dateFormat'
 import { formatReadingTime } from '../utils/readingTime'
 import { Clock, Calendar, RotateCcw } from 'lucide-vue-next'
+import DOMPurify from 'dompurify'
 
 const route = useRoute()
 const { t, locale } = useI18n()
 const post = ref<Post | null>(null)
 const error = ref<string | null>(null)
 const loading = ref(false)
+
+const sanitizedContent = computed(() =>
+  post.value?.content ? DOMPurify.sanitize(post.value.content) : ''
+)
 
 
 const fetchPost = async (slug: string) => {
@@ -84,7 +89,7 @@ onMounted(() => {
             </span>
           </div>
         </div>
-        <article v-html="post.content" class="prose prose-sm md:prose-lg max-w-none"></article>
+        <article v-html="sanitizedContent" class="prose prose-sm md:prose-lg max-w-none"></article>
       </div>
 
       <div v-else class="text-center py-16">
