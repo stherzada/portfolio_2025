@@ -6,6 +6,7 @@ import Links from './Links.vue'
 import AnimatedCircle from './AnimatedCircle.vue'
 import ScrambleText from './ScrambleText.vue'
 import SpotifyNowPlaying from './SpotifyNowPlaying.vue'
+import TwitchLiveStatus from './TwitchLiveStatus.vue'
 import { useReducedMotion } from '../composables/useReducedMotion'
 
 const { t } = useI18n()
@@ -58,6 +59,7 @@ const scrollToNext = () => {
                             class="w-full h-full object-cover transition-all duration-300 ease-in-out filter grayscale hover:grayscale-0 lg:grayscale lg:hover:grayscale-0 relative z-20" />
                     </div>
                     <SpotifyNowPlaying />
+                    <TwitchLiveStatus />
                 </div>
             </div>
         </div>

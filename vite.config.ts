@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath } from 'url'
 import { dirname, resolve } from 'path'
@@ -7,10 +7,31 @@ import tailwindcss from '@tailwindcss/vite'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
+function twitchLiveStatusDevProxy(): Plugin {
+  return {
+    name: 'twitch-live-status-dev-proxy',
+    configureServer(server) {
+      server.middlewares.use('/api/twitch-live-status', async (_req, res) => {
+        const mod = await server.ssrLoadModule('/api/twitch-live-status.ts')
+        const devRes = {
+          status: () => devRes,
+          setHeader: () => devRes,
+          json: (body: unknown) => {
+            res.setHeader('Content-Type', 'application/json')
+            res.end(JSON.stringify(body))
+          },
+        }
+        await mod.default({}, devRes)
+      })
+    },
+  }
+}
+
 export default defineConfig({
   plugins: [
     vue(),
     tailwindcss(),
+    twitchLiveStatusDevProxy(),
   ],
   resolve: {
     alias: {
