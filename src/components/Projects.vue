@@ -55,7 +55,7 @@ onMounted(() => {
 
 <template>
     <section id="projects" class="flex items-center justify-center py-16 scroll-mt-24">
-        <div class="md:mx-8 mx-4 md:max-w-4xl w-full">
+        <div class="md:mx-8 m-6 md:mx-4 md:max-w-4xl w-full">
             <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
                 <div>
                     <p class="eyebrow mb-3">/{{ t('nav.projects') }}</p>

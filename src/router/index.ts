@@ -12,14 +12,25 @@ const router = createRouter({
       name: "Home",
       component: () => import("@/views/Home.vue"),
       beforeEnter: (_to, _from, next) => {
-        const { updateTitle, updateMetaTag, updateCanonical } = useMeta();
+        const { setMeta } = useMeta();
+        const origin = window.location.origin;
+        const description =
+          "Portfolio de Sthefany Sther, Desenvolvedora de Software que curte gestão e análise de dados. Conheça meus projetos e experiências em tecnologia.";
+        const image = `${origin}/Logo.png`;
 
-        updateTitle("Sthefany Sther - Software Engineer");
-        updateMetaTag(
-          "description",
-          "Portfolio de Sthefany Sther, Desenvolvedora de Software que curte gestão e análise de dados. Conheça meus projetos e experiências em tecnologia.",
-        );
-        updateCanonical(`${window.location.origin}`);
+        setMeta({
+          title: "Sthefany Sther - Software Engineer",
+          description,
+          canonical: origin,
+          ogType: "website",
+          ogTitle: "Sthefany Sther - Software Engineer",
+          ogDescription: description,
+          ogImage: image,
+          ogUrl: origin,
+          twitterTitle: "Sthefany Sther - Software Engineer",
+          twitterDescription: description,
+          twitterImage: image,
+        });
         next();
       },
     },
@@ -28,14 +39,26 @@ const router = createRouter({
       name: "Blog",
       component: () => import("@/views/Blog.vue"),
       beforeEnter: (_to, _from, next) => {
-        const { updateTitle, updateMetaTag, updateCanonical } = useMeta();
+        const { setMeta } = useMeta();
+        const origin = window.location.origin;
+        const canonical = `${origin}/blog`;
+        const description =
+          "Aqui você pode encontrar meus pensamentos e ideias sobre tecnologia, programação e outros tópicos.";
+        const image = `${origin}/Logo.png`;
 
-        updateTitle("Blog - Sthefany Sther");
-        updateMetaTag(
-          "description",
-          "Aqui você pode encontrar meus pensamentos e ideias sobre tecnologia, programação e outros tópicos.",
-        );
-        updateCanonical(`${window.location.origin}/blog`);
+        setMeta({
+          title: "Blog - Sthefany Sther",
+          description,
+          canonical,
+          ogType: "website",
+          ogTitle: "Blog - Sthefany Sther",
+          ogDescription: description,
+          ogImage: image,
+          ogUrl: canonical,
+          twitterTitle: "Blog - Sthefany Sther",
+          twitterDescription: description,
+          twitterImage: image,
+        });
         next();
       },
     },
@@ -46,15 +69,28 @@ const router = createRouter({
       beforeEnter: async (to, _from, next) => {
           const slug = to.params.slug as string;
           const postData = await fetchPostBySlug(slug);
-          const { updateTitle, updateMetaTag, updateCanonical } = useMeta();
-
-          updateTitle(`${postData.title}`);
-          updateMetaTag(
-            "description",
+          const { setMeta } = useMeta();
+          const origin = window.location.origin;
+          const title = `${postData.title} - Sthefany Sther`;
+          const description =
             postData.description ||
-              "Leia mais sobre este post no blog da Sthefany Sther",
-          );
-          updateCanonical(`${window.location.origin}/blog/${postData.slug}`);
+            "Leia mais sobre este post no blog da Sthefany Sther";
+          const canonical = `${origin}/blog/${postData.slug}`;
+          const image = postData.image_path || `${origin}/Logo.png`;
+
+          setMeta({
+            title,
+            description,
+            canonical,
+            ogType: "article",
+            ogTitle: title,
+            ogDescription: description,
+            ogImage: image,
+            ogUrl: canonical,
+            twitterTitle: title,
+            twitterDescription: description,
+            twitterImage: image,
+          });
           to.meta.postData = postData;
           next();
       },

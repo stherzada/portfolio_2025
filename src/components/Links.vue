@@ -20,6 +20,23 @@ const links: Link[] = [
         title: 'Entre em contato por email',
         rel: 'nofollow'
     },
+
+    {
+        href: 'https://www.linkedin.com/in/sthefany-sther/',
+        icon: Linkedin,
+        alt: 'LinkedIn',
+        title: 'Conecte-se comigo no LinkedIn',
+        rel: 'me noopener'
+    },
+
+    {
+        href: 'https://github.com/stherzada',
+        icon: Github,
+        alt: 'GitHub',
+        title: 'Veja meus projetos no GitHub',
+        rel: 'me noopener'
+    },
+    
     {
         href: 'https://twitter.com/stherzada',
         icon: Twitter,
@@ -41,20 +58,6 @@ const links: Link[] = [
         title: 'Assista minhas lives na Twitch',
         rel: 'me noopener'
     },
-    {
-        href: 'https://github.com/stherzada',
-        icon: Github,
-        alt: 'GitHub',
-        title: 'Veja meus projetos no GitHub',
-        rel: 'me noopener'
-    },
-    {
-        href: 'https://www.linkedin.com/in/sthefany-sther/',
-        icon: Linkedin,
-        alt: 'LinkedIn',
-        title: 'Conecte-se comigo no LinkedIn',
-        rel: 'me noopener'
-    }
 ]
 </script>
 

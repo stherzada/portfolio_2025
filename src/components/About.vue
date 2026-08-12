@@ -38,7 +38,7 @@ const scrollToNext = () => {
 <template>
     <section id="about" class="relative flex items-center justify-center min-h-[calc(100vh-6rem)] py-16 overflow-hidden">
         <ParticleField v-if="showParticleField" />
-        <div class="relative z-10 md:mx-8 mx-4 md:max-w-4xl w-full">
+        <div class="relative z-10 md:mx-8 m-6 md:mx-4 md:max-w-4xl w-full">
             <div class="flex flex-col lg:flex-row items-center gap-12">
                 <div class="flex-1 text-center lg:text-left order-2 lg:order-1" v-reveal>
                     <h1 class="font-mono font-semibold text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight mb-4 text-primary">
@@ -47,7 +47,7 @@ const scrollToNext = () => {
                     <p class="font-mono text-sm sm:text-base text-muted mb-6">
                         <span class="opacity-50">$</span> {{ t('about.role') }}
                     </p>
-                    <p class="text-lg leading-relaxed mb-6 text-primary max-w-xl mx-auto lg:mx-0">
+                    <p class="text-lg p-1 leading-relaxed mb-6 text-primary max-w-xl mx-auto lg:mx-0">
                         {{ t('about.description') }}
                     </p>
                     <Links />

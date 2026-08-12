@@ -13,7 +13,7 @@ interface VercelResponse {
   send(body: string): void
 }
 
-const SITE_URL = 'https://stherzada.dev'
+const SITE_URL = 'https://stherzada.com'
 
 interface PostRow {
   slug: string

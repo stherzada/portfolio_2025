@@ -5,10 +5,19 @@
       "destination": "/api/sitemap"
     },
     {
+      "source": "/blog/:slug",
+      "destination": "/api/blog-meta?slug=:slug"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
+  "functions": {
+    "api/blog-meta.ts": {
+      "includeFiles": "dist/index.html"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",

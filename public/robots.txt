@@ -14,8 +14,6 @@ Allow: /*.webp$
 # Não permitir acesso a arquivos específicos
 Disallow: /api/
 Disallow: /*.json$
-Disallow: /*.js$
-Disallow: /*.css$
 Disallow: /*.config.*$
 Disallow: /node_modules/
 
@@ -39,4 +37,4 @@ Allow: /
 Crawl-delay: 1
 
 # Localização do sitemap
-Sitemap: https://stherzada.dev/sitemap.xml 
+Sitemap: https://stherzada.com/sitemap.xml 

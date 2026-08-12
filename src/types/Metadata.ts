@@ -4,6 +4,8 @@ export interface MetaData {
     ogTitle?: string
     ogDescription?: string
     ogImage?: string
+    ogType?: string
+    ogUrl?: string
     twitterTitle?: string
     twitterDescription?: string
     twitterImage?: string

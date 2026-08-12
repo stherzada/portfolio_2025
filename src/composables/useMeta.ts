@@ -40,6 +40,32 @@ export function useMeta() {
     if (metaData.canonical) {
       updateCanonical(metaData.canonical)
     }
+
+    if (metaData.ogTitle) {
+      updateMetaTag('og:title', metaData.ogTitle, 'property')
+    }
+    if (metaData.ogDescription) {
+      updateMetaTag('og:description', metaData.ogDescription, 'property')
+    }
+    if (metaData.ogImage) {
+      updateMetaTag('og:image', metaData.ogImage, 'property')
+    }
+    if (metaData.ogType) {
+      updateMetaTag('og:type', metaData.ogType, 'property')
+    }
+    if (metaData.ogUrl) {
+      updateMetaTag('og:url', metaData.ogUrl, 'property')
+    }
+
+    if (metaData.twitterTitle) {
+      updateMetaTag('twitter:title', metaData.twitterTitle)
+    }
+    if (metaData.twitterDescription) {
+      updateMetaTag('twitter:description', metaData.twitterDescription)
+    }
+    if (metaData.twitterImage) {
+      updateMetaTag('twitter:image', metaData.twitterImage)
+    }
   }
 
   return {
