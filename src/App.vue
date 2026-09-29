@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import NavBar from './components/NavBar.vue'
 import Footer from './components/Footer.vue'
 import TerminalOverlay from './components/TerminalOverlay.vue'
-import DestroyMode from './components/DestroyMode.vue'
 import { useKonami } from './composables/useKonami'
 import { isTerminalOpen, useTerminalTrigger } from './composables/useTerminal'
 import { destroyCharacter } from './composables/useDestroyMode'
+
+// Easter egg (`sudo rm -rf /` in the terminal): only downloaded when triggered.
+const DestroyMode = defineAsyncComponent(() => import('./components/DestroyMode.vue'))
 
 const route = useRoute()
 const isAdminRoute = computed(() => route.path.startsWith('/admin'))
