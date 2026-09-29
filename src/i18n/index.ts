@@ -60,7 +60,27 @@ const messages = {
             linksIntro: 'Find me at:',
             hireMe: 'Permission granted. Opening email client...',
             unknownCommand: 'command not found: {cmd} — type "help"',
-            closeHint: 'Press Esc or type "exit" to close.'
+            closeHint: 'Press Esc or type "exit" to close.',
+            permissionDenied: 'rm: cannot remove \'/\': Permission denied (maybe try sudo?)',
+            rmrf: {
+                removing: "rm: removing '/' ...",
+                deleted: 'deleted: /home, /css, /layout, /dignity',
+                awake: 'Just kidding. Something woke up. RUN.'
+            }
+        },
+        destroy: {
+            destroyed: '{n} destroyed',
+            controls: '←↑↓→ / WASD walk · Space jump (again mid-air = ground pound) · F breath',
+            restore: 'reload the page to restore the site',
+            move: 'Move',
+            jump: 'Jump',
+            breath: 'Breath',
+            taunts: {
+                t5: 'the CSS will never be the same',
+                t15: 'the designer is crying',
+                t30: 'this is fine 🔥',
+                t60: 'total annihilation. proud of you.'
+            }
         }
     },
     pt: {
@@ -122,7 +142,27 @@ const messages = {
             linksIntro: 'Me encontre em:',
             hireMe: 'Permissão concedida. Abrindo cliente de email...',
             unknownCommand: 'comando não encontrado: {cmd} — digite "help"',
-            closeHint: 'Pressione Esc ou digite "exit" para fechar.'
+            closeHint: 'Pressione Esc ou digite "exit" para fechar.',
+            permissionDenied: 'rm: não foi possível remover \'/\': Permissão negada (tente com sudo?)',
+            rmrf: {
+                removing: "rm: removendo '/' ...",
+                deleted: 'removido: /home, /css, /layout, /dignidade',
+                awake: 'Brincadeira. Algo acordou. CORRE.'
+            }
+        },
+        destroy: {
+            destroyed: '{n} destruídos',
+            controls: '←↑↓→ / WASD andar · Espaço pular (de novo no ar = pisão) · F bafo',
+            restore: 'recarregue a página para restaurar o site',
+            move: 'Mover',
+            jump: 'Pular',
+            breath: 'Bafo',
+            taunts: {
+                t5: 'o CSS nunca mais será o mesmo',
+                t15: 'a designer está chorando',
+                t30: 'tá tudo bem 🔥',
+                t60: 'aniquilação total. orgulho de você.'
+            }
         }
     }
 }

@@ -71,6 +71,9 @@ export default defineConfig({
       }
     },
     reportCompressedSize: true,
+    // three-vendor (~510 kB) is a single library that's already lazy-loaded
+    // by the About particle field, so splitting it further buys nothing.
+    chunkSizeWarningLimit: 600,
     assetsInlineLimit: 4096
   }
 })
