@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { X } from 'lucide-vue-next'
 import { closeTerminal } from '@/composables/useTerminal'
 import { triggerParticleBurst } from '@/composables/useParticleBurst'
+import { startDestroyMode } from '@/composables/useDestroyMode'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -90,6 +91,16 @@ function runCommand(raw: string) {
     }
   } else if (cmd === 'clear') {
     lines.value = []
+  } else if (cmd === 'sudo' && argLine.startsWith('rm -rf /')) {
+    pushLine('error', t('terminal.rmrf.removing'))
+    pushLine('error', t('terminal.rmrf.deleted'))
+    pushLine('output', t('terminal.rmrf.awake'))
+    setTimeout(() => {
+      closeTerminal()
+      startDestroyMode(argLine.includes('--cat') ? 'cat' : 'kaiju')
+    }, 900)
+  } else if (cmd === 'rm') {
+    pushLine('error', t('terminal.permissionDenied'))
   } else if (cmd === 'sudo' && argLine === 'hire-me') {
     pushLine('output', t('terminal.hireMe'))
     triggerParticleBurst()

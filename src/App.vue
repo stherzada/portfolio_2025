@@ -4,8 +4,10 @@ import { RouterView, useRoute } from 'vue-router'
 import NavBar from './components/NavBar.vue'
 import Footer from './components/Footer.vue'
 import TerminalOverlay from './components/TerminalOverlay.vue'
+import DestroyMode from './components/DestroyMode.vue'
 import { useKonami } from './composables/useKonami'
 import { isTerminalOpen, useTerminalTrigger } from './composables/useTerminal'
+import { destroyCharacter } from './composables/useDestroyMode'
 
 const route = useRoute()
 const isAdminRoute = computed(() => route.path.startsWith('/admin'))
@@ -20,5 +22,6 @@ useTerminalTrigger()
     <RouterView />
     <Footer v-if="!isAdminRoute" />
     <TerminalOverlay v-if="isTerminalOpen" />
+    <DestroyMode v-if="destroyCharacter" :character="destroyCharacter" />
   </div>
 </template>
