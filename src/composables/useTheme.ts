@@ -129,12 +129,11 @@ const calculateOptimalMaskSize = (): number => {
     : viewportSize * scaleFactor
 }
 
-// Get initial theme from localStorage
+// public/theme-init.js already applied the saved/system theme before first
+// paint, so the class on <html> is the source of truth.
 const getInitialTheme = (): boolean => {
   if (!isBrowser) return false
-  const savedTheme = localStorage.getItem('theme')
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-  return savedTheme === 'dark' || (!savedTheme && prefersDark)
+  return document.documentElement.classList.contains('dark')
 }
 
 export const useTheme = (props?: ThemeAnimationProps) => {

@@ -15,7 +15,11 @@ const SCROLL_POSITION_DURATION = 1000 * 60 * 30
  * otherwise the restore-on-mount below would silently override it.
  */
 export function clearSavedScrollPosition() {
-  localStorage.removeItem(SCROLL_POSITION_KEY)
+  try {
+    localStorage.removeItem(SCROLL_POSITION_KEY)
+  } catch {
+    // Storage blocked: nothing saved to clear.
+  }
 }
 
 export function useScrollPosition() {
@@ -28,21 +32,26 @@ export function useScrollPosition() {
       y: window.scrollY,
       timestamp: Date.now()
     }
-    
+    try {
       localStorage.setItem(SCROLL_POSITION_KEY, JSON.stringify(position))
-    
+    } catch {
+      // Storage full/blocked: restoring scroll is a nice-to-have.
+    }
   }
 
   const restoreScrollPosition = () => {
-   
-      const saved = localStorage.getItem(SCROLL_POSITION_KEY)
-      if (!saved) return
+      let position: ScrollPosition
+      try {
+        const saved = localStorage.getItem(SCROLL_POSITION_KEY)
+        if (!saved) return
+        position = JSON.parse(saved)
+      } catch {
+        clearSavedScrollPosition()
+        return
+      }
 
-      const position: ScrollPosition = JSON.parse(saved)
-      const now = Date.now()
-
-      if (now - position.timestamp > SCROLL_POSITION_DURATION) {
-        localStorage.removeItem(SCROLL_POSITION_KEY)
+      if (Date.now() - position.timestamp > SCROLL_POSITION_DURATION) {
+        clearSavedScrollPosition()
         return
       }
 
@@ -52,7 +61,6 @@ export function useScrollPosition() {
           window.scrollTo({ left: position.x, top: position.y, behavior: 'auto' })
         }, 100)
       })
-   
   }
 
   const handleScroll = () => {   
@@ -82,7 +90,11 @@ export function useScrollPosition() {
   onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll)
     window.removeEventListener('beforeunload', handleBeforeUnload)
-    
+    // Hand scroll restoration back to the browser/router on other pages.
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'auto'
+    }
+
     if (scrollTimeout) {
       clearTimeout(scrollTimeout)
     }

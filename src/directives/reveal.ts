@@ -24,6 +24,18 @@ function resolveOptions(value: RevealValue): RevealOptions {
 
 const triggers = new WeakMap<HTMLElement, ScrollTrigger>()
 
+// Async content (posts, projects) mounting later shifts the layout under
+// triggers that were already measured; re-measure once per batch of mounts.
+let refreshScheduled = false
+function scheduleRefresh() {
+  if (refreshScheduled) return
+  refreshScheduled = true
+  requestAnimationFrame(() => {
+    refreshScheduled = false
+    ScrollTrigger.refresh()
+  })
+}
+
 /**
  * `v-reveal` — Apple-style scroll reveal (fade + rise) driven by
  * GSAP ScrollTrigger, matching the codebase's existing `fadeIn` easing.
@@ -62,6 +74,7 @@ export const reveal: Directive<HTMLElement, RevealValue> = {
     })
 
     triggers.set(el, trigger)
+    scheduleRefresh()
   },
   unmounted(el) {
     triggers.get(el)?.kill()

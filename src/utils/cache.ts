@@ -1,76 +1,35 @@
-export interface CacheOptions {
-    duration?: number
-    key: string
-}
-
 export interface CacheEntry<T> {
     data: T
     timestamp: number
 }
 
-export class LocalStorageCache {
-    private static instance: LocalStorageCache
-    private defaultDuration = 1000 * 60 * 5
+const readCache = <T>(key: string, duration: number): T | null => {
+    try {
+        const cached = localStorage.getItem(key)
+        if (!cached) return null
 
-    private constructor() { }
-
-    static getInstance(): LocalStorageCache {
-        if (!LocalStorageCache.instance) {
-            LocalStorageCache.instance = new LocalStorageCache()
-        }
-        return LocalStorageCache.instance
-    }
-
-
-    get<T>(key: string): T | null {
-        try {
-            const cached = localStorage.getItem(key)
-            if (!cached) return null
-
-            const entry: CacheEntry<T> = JSON.parse(cached)
-            if (Date.now() - entry.timestamp > this.defaultDuration) {
-                localStorage.removeItem(key)
-                return null
-            }
-
-            return entry.data
-        } catch {
+        const entry: CacheEntry<T> = JSON.parse(cached)
+        if (Date.now() - entry.timestamp > duration) {
+            localStorage.removeItem(key)
             return null
         }
-    }
 
-    set<T>(key: string, data: T, _duration?: number): void {
-        try {
-            const entry: CacheEntry<T> = {
-                data,
-                timestamp: Date.now()
-            }
-            localStorage.setItem(key, JSON.stringify(entry))
-        } catch (error) {
-            console.warn('Error saving to localStorage cache:', error)
-        }
-    }
-
-    clear(): void {
-        try {
-            const keys = Object.keys(localStorage)
-            keys.forEach(key => {
-                if (key.includes('cache_')) {
-                    localStorage.removeItem(key)
-                }
-            })
-        } catch (error) {
-            console.warn('Error clearing localStorage cache:', error)
-        }
-    }
-
-    has(key: string): boolean {
-        return this.get(key) !== null
-    }
-    setDefaultDuration(duration: number): void {
-        this.defaultDuration = duration
+        return entry.data
+    } catch {
+        return null
     }
 }
+
+const writeCache = <T>(key: string, data: T): void => {
+    try {
+        const entry: CacheEntry<T> = { data, timestamp: Date.now() }
+        localStorage.setItem(key, JSON.stringify(entry))
+    } catch (error) {
+        console.warn('Error saving to localStorage cache:', error)
+    }
+}
+
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export function useLocalStorageCache<T>(
     key: string,
@@ -82,46 +41,34 @@ export function useLocalStorageCache<T>(
     } = {}
 ) {
     const {
-        duration,
+        duration = 1000 * 60 * 5,
         retries = 2,
         retryDelay = 300
     } = options
 
-    const cache = LocalStorageCache.getInstance()
-    if (duration) {
-        cache.setDefaultDuration(duration)
-    }
-
+    // Tries the cache first, then the fetcher up to `retries + 1` times with
+    // exponential backoff. Rethrows the last error if every attempt fails.
     const fetchWithRetry = async (): Promise<T> => {
-        const cached = cache.get<T>(key)
-        if (cached) {
-            return cached
-        }
+        const cached = readCache<T>(key, duration)
+        if (cached) return cached
 
-        for (let i = 0; i < retries; i++) {
-            const data = await fetcher()
-            cache.set(key, data, duration)
-            await new Promise(resolve => setTimeout(resolve, retryDelay))
-            return data
+        let lastError: unknown
+        for (let attempt = 0; attempt <= retries; attempt++) {
+            if (attempt > 0) await wait(retryDelay * 2 ** (attempt - 1))
+            try {
+                const data = await fetcher()
+                writeCache(key, data)
+                return data
+            } catch (error) {
+                lastError = error
+            }
         }
-        throw new Error('All attempts failed')
+        throw lastError
     }
-    const clearAllCache = () => {
-        cache.clear()
-    }
-    return {
-        fetchWithRetry,
-        clearAllCache,
-        getCached: () => cache.get<T>(key),
-        hasCached: () => cache.has(key)
-    }
+
+    return { fetchWithRetry }
 }
-
 
 export const createCacheKey = {
     github: (username?: string) => `github_repos${username ? `_${username}` : ''}`,
-    user: (userId: string) => `user_${userId}`,
-    project: (projectId: string) => `project_${projectId}`,
-    custom: (prefix: string, ...params: string[]) => `${prefix}_${params.join('_')}`
 }
-

@@ -8,22 +8,20 @@
     "theme_color": "#ffffff",
     "icons": [
         {
-            "src": "/icon-192x192.png",
-            "sizes": "192x192",
+            "src": "/Logo.png",
+            "sizes": "800x800",
             "type": "image/png",
-            "purpose": "any maskable"
-        },
-        {
-            "src": "/icon-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
         }
     ],
     "orientation": "portrait",
     "lang": "pt-BR",
     "dir": "ltr",
-    "categories": ["portfolio", "development", "technology"],
+    "categories": [
+        "portfolio",
+        "development",
+        "technology"
+    ],
     "shortcuts": [
         {
             "name": "Projetos",
@@ -36,4 +34,4 @@
             "description": "Ler meus artigos"
         }
     ]
-} 
+}

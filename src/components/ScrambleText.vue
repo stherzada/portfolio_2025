@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, onUnmounted } from 'vue'
+import { useReducedMotion } from '../composables/useReducedMotion'
 
 interface Props {
     text: string
@@ -20,6 +21,8 @@ const scrambledText = ref('')
 const isHovering = ref(false)
 const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 let interval: number | null = null
+let delayTimeout: number | null = null
+const prefersReducedMotion = useReducedMotion()
 
 const getRandomLetter = (originalLetter: string) => {
     if (props.preserveCase) {
@@ -31,13 +34,14 @@ const getRandomLetter = (originalLetter: string) => {
 }
 
 const startScramble = () => {
+    if (prefersReducedMotion.value) return
     isHovering.value = true
     let iteration = 0
     const originalText = props.text
 
     clearInterval(interval as number)
 
-    interval = setInterval(() => {
+    interval = window.setInterval(() => {
         scrambledText.value = originalText
             .split('')
             .map((letter, index) => {
@@ -60,6 +64,7 @@ const startScramble = () => {
 
 onUnmounted(() => {
     if (interval) clearInterval(interval)
+    if (delayTimeout) clearTimeout(delayTimeout)
 })
 
 watch(() => props.text, (newText) => {
@@ -70,14 +75,16 @@ watch(() => props.text, (newText) => {
 onMounted(() => {
     scrambledText.value = props.text
     if (props.delay > 0) {
-        setTimeout(startScramble, props.delay)
+        delayTimeout = window.setTimeout(startScramble, props.delay)
     }
 })
 </script>
 
 <template>
+    <!-- Screen readers get the real text; the scrambling span is visual only. -->
     <span class="text-primary inline-block cursor-pointer select-none transition-colors duration-300"
         :class="{ 'hover:text-primary': !isHovering }" @mouseenter="startScramble">
-        {{ scrambledText }}
+        <span class="sr-only">{{ text }}</span>
+        <span aria-hidden="true">{{ scrambledText }}</span>
     </span>
 </template>

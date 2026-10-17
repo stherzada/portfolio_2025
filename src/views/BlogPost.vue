@@ -2,16 +2,19 @@
 import store from '../store'
 import { useRoute } from 'vue-router'
 import type { Post } from '../types'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { fetchPostBySlug } from '../services/blog'
 import { useI18n } from 'vue-i18n'
 import { formatDateWithI18n } from '../utils/dateFormat'
 import { formatReadingTime } from '../utils/readingTime'
 import { Clock, Calendar, RotateCcw } from 'lucide-vue-next'
 import DOMPurify from 'dompurify'
+import { useMeta } from '../composables/useMeta'
+import { SITE_URL, DEFAULT_OG_IMAGE } from '../config'
 
 const route = useRoute()
 const { t, locale } = useI18n()
+const { setMeta, setNoIndex } = useMeta()
 const post = ref<Post | null>(null)
 const error = ref<string | null>(null)
 const loading = ref(false)
@@ -20,22 +23,44 @@ const sanitizedContent = computed(() =>
   post.value?.content ? DOMPurify.sanitize(post.value.content) : ''
 )
 
+const applyPostMeta = (data: Post) => {
+  const title = `${data.title} - Sthefany Sther`
+  const description = data.description || 'Leia mais sobre este post no blog da Sthefany Sther'
+  const canonical = `${SITE_URL}/blog/${data.slug}`
+  const image = data.image_path || DEFAULT_OG_IMAGE
+
+  setMeta({
+    title,
+    description,
+    canonical,
+    ogType: 'article',
+    ogTitle: title,
+    ogDescription: description,
+    ogImage: image,
+    ogUrl: canonical,
+    twitterTitle: title,
+    twitterDescription: description,
+    twitterImage: image,
+  })
+}
 
 const fetchPost = async (slug: string) => {
   try {
     loading.value = true
     error.value = null
+    post.value = null
 
-    if (store.posts.length > 0) {
-      const found = store.posts.find((post: Post) => post.slug === slug)
-      if (found) {
-        post.value = found
-        return found
-      }
-    }
+    const data = store.posts.find((p: Post) => p.slug === slug) ?? await fetchPostBySlug(slug)
+    // Ignore a stale response if the user already navigated to another post.
+    if (route.params.slug !== slug) return
 
-    const data = await fetchPostBySlug(slug)
     post.value = data
+    if (data) {
+      applyPostMeta(data)
+    } else {
+      document.title = `${t('blog.postNotFound')} - Sthefany Sther`
+      setNoIndex(true)
+    }
   } catch (err) {
     console.error('Error fetching post:', err)
     error.value = t('blog.errorLoading')
@@ -44,11 +69,10 @@ const fetchPost = async (slug: string) => {
   }
 }
 
-onMounted(() => {
-  if (!post.value) {
-    fetchPost(route.params.slug as string)
-  }
-})
+// immediate: also covers /blog/a -> /blog/b, where the component is reused.
+watch(() => route.params.slug, (slug) => {
+  if (typeof slug === 'string') fetchPost(slug)
+}, { immediate: true })
 
 </script>
 

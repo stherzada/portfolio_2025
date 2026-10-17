@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="apple-touch-icon" href="/Logo.png">
+  <link rel="manifest" href="/manifest.json">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sthefany Sther - Software Engineer</title>
 
@@ -13,17 +14,31 @@
   <meta name="author" content="Sthefany Sther">
   <meta name="keywords"
     content="desenvolvimento de software, gestão de projetos, análise de dados, portfolio, tecnologia">
-  <link rel="canonical" href="https://stherzada.com">
+  <link rel="canonical" href="https://stherzada.com/">
+
+  <!-- Defaults for link unfurlers that don't run JS (WhatsApp, LinkedIn, Slack).
+       /blog/:slug gets per-post values injected by api/blog-meta.ts. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sthefany Sther">
+  <meta property="og:title" content="Sthefany Sther - Software Engineer">
+  <meta property="og:description"
+    content="Portfolio de Sthefany Sther, Desenvolvedora de Software que curte gestão e análise de dados. Conheça meus projetos e experiências em tecnologia.">
+  <meta property="og:image" content="https://stherzada.com/Logo.png">
+  <meta property="og:url" content="https://stherzada.com/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@stherzada">
+  <meta name="twitter:title" content="Sthefany Sther - Software Engineer">
+  <meta name="twitter:description"
+    content="Portfolio de Sthefany Sther, Desenvolvedora de Software que curte gestão e análise de dados. Conheça meus projetos e experiências em tecnologia.">
+  <meta name="twitter:image" content="https://stherzada.com/Logo.png">
 
   <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/ibm-plex-mono-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/src/style.css" as="style">
-  <link rel="stylesheet" href="/src/style.css">
-  <link rel="modulepreload" href="/src/main.ts">
 
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)">
 
+  <script src="/theme-init.js"></script>
   <script type="module" src="/src/main.ts" async></script>
 
 </head>

@@ -5,7 +5,7 @@ import {
   Bold, Italic, Heading2, Heading3, List, ListOrdered,
   Quote, Minus, Image as ImageIcon, Loader2
 } from 'lucide-vue-next'
-import { uploadImage } from '@/services/admin'
+import { uploadImage, IMAGE_ACCEPT } from '@/services/admin'
 
 const props = defineProps<{ editor: Editor | undefined }>()
 
@@ -21,6 +21,7 @@ const handleImageUpload = async (event: Event) => {
     props.editor.chain().focus().setImage({ src: url }).run()
   } catch (err) {
     console.error('Image upload failed:', err)
+    window.alert(err instanceof Error ? err.message : 'Falha ao enviar a imagem.')
   } finally {
     isUploading.value = false
     if (fileInputRef.value) fileInputRef.value.value = ''
@@ -119,7 +120,7 @@ const activeBtn = 'bg-[var(--color-base-300)]'
     <input
       ref="fileInputRef"
       type="file"
-      accept="image/*"
+      :accept="IMAGE_ACCEPT"
       class="hidden"
       @change="handleImageUpload"
     />

@@ -9,7 +9,6 @@ import { clearSavedScrollPosition } from '../composables/useScrollPosition'
 const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
-const isInitialized = ref(false)
 
 const isBlogPage = computed(() => route.path === '/blog')
 const isBlogPostPage = computed(() => route.path.startsWith('/blog/') && route.path !== '/blog')
@@ -27,9 +26,12 @@ const navigateToBlog = () => {
 }
 
 const setLanguage = (lang: 'en' | 'pt') => {
-  if (!isInitialized.value) return
   locale.value = lang
-  localStorage.setItem('language', lang)
+  try {
+    localStorage.setItem('language', lang)
+  } catch {
+    // Storage blocked: the choice still applies for this visit.
+  }
 }
 
 const showScrollTop = ref(false)
@@ -86,20 +88,23 @@ const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-onMounted(() => {
-  const savedLanguage = localStorage.getItem('language')
-  locale.value = savedLanguage ? (savedLanguage as 'en' | 'pt') : 'en'
+const isMenuOpen = ref(false)
+const hasMobileMenu = computed(() => !isBlogPostPage.value && !isBlogPage.value)
 
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && isMenuOpen.value) isMenuOpen.value = false
+}
+
+onMounted(() => {
   window.addEventListener('scroll', updateScrollState, { passive: true })
+  window.addEventListener('keydown', handleKeydown)
   updateScrollState()
-  isInitialized.value = true
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', updateScrollState)
+  window.removeEventListener('keydown', handleKeydown)
 })
-
-const isMenuOpen = ref(false)
 
 const scrollToSection = (id: string) => {
   isMenuOpen.value = false
@@ -115,14 +120,16 @@ const scrollToSection = (id: string) => {
 
 
 <template>
-  <div v-show="isInitialized" class="fixed top-0 inset-x-0 z-50 flex justify-center px-3 pt-3 md:pt-4 pointer-events-none">
+  <div class="fixed top-0 inset-x-0 z-50 flex justify-center px-3 pt-3 md:pt-4 pointer-events-none">
     <nav
       class="nav-pill pointer-events-auto flex items-center gap-1 rounded-full border backdrop-blur-xl transition-all duration-500 ease-out"
       :class="isScrolled ? 'px-2 py-1.5 gap-1 shadow-lg' : 'px-3 py-2 gap-2 shadow-sm'">
       <button
         @click="isBlogPostPage ? navigateToBlog() : isBlogPage ? navigateToHome() : (isMenuOpen = !isMenuOpen)"
         class="text-primary flex items-center justify-center rounded-full w-9 h-9 shrink-0 lg:hidden"
-        :aria-label="isBlogPostPage ? 'Voltar ao blog' : isBlogPage ? 'Ir para home' : 'Toggle menu'">
+        :aria-label="isBlogPostPage ? t('nav.backToBlog') : isBlogPage ? t('nav.home') : t('nav.menu')"
+        :aria-expanded="hasMobileMenu ? isMenuOpen : undefined"
+        :aria-controls="hasMobileMenu ? 'mobile-menu' : undefined">
         <ArrowLeft v-if="isBlogPostPage" class="h-5 w-5" aria-hidden="true" />
         <Home v-else-if="isBlogPage" class="h-5 w-5" aria-hidden="true" />
         <Menu v-else-if="!isMenuOpen" class="h-5 w-5" aria-hidden="true" />
@@ -134,23 +141,24 @@ const scrollToSection = (id: string) => {
         <template v-if="isBlogPostPage">
           <button @click="navigateToBlog"
             class="nav-link flex items-center gap-1.5 font-mono text-xs tracking-wider uppercase px-3 py-1.5 rounded-full cursor-pointer text-primary">
-            <ArrowLeft class="h-3.5 w-3.5" />
+            <ArrowLeft class="h-3.5 w-3.5" aria-hidden="true" />
             {{ t('nav.writing') }}
           </button>
         </template>
         <template v-else-if="isBlogPage">
-          <a @click="navigateToHome"
+          <router-link to="/" @click="clearSavedScrollPosition"
             class="nav-link flex items-center gap-1.5 font-mono text-xs tracking-wider uppercase px-3 py-1.5 rounded-full cursor-pointer text-primary">
             {{ t('nav.home') }}
-          </a>
+          </router-link>
         </template>
         <template v-else>
-          <a v-for="section in sections" :key="section.id" @click="scrollToSection(section.id)"
+          <button v-for="section in sections" :key="section.id" type="button" @click="scrollToSection(section.id)"
+            :aria-current="activeSection === section.id ? 'location' : undefined"
             class="nav-link flex items-center gap-1.5 font-mono text-xs tracking-wider uppercase px-3 py-1.5 rounded-full cursor-pointer text-primary">
             <span class="nav-dot rounded-full transition-all duration-300"
-              :class="activeSection === section.id ? 'nav-dot-active' : ''" />
+              :class="activeSection === section.id ? 'nav-dot-active' : ''" aria-hidden="true" />
             {{ t(section.label) }}
-          </a>
+          </button>
         </template>
       </div>
 
@@ -160,12 +168,14 @@ const scrollToSection = (id: string) => {
         <template v-if="!isMenuOpen">
           <div class="hidden sm:flex items-center gap-1 font-mono text-xs">
             <button @click="setLanguage('pt')" class="px-1.5 py-1 rounded-full cursor-pointer transition-opacity"
-              :class="locale === 'pt' ? 'text-primary opacity-100 font-semibold' : 'text-primary opacity-40 hover:opacity-70'">
+              lang="pt-BR" aria-label="Português" :aria-pressed="locale === 'pt'"
+              :class="locale === 'pt' ? 'text-primary opacity-100 font-semibold' : 'text-primary opacity-60 hover:opacity-80'">
               PT
             </button>
-            <span class="opacity-30 text-primary">/</span>
+            <span class="opacity-30 text-primary" aria-hidden="true">/</span>
             <button @click="setLanguage('en')" class="px-1.5 py-1 rounded-full cursor-pointer transition-opacity"
-              :class="locale === 'en' ? 'text-primary opacity-100 font-semibold' : 'text-primary opacity-40 hover:opacity-70'">
+              lang="en" aria-label="English" :aria-pressed="locale === 'en'"
+              :class="locale === 'en' ? 'text-primary opacity-100 font-semibold' : 'text-primary opacity-60 hover:opacity-80'">
               EN
             </button>
           </div>
@@ -178,34 +188,38 @@ const scrollToSection = (id: string) => {
     </nav>
   </div>
 
-  <div v-if="isMenuOpen && !isBlogPostPage && !isBlogPage" class="fixed inset-0 z-40 lg:hidden bg-black/20 backdrop-blur-sm"
+  <div v-if="isMenuOpen && hasMobileMenu" class="fixed inset-0 z-40 lg:hidden bg-black/20 backdrop-blur-sm"
     @click="isMenuOpen = false" />
-  <div v-if="!isBlogPostPage && !isBlogPage" :class="[
+  <!-- inert while closed: it's only translated off-screen, so its controls would still be tabbable. -->
+  <div v-if="hasMobileMenu" id="mobile-menu" :inert="!isMenuOpen" :aria-hidden="!isMenuOpen" :class="[
     'mobile-menu text-primary fixed top-0 right-0 h-full w-72 shadow-2xl transform transition-transform duration-500 ease-out z-50 lg:hidden border-l',
     isMenuOpen ? 'translate-x-0' : 'translate-x-full'
   ]">
     <div class="flex flex-col gap-2 p-6 pt-24">
-      <a v-for="section in sections" :key="section.id" @click="scrollToSection(section.id)"
-        class="flex items-center gap-3 cursor-pointer group py-2">
+      <button v-for="section in sections" :key="section.id" type="button" @click="scrollToSection(section.id)"
+        :aria-current="activeSection === section.id ? 'location' : undefined"
+        class="flex items-center gap-3 cursor-pointer group py-2 text-left">
         <span class="nav-dot rounded-full transition-all duration-300 shrink-0"
-          :class="activeSection === section.id ? 'nav-dot-active' : ''" />
+          :class="activeSection === section.id ? 'nav-dot-active' : ''" aria-hidden="true" />
         <span class="font-mono text-2xl tracking-tight">{{ t(section.label) }}</span>
-      </a>
+      </button>
 
       <div class="mt-8 pt-6 card-divider flex items-center gap-4 font-mono text-sm">
         <button @click="setLanguage('pt')" class="cursor-pointer transition-opacity"
-          :class="locale === 'pt' ? 'opacity-100 font-semibold' : 'opacity-40'">PT</button>
-        <span class="opacity-30">/</span>
+          lang="pt-BR" aria-label="Português" :aria-pressed="locale === 'pt'"
+          :class="locale === 'pt' ? 'opacity-100 font-semibold' : 'opacity-60'">PT</button>
+        <span class="opacity-30" aria-hidden="true">/</span>
         <button @click="setLanguage('en')" class="cursor-pointer transition-opacity"
-          :class="locale === 'en' ? 'opacity-100 font-semibold' : 'opacity-40'">EN</button>
+          lang="en" aria-label="English" :aria-pressed="locale === 'en'"
+          :class="locale === 'en' ? 'opacity-100 font-semibold' : 'opacity-60'">EN</button>
       </div>
     </div>
   </div>
 
   <button v-show="showScrollTop" @click="scrollToTop"
     class="text-primary scroll-top-button fixed bottom-6 right-6 w-10 h-10 flex items-center justify-center rounded-full shadow-lg transition-all duration-300 opacity-70 hover:opacity-100 z-50 cursor-pointer"
-    aria-label="Voltar ao topo">
-    <ChevronUp class="h-5 w-5" />
+    :aria-label="t('nav.backToTop')">
+    <ChevronUp class="h-5 w-5" aria-hidden="true" />
   </button>
 </template>
 

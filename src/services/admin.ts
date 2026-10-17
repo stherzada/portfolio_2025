@@ -35,8 +35,19 @@ export const deletePost = async (id: string): Promise<void> => {
   if (error) throw error
 }
 
+// Raster formats only: SVG can carry scripts and is served from a public bucket.
+export const ALLOWED_IMAGE_TYPES: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/gif': 'gif',
+  'image/avif': 'avif',
+}
+export const IMAGE_ACCEPT = Object.keys(ALLOWED_IMAGE_TYPES).join(',')
+
 export const uploadImage = async (file: File): Promise<string> => {
-  const ext = file.name.split('.').pop() ?? 'jpg'
+  const ext = ALLOWED_IMAGE_TYPES[file.type]
+  if (!ext) throw new Error('Formato de imagem não suportado (use JPG, PNG, WebP, GIF ou AVIF).')
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
 
   const { error } = await supabase.storage

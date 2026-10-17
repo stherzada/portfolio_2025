@@ -29,7 +29,19 @@ export function useMeta() {
     }
   }
 
+  // Tells crawlers not to index soft-404s (unknown slug / catch-all route).
+  const setNoIndex = (noindex: boolean) => {
+    const existing = document.querySelector('meta[name="robots"]')
+    if (noindex && !existing) {
+      updateMetaTag('robots', 'noindex')
+    } else if (!noindex && existing) {
+      existing.remove()
+    }
+  }
+
   const setMeta = (metaData: MetaData) => {
+    setNoIndex(false)
+
     if (metaData.title) {
       updateTitle(metaData.title)
     }
@@ -57,6 +69,7 @@ export function useMeta() {
       updateMetaTag('og:url', metaData.ogUrl, 'property')
     }
 
+    updateMetaTag('twitter:card', metaData.ogImage ? 'summary_large_image' : 'summary')
     if (metaData.twitterTitle) {
       updateMetaTag('twitter:title', metaData.twitterTitle)
     }
@@ -70,6 +83,7 @@ export function useMeta() {
 
   return {
     setMeta,
+    setNoIndex,
     updateTitle,
     updateMetaTag,
     updateCanonical

@@ -1,99 +1,64 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { fetchPostBySlug } from "@/services/blog";
 import { useMeta } from "@/composables/useMeta";
 import { useAuth } from "@/composables/useAuth";
 import supabase from "@/supabase";
+import { SITE_URL, DEFAULT_OG_IMAGE } from "@/config";
+
+const pageMeta = (title: string, description: string, path: string) => {
+  const canonical = `${SITE_URL}${path}`;
+  useMeta().setMeta({
+    title,
+    description,
+    canonical,
+    ogType: "website",
+    ogTitle: title,
+    ogDescription: description,
+    ogImage: DEFAULT_OG_IMAGE,
+    ogUrl: canonical,
+    twitterTitle: title,
+    twitterDescription: description,
+    twitterImage: DEFAULT_OG_IMAGE,
+  });
+};
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, _from, savedPosition) {
+    if (savedPosition) return savedPosition;
+    if (to.hash) return { el: to.hash, behavior: "smooth" };
+    return { top: 0 };
+  },
   routes: [
     {
       path: "/",
       name: "Home",
       component: () => import("@/views/Home.vue"),
-      beforeEnter: (_to, _from, next) => {
-        const { setMeta } = useMeta();
-        const origin = window.location.origin;
-        const description =
-          "Portfolio de Sthefany Sther, Desenvolvedora de Software que curte gestão e análise de dados. Conheça meus projetos e experiências em tecnologia.";
-        const image = `${origin}/Logo.png`;
-
-        setMeta({
-          title: "Sthefany Sther - Software Engineer",
-          description,
-          canonical: origin,
-          ogType: "website",
-          ogTitle: "Sthefany Sther - Software Engineer",
-          ogDescription: description,
-          ogImage: image,
-          ogUrl: origin,
-          twitterTitle: "Sthefany Sther - Software Engineer",
-          twitterDescription: description,
-          twitterImage: image,
-        });
-        next();
+      beforeEnter: () => {
+        pageMeta(
+          "Sthefany Sther - Software Engineer",
+          "Portfolio de Sthefany Sther, Desenvolvedora de Software que curte gestão e análise de dados. Conheça meus projetos e experiências em tecnologia.",
+          "/"
+        );
       },
     },
     {
       path: "/blog",
       name: "Blog",
       component: () => import("@/views/Blog.vue"),
-      beforeEnter: (_to, _from, next) => {
-        const { setMeta } = useMeta();
-        const origin = window.location.origin;
-        const canonical = `${origin}/blog`;
-        const description =
-          "Aqui você pode encontrar meus pensamentos e ideias sobre tecnologia, programação e outros tópicos.";
-        const image = `${origin}/Logo.png`;
-
-        setMeta({
-          title: "Blog - Sthefany Sther",
-          description,
-          canonical,
-          ogType: "website",
-          ogTitle: "Blog - Sthefany Sther",
-          ogDescription: description,
-          ogImage: image,
-          ogUrl: canonical,
-          twitterTitle: "Blog - Sthefany Sther",
-          twitterDescription: description,
-          twitterImage: image,
-        });
-        next();
+      beforeEnter: () => {
+        pageMeta(
+          "Blog - Sthefany Sther",
+          "Aqui você pode encontrar meus pensamentos e ideias sobre tecnologia, programação e outros tópicos.",
+          "/blog"
+        );
       },
     },
     {
+      // Post meta is set by BlogPost.vue once the post loads; the server
+      // already injected it for crawlers (api/blog-meta.ts).
       path: "/blog/:slug",
       name: "BlogPost",
       component: () => import("@/views/BlogPost.vue"),
-      beforeEnter: async (to, _from, next) => {
-          const slug = to.params.slug as string;
-          const postData = await fetchPostBySlug(slug);
-          const { setMeta } = useMeta();
-          const origin = window.location.origin;
-          const title = `${postData.title} - Sthefany Sther`;
-          const description =
-            postData.description ||
-            "Leia mais sobre este post no blog da Sthefany Sther";
-          const canonical = `${origin}/blog/${postData.slug}`;
-          const image = postData.image_path || `${origin}/Logo.png`;
-
-          setMeta({
-            title,
-            description,
-            canonical,
-            ogType: "article",
-            ogTitle: title,
-            ogDescription: description,
-            ogImage: image,
-            ogUrl: canonical,
-            twitterTitle: title,
-            twitterDescription: description,
-            twitterImage: image,
-          });
-          to.meta.postData = postData;
-          next();
-      },
     },
     {
       path: "/admin/login",

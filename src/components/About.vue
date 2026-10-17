@@ -36,9 +36,9 @@ const scrollToNext = () => {
 </script>
 
 <template>
-    <section id="about" class="relative flex items-center justify-center min-h-[calc(100vh-6rem)] py-16 overflow-hidden">
+    <section id="about" class="relative flex items-center justify-center min-h-[calc(100svh-6rem)] py-16 overflow-hidden">
         <ParticleField v-if="showParticleField" />
-        <div class="relative z-10 md:mx-8 m-6 md:mx-4 md:max-w-4xl w-full">
+        <div class="relative z-10 m-6 md:mx-8 md:max-w-4xl w-full">
             <div class="flex flex-col lg:flex-row items-center gap-12">
                 <div class="flex-1 text-center lg:text-left order-2 lg:order-1" v-reveal>
                     <h1 class="font-mono font-semibold text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight mb-4 text-primary">
@@ -55,7 +55,7 @@ const scrollToNext = () => {
                 <div class="flex flex-col items-center gap-5 order-1 lg:order-2" v-reveal="{ delay: 0.15 }">
                     <div class="relative w-56 h-56 lg:w-72 lg:h-72 rounded-3xl overflow-hidden group">
                         <AnimatedCircle />
-                        <img src="/src/assets/photo-no-bg.png" alt="Sthefany Sther"
+                        <img src="/src/assets/photo-no-bg.png" alt="Sthefany Sther" fetchpriority="high" width="288" height="288"
                             class="w-full h-full object-cover transition-all duration-300 ease-in-out filter grayscale hover:grayscale-0 lg:grayscale lg:hover:grayscale-0 relative z-20" />
                     </div>
                     <SpotifyNowPlaying />

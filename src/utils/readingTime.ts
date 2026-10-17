@@ -32,29 +32,3 @@ export const formatReadingTime = (text: string, wordsPerMinute: number = 200): s
   if (minutes === 1) return '1 min'
   return `${minutes} min`
 }
-
-/**
- * Configurações de velocidade de leitura por idioma
- */
-export const READING_SPEEDS = {
-  portuguese: 200,
-  english: 250,
-  spanish: 200,
-  french: 200,
-  german: 200,
-  italian: 200
-} as const
-
-/**
- * Calcula o tempo de leitura com configuração de idioma
- * @param text - Texto para calcular o tempo
- * @param language - Idioma para determinar a velocidade de leitura
- * @returns Tempo de leitura em minutos
- */
-export const getReadingTimeByLanguage = (
-  text: string, 
-  language: keyof typeof READING_SPEEDS = 'portuguese'
-): number => {
-  const wordsPerMinute = READING_SPEEDS[language]
-  return getReadingTime(text, wordsPerMinute)
-}

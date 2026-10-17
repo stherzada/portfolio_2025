@@ -21,22 +21,34 @@ const page = ref(1)
 const PAGE_SIZE = 20
 const totalPages = computed(() => Math.ceil(total.value / PAGE_SIZE))
 const loading = ref(true)
+const errorMessage = ref<string | null>(null)
 const showSavedToast = ref(route.query.saved === '1')
 
 let toastTimer: ReturnType<typeof setTimeout> | null = null
 
 const loadPosts = async () => {
   loading.value = true
-  const result = await fetchPostsAll(page.value, PAGE_SIZE)
-  posts.value = result.posts
-  total.value = result.total ?? 0
-  if (posts.value.length === 0 && page.value > 1) page.value--
-  loading.value = false
+  errorMessage.value = null
+  try {
+    const result = await fetchPostsAll(page.value, PAGE_SIZE)
+    posts.value = result.posts
+    total.value = result.total ?? 0
+    if (posts.value.length === 0 && page.value > 1) page.value--
+  } catch {
+    errorMessage.value = 'Não foi possível carregar os posts.'
+  } finally {
+    loading.value = false
+  }
 }
 
 const handleDelete = async (id: string, title: string) => {
   if (!window.confirm(`Excluir "${title}"?`)) return
-  await deletePost(id)
+  try {
+    await deletePost(id)
+  } catch {
+    errorMessage.value = `Não foi possível excluir "${title}".`
+    return
+  }
   store.posts = []
   await loadPosts()
 }
@@ -104,8 +116,14 @@ onUnmounted(() => {
       Post salvo com sucesso!
     </div>
 
+    <div v-if="errorMessage" role="alert"
+      class="mb-6 px-4 py-3 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 rounded-lg text-sm font-medium flex items-center justify-between gap-4">
+      {{ errorMessage }}
+      <button @click="loadPosts" class="underline cursor-pointer">Tentar novamente</button>
+    </div>
+
     <div v-if="loading" class="text-center py-16 text-[var(--color-base-content-secondary)]">
-      {{ t('blog.loading') }}
+      {{ t('blog.loadingPosts') }}
     </div>
 
     <div v-else-if="posts.length === 0" class="text-center py-16 text-[var(--color-base-content-secondary)]">
@@ -131,16 +149,18 @@ onUnmounted(() => {
             class="p-2 rounded-lg hover:bg-[var(--color-base-200)] transition-colors
                    text-primary cursor-pointer"
             title="Editar"
+            :aria-label="`Editar ${post.title}`"
           >
-            <PenLine class="w-4 h-4" />
+            <PenLine class="w-4 h-4" aria-hidden="true" />
           </router-link>
           <button
             @click="handleDelete(post.id, post.title)"
             class="p-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30
                    text-red-500 transition-colors cursor-pointer"
             title="Excluir"
+            :aria-label="`Excluir ${post.title}`"
           >
-            <Trash2 class="w-4 h-4" />
+            <Trash2 class="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
       </div>

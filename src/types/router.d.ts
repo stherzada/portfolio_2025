@@ -1,8 +1,8 @@
-import type { Post } from './index'
+export {}
+
 
 declare module 'vue-router' {
   interface RouteMeta {
     requiresAuth?: boolean
-    postData?: Post
   }
 }

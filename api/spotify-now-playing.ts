@@ -43,6 +43,7 @@ async function getAccessToken(): Promise<string | null> {
 
   const response = await fetch(TOKEN_URL, {
     method: 'POST',
+    signal: AbortSignal.timeout(5000),
     headers: {
       Authorization: `Basic ${basicAuth}`,
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -64,6 +65,7 @@ async function getAccessToken(): Promise<string | null> {
 
 async function getNowPlaying(accessToken: string): Promise<NowPlayingPayload> {
   const response = await fetch(NOW_PLAYING_URL, {
+    signal: AbortSignal.timeout(5000),
     headers: { Authorization: `Bearer ${accessToken}` },
   })
 

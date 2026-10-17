@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* `dark:` utilities follow the .dark class set by the theme toggle, not the OS. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Inter Variable — body/UI workhorse. Split latin / latin-ext so accented
    PT-BR characters (ã, ç, õ...) load from the same variable-weight file. */
 @font-face {
@@ -177,14 +180,6 @@ body {
   --color-base-200: var(--color-base-200-dark);
   --color-base-300: var(--color-base-300-dark);
   --color-base-content: var(--color-base-content-dark);
-  --color-neutral: var(--color-neutral-dark);
-  --color-neutral-dark: var(--color-neutral-dark);
-  --color-neutral-light: var(--color-neutral-light);
-  --color-neutral-medium: var(--color-neutral-medium);
-  --color-neutral-dark: var(--color-neutral-dark);
-  --color-neutral-light: var(--color-neutral-light);
-  --color-neutral-medium: var(--color-neutral-medium);
-  --color-neutral-dark: var(--color-neutral-dark);
 
   --shadow-primary: var(--shadow-primary-dark);
   --shadow-accent: var(--shadow-accent-dark);
@@ -392,30 +387,14 @@ article {
   }
 }
 
-.animate-fade-in {
-  opacity: 0;
-  animation: fadeIn 0.5s ease-in-out forwards;
-}
-
-article {
-  opacity: 0;
-  animation: fadeIn 0.5s ease-in-out forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 html {
   scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 :focus {
@@ -423,13 +402,11 @@ html {
   outline-offset: 2px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-
-  .animate-fade-in,
-  article {
-    animation: none;
-    opacity: 1;
-  }
+/* Keyboard users need to see where focus is (WCAG 2.4.7). */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .group:hover img {

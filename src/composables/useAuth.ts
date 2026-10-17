@@ -1,13 +1,8 @@
-import { ref, readonly } from 'vue'
 import supabase from '@/supabase'
-import type { User } from '@supabase/supabase-js'
-import store from '@/store'
 
-const _user = ref<User | null>(null)
-const _isAuthenticated = ref(false)
-const _isAdmin = ref(false)
-let _initialized = false
-
+// Auth state isn't mirrored into the app: the router guard asks Supabase
+// directly (getSession + is_admin RPC) on admin routes, so public pages
+// don't wait on auth before mounting.
 const checkIsAdmin = async (): Promise<boolean> => {
   const { data, error } = await supabase.rpc('is_admin')
   if (error) return false
@@ -15,28 +10,6 @@ const checkIsAdmin = async (): Promise<boolean> => {
 }
 
 export function useAuth() {
-  const initAuth = async () => {
-    if (_initialized) return
-    _initialized = true
-
-    const { data: { session } } = await supabase.auth.getSession()
-    _user.value = session?.user ?? null
-    _isAuthenticated.value = !!session
-    _isAdmin.value = session ? await checkIsAdmin() : false
-    store.currentUser = session?.user ?? null
-    store.isAuthenticated = !!session
-    store.isAdmin = _isAdmin.value
-
-    supabase.auth.onAuthStateChange(async (_event, session) => {
-      _user.value = session?.user ?? null
-      _isAuthenticated.value = !!session
-      _isAdmin.value = session ? await checkIsAdmin() : false
-      store.currentUser = session?.user ?? null
-      store.isAuthenticated = !!session
-      store.isAdmin = _isAdmin.value
-    })
-  }
-
   const signIn = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
@@ -47,8 +20,6 @@ export function useAuth() {
       throw new Error('Esta conta não tem permissão de administrador.')
     }
 
-    _isAdmin.value = true
-    store.isAdmin = true
     return data
   }
 
@@ -63,13 +34,9 @@ export function useAuth() {
   }
 
   return {
-    user: readonly(_user),
-    isAuthenticated: readonly(_isAuthenticated),
-    isAdmin: readonly(_isAdmin),
     signIn,
     signOut,
     getSession,
     checkIsAdmin,
-    initAuth,
   }
 }

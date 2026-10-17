@@ -14,6 +14,8 @@ let pollId: ReturnType<typeof setInterval> | undefined
 let subscriberCount = 0
 
 async function fetchTwitchLiveStatus() {
+  // Don't poll from background tabs.
+  if (document.hidden) return
   try {
     const response = await fetch('/api/twitch-live-status')
     if (!response.ok) throw new Error(`Unexpected status ${response.status}`)

@@ -9,7 +9,7 @@ import { ArrowLeft, ImagePlus } from 'lucide-vue-next'
 import EditorToolbar from '@/components/admin/EditorToolbar.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import { fetchPostById } from '@/services/blog'
-import { createPost, updatePost, uploadImage, type PostInput } from '@/services/admin'
+import { createPost, updatePost, uploadImage, IMAGE_ACCEPT, type PostInput } from '@/services/admin'
 import { slugify } from '@/utils/slugify'
 import store from '@/store'
 
@@ -69,7 +69,13 @@ const handleCoverImageChange = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (!file) return
   coverImageFile.value = file
+  revokePreview()
   coverImagePreview.value = URL.createObjectURL(file)
+}
+
+// Object URLs keep the file in memory until revoked.
+const revokePreview = () => {
+  if (coverImagePreview.value?.startsWith('blob:')) URL.revokeObjectURL(coverImagePreview.value)
 }
 
 const loadPost = async (id: string) => {
@@ -142,6 +148,7 @@ const handleSubmit = async () => {
 
 onUnmounted(() => {
   editor.value?.destroy()
+  revokePreview()
 })
 </script>
 
@@ -182,8 +189,9 @@ onUnmounted(() => {
     <div v-else class="max-w-5xl mx-auto px-6 py-8 flex flex-col lg:flex-row gap-8">
       <aside class="lg:w-72 shrink-0 flex flex-col gap-4">
         <div>
-          <label class="block text-sm font-medium text-primary mb-1">Título</label>
+          <label for="post-title" class="block text-sm font-medium text-primary mb-1">Título</label>
           <input
+            id="post-title"
             v-model="form.title"
             type="text"
             placeholder="Título do post"
@@ -194,8 +202,9 @@ onUnmounted(() => {
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-primary mb-1">Slug</label>
+          <label for="post-slug" class="block text-sm font-medium text-primary mb-1">Slug</label>
           <input
+            id="post-slug"
             v-model="form.slug"
             type="text"
             placeholder="meu-post"
@@ -210,8 +219,9 @@ onUnmounted(() => {
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-primary mb-1">Descrição</label>
+          <label for="post-description" class="block text-sm font-medium text-primary mb-1">Descrição</label>
           <textarea
+            id="post-description"
             v-model="form.description"
             rows="3"
             placeholder="Resumo do post..."
@@ -222,9 +232,11 @@ onUnmounted(() => {
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-primary mb-2">Imagem de capa</label>
-          <div
-            class="relative rounded-lg border-2 border-dashed border-[var(--color-base-300)]
+          <span id="post-cover-label" class="block text-sm font-medium text-primary mb-2">Imagem de capa</span>
+          <button
+            type="button"
+            aria-labelledby="post-cover-label"
+            class="relative block w-full rounded-lg border-2 border-dashed border-[var(--color-base-300)]
                    overflow-hidden cursor-pointer hover:border-primary transition-colors"
             @click="($refs.coverInput as HTMLInputElement)?.click()"
           >
@@ -242,11 +254,11 @@ onUnmounted(() => {
               <ImagePlus class="w-8 h-8" />
               <span class="text-sm">Clique para enviar</span>
             </div>
-          </div>
+          </button>
           <input
             ref="coverInput"
             type="file"
-            accept="image/*"
+            :accept="IMAGE_ACCEPT"
             class="hidden"
             @change="handleCoverImageChange"
           />

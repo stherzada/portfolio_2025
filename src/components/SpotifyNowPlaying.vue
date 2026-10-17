@@ -17,6 +17,8 @@ const prefersReducedMotion = useReducedMotion()
 let pollId: ReturnType<typeof setInterval> | undefined
 
 async function fetchNowPlaying() {
+    // Don't poll from background tabs.
+    if (document.hidden) return
     try {
         const response = await fetch('/api/spotify-now-playing')
         if (!response.ok) throw new Error(`Unexpected status ${response.status}`)

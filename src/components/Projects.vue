@@ -40,12 +40,16 @@ const fetchWithRetry = useLocalStorageCache<Repository[]>(
 )
 
 const fetchReposWithRetry = async () => {
-        isLoading.value = true
-        error.value = null
-        const repos = await fetchWithRetry.fetchWithRetry()
-        pinnedRepos.value = repos
+    isLoading.value = true
+    error.value = null
+    try {
+        pinnedRepos.value = await fetchWithRetry.fetchWithRetry()
+    } catch (err) {
+        console.error('Error fetching repositories:', err)
+        error.value = t('projects.errorLoading')
+    } finally {
         isLoading.value = false
-
+    }
 }
 
 onMounted(() => {
@@ -55,7 +59,7 @@ onMounted(() => {
 
 <template>
     <section id="projects" class="flex items-center justify-center py-16 scroll-mt-24">
-        <div class="md:mx-8 m-6 md:mx-4 md:max-w-4xl w-full">
+        <div class="m-6 md:mx-8 md:max-w-4xl w-full">
             <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
                 <div>
                     <p class="eyebrow mb-3">/{{ t('nav.projects') }}</p>
@@ -72,6 +76,16 @@ onMounted(() => {
                     <Loader2 class="w-6 h-6 animate-spin loading-icon" />
                     <span class="font-mono text-sm text-muted">{{ t('projects.loading') }}</span>
                 </div>
+            </div>
+
+            <div v-else-if="error" role="alert"
+                class="empty-state text-center flex flex-col items-center gap-5 py-20 border rounded-2xl">
+                <p class="font-mono text-sm text-primary">{{ error }}</p>
+                <button @click="fetchReposWithRetry"
+                    class="clear-chip text-primary px-4 py-2 rounded-full transition-colors duration-200 flex items-center gap-2 group cursor-pointer border">
+                    <RotateCcw class="w-3.5 h-3.5 arrow-rotate" />
+                    <span class="font-mono text-xs uppercase tracking-wide">{{ t('projects.tryAgain') }}</span>
+                </button>
             </div>
 
             <div v-else-if="filteredRepos.length === 0"

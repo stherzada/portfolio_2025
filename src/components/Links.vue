@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import type { Component } from 'vue'
 import { Mail, Twitter, FileText, Twitch, Github, Linkedin } from 'lucide-vue-next'
 import { useTwitchLiveStatus } from '../composables/useTwitchLiveStatus'
 
 interface Link {
     href: string
-    icon: any
+    icon: Component
     alt: string
     title: string
     rel: string

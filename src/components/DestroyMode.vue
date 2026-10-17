@@ -55,6 +55,10 @@ const MOVE_KEYS: Record<string, Dir> = {
 }
 
 const layerEl = ref<HTMLDivElement | null>(null)
+const hudEl = ref<HTMLDivElement | null>(null)
+// Read once: with reduced motion, things fade out instead of shattering,
+// wobbling, bouncing and throwing debris around.
+const reducedMotion = prefersReducedMotion()
 const charEl = ref<HTMLDivElement | null>(null)
 const flipEl = ref<HTMLDivElement | null>(null)
 const spriteEl = ref<HTMLDivElement | null>(null)
@@ -121,7 +125,7 @@ function toTarget(el: Element): Element | null {
   // Smash whole icons rather than individual <path>s.
   const target = el instanceof SVGElement ? (el.ownerSVGElement ?? el) : el
   if (target === document.documentElement || target === document.body) return null
-  if (target.id === 'app' || layerEl.value?.contains(target)) return null
+  if (target.id === 'app' || layerEl.value?.contains(target) || hudEl.value?.contains(target)) return null
   if (target.classList.contains('destroy-crack') || destroyed.has(target)) return null
 
   const rect = target.getBoundingClientRect()
@@ -196,6 +200,7 @@ function spawn(className: string, x: number, y: number): HTMLDivElement | null {
 }
 
 function spawnPuff(x: number, y: number, size: number) {
+  if (reducedMotion) return
   const puff = spawn('destroy-puff', x, y)
   if (!puff) return
   puff.style.width = puff.style.height = `${size}px`
@@ -215,6 +220,7 @@ function spawnPuff(x: number, y: number, size: number) {
 }
 
 function spawnShockwave(x: number, y: number, radius: number) {
+  if (reducedMotion) return
   const ring = spawn('destroy-shockwave', x, y)
   if (!ring) return
   ring.style.width = `${radius * 2}px`
@@ -231,6 +237,7 @@ function spawnShockwave(x: number, y: number, radius: number) {
 }
 
 function spawnDebris(rect: DOMRect, color: string, ix: number, iy: number) {
+  if (reducedMotion) return
   const count = Math.round(clamp(Math.sqrt(rect.width * rect.height) / 12, 6, 14))
   for (let i = 0; i < count; i++) {
     const bit = spawn('destroy-debris', ix + rand(-10, 10), iy + rand(-10, 10))
@@ -250,6 +257,10 @@ function popText(x: number, y: number) {
   const pop = spawn('destroy-pop', x, y)
   if (!pop) return
   pop.textContent = words[Math.floor(Math.random() * words.length)] ?? ''
+  if (reducedMotion) {
+    gsap.fromTo(pop, { xPercent: -50, yPercent: -50, opacity: 1 }, { opacity: 0, duration: 0.6, delay: 0.4, onComplete: () => pop.remove() })
+    return
+  }
   gsap
     .timeline({ onComplete: () => pop.remove() })
     .fromTo(
@@ -271,6 +282,7 @@ function hitPoints(rect: DOMRect): number {
 }
 
 function wobble(el: Element, ix: number, rect: DOMRect) {
+  if (reducedMotion) return
   const away = ix < rect.left + rect.width / 2 ? 1 : -1
   gsap.to(el, {
     rotation: `+=${away * rand(3, 9)}`,
@@ -441,7 +453,9 @@ function damage(el: Element, power: number, ix: number, iy: number): boolean {
   destroyedCount.value += 1
   spawnDebris(rect, getComputedStyle(el).color || '#888', ix, iy)
   const unclonable = /^(IFRAME|VIDEO|CANVAS)$/.test(el.tagName) || el.querySelector('iframe, video, canvas')
-  if (unclonable || activeShards > MAX_ACTIVE_SHARDS) {
+  if (reducedMotion) {
+    gsap.to(el, { opacity: 0, duration: 0.4 })
+  } else if (unclonable || activeShards > MAX_ACTIVE_SHARDS) {
     topple(el, rect)
   } else {
     shatter(el, rect, ix, iy)
@@ -458,6 +472,7 @@ function smash(targets: Element[], power: number, ix: number, iy: number): numbe
 }
 
 function bounceNearby(cx: number, cy: number, r: number, height: number) {
+  if (reducedMotion) return
   for (const el of targetsAt(groundPoints(cx, cy, r))) {
     if (gsap.isTweening(el)) continue
     gsap.to(el, { y: `-=${height}`, duration: 0.1, yoyo: true, repeat: 1, ease: 'power1.out' })
@@ -688,14 +703,24 @@ function tick(now: number) {
 
 // ---------------------------------------------------------------- input
 
+function isActivatable(target: EventTarget | null): boolean {
+  return target instanceof HTMLElement && !!target.closest('a, button, [role="button"]')
+}
+
 function handleKeydown(event: KeyboardEvent) {
   if (isTerminalOpen.value || isTypingTarget(event.target)) return
   const key = event.key.toLowerCase()
+  // The only way to undo the rampage is a fresh page load.
+  if (key === 'escape') {
+    window.location.reload()
+    return
+  }
   const dir = MOVE_KEYS[key]
   if (dir) {
     event.preventDefault()
     held.add(dir)
-  } else if (key === ' ') {
+  } else if (key === ' ' && !isActivatable(event.target)) {
+    // Space on a focused button/link still activates it.
     event.preventDefault()
     if (!event.repeat) jump()
   } else if (key === 'f' || key === 'k') {
@@ -747,6 +772,7 @@ onUnmounted(() => {
 
 <template>
   <Teleport to="body">
+    <!-- Purely decorative: sprite, shards and effects. -->
     <div ref="layerEl" class="fixed inset-0 z-[90] pointer-events-none select-none overflow-hidden" aria-hidden="true">
       <div ref="shadowEl" class="destroy-shadow" :class="character === 'cat' ? 'destroy-shadow--cat' : ''"></div>
 
@@ -834,29 +860,33 @@ onUnmounted(() => {
           </div>
         </div>
       </div>
+    </div>
 
+    <div ref="hudEl" class="fixed inset-0 z-[91] pointer-events-none select-none overflow-hidden">
       <div
+        role="status"
         class="absolute top-20 md:top-24 left-1/2 -translate-x-1/2 max-w-[calc(100%-2rem)] rounded-lg border border-white/10 bg-[#0b0b0d]/90 px-4 py-2 text-center font-mono text-xs text-[#e5e5e5] shadow-xl"
       >
         <p class="text-[#ff6b6b]">💥 {{ t('destroy.destroyed', { n: destroyedCount }) }}<span v-if="taunt"> · {{ taunt }}</span></p>
         <p v-if="!isTouch" class="text-white/60">{{ t('destroy.controls') }}</p>
-        <p class="text-white/40">{{ t('destroy.restore') }}</p>
+        <p class="text-white/60">{{ t('destroy.restore') }}</p>
       </div>
 
       <template v-if="isTouch">
-        <div class="absolute bottom-6 left-4 grid grid-cols-3 gap-1 pointer-events-auto touch-none" :aria-label="t('destroy.move')">
+        <div role="group" class="absolute bottom-6 left-4 grid grid-cols-3 gap-1 pointer-events-auto touch-none" :aria-label="t('destroy.move')">
           <template v-for="(cell, i) in PAD_LAYOUT" :key="i">
             <span v-if="!cell"></span>
             <button
               v-else
               type="button"
               class="destroy-pad"
+              :aria-label="t(`destroy.dirs.${cell}`)"
               @pointerdown.prevent="held.add(cell)"
               @pointerup="held.delete(cell)"
               @pointerleave="held.delete(cell)"
               @pointercancel="held.delete(cell)"
             >
-              {{ PAD_ARROWS[cell] }}
+              <span aria-hidden="true">{{ PAD_ARROWS[cell] }}</span>
             </button>
           </template>
         </div>

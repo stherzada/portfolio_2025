@@ -2,17 +2,16 @@
 <script setup lang="ts">
 
 import { useTheme, ThemeAnimationType } from '../composables/useTheme'
-import { onMounted, type ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { Sun, Moon } from 'lucide-vue-next'
 
 const { buttonRef, toggleSwitchTheme, isDarkMode } = useTheme({
   onDarkModeChange: (isDark: boolean) => {
-    if (isDark) {
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
+    document.documentElement.classList.toggle('dark', isDark)
+    try {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light')
+    } catch {
+      // Private mode / blocked storage: the toggle still works for this visit.
     }
   },
   animationType: ThemeAnimationType.CIRCLE,
@@ -22,20 +21,14 @@ const { buttonRef, toggleSwitchTheme, isDarkMode } = useTheme({
 const setButtonRef = (el: Element | ComponentPublicInstance | null) => {
   buttonRef.value = el instanceof HTMLElement ? el : null
 }
-
-onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
-  if (savedTheme === 'dark') {
-    document.documentElement.classList.add('dark')
-  }
-})
 </script>
 
 <template>
   <button
     :ref="setButtonRef"
     @click="toggleSwitchTheme"
-    aria-label="Toggle theme"
+    aria-label="Dark mode"
+    :aria-pressed="isDarkMode"
     class="theme-toggle-button w-9 h-9 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ease-out hover:scale-110 active:scale-95 cursor-pointer relative overflow-hidden"
   >
       <div class="relative z-10 transition-transform duration-500" :class="isDarkMode ? 'rotate-0' : 'rotate-360'">

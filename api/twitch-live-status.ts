@@ -25,7 +25,9 @@ const DECAPI_BASE_URL = 'https://decapi.me/twitch'
 
 async function fetchDecapiText(path: string): Promise<string | null> {
   try {
-    const response = await fetch(`${DECAPI_BASE_URL}/${path}/${TWITCH_CHANNEL_LOGIN}`)
+    const response = await fetch(`${DECAPI_BASE_URL}/${path}/${TWITCH_CHANNEL_LOGIN}`, {
+      signal: AbortSignal.timeout(5000),
+    })
     if (!response.ok) return null
     return (await response.text()).trim()
   } catch {

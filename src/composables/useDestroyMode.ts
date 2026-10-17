@@ -10,5 +10,8 @@ export type DestroyCharacter = 'kaiju' | 'cat'
 export const destroyCharacter = ref<DestroyCharacter | null>(null)
 
 export function startDestroyMode(kind: DestroyCharacter) {
+  // DestroyMode captures its character's DOM/physics once on mount, so
+  // switching mid-rampage would leave a half-swapped sprite. First one wins.
+  if (destroyCharacter.value) return
   destroyCharacter.value = kind
 }

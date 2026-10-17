@@ -236,6 +236,9 @@ function disposeScene() {
   pauseRaf()
   points?.geometry.dispose()
   material?.dispose()
+  // dispose() alone keeps the WebGL context alive; browsers cap live contexts,
+  // so leaving and re-entering Home repeatedly would eventually hit that cap.
+  renderer?.forceContextLoss()
   renderer?.dispose()
   scene = null
   camera = null

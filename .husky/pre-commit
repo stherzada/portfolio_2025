@@ -1,23 +1,23 @@
-
 echo "🔍 Verificando build antes do commit..."
 
-# Salva o estado atual do diretório de trabalho
-git stash -q --keep-index
+# Esconde as mudanças fora do stage para buildar só o que vai ser commitado.
+# `git stash push` não cria stash quando não há nada a guardar, então só
+# fazemos pop se o número de stashes mudou (senão aplicaríamos um stash antigo).
+STASH_COUNT_BEFORE=$(git stash list | wc -l)
+git stash push -q --keep-index --include-untracked -m "pre-commit"
+STASH_COUNT_AFTER=$(git stash list | wc -l)
 
-# Tenta fazer o build
 npm run verify-build
-
-# Guarda o status do build
 BUILD_STATUS=$?
 
-# Restaura o estado do diretório de trabalho
-git stash pop -q
+if [ "$STASH_COUNT_AFTER" -ne "$STASH_COUNT_BEFORE" ]; then
+  git stash pop -q
+fi
 
-# Se o build falhou, impede o commit
 if [ $BUILD_STATUS -ne 0 ]; then
   echo "❌ Build falhou! Corrija os erros antes de commitar."
   exit 1
 fi
 
 echo "✅ Build passou! Prosseguindo com o commit..."
-exit 0 
+exit 0

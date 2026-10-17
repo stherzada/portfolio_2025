@@ -11,8 +11,12 @@ const { t, locale } = useI18n()
 const featuredPost = ref<Post | undefined>(undefined)
 
 onMounted(async () => {
-    const { posts } = await fetchPostsAll(1, 1)
-    featuredPost.value = posts[0]
+    try {
+        const { posts } = await fetchPostsAll(1, 1)
+        featuredPost.value = posts[0]
+    } catch {
+        // The featured card is optional; the section still links to /blog.
+    }
 })
 </script>
 
@@ -30,8 +34,9 @@ onMounted(async () => {
 
             <div v-if="featuredPost" v-reveal class="featured-post rounded-2xl border overflow-hidden transition-all duration-300 hover:shadow-lg">
                 <div class="flex flex-col lg:flex-row">
-                    <router-link :to="`/blog/${featuredPost.slug}`" class="lg:w-2/5 shrink-0 block overflow-hidden">
-                        <img :src="featuredPost.image_path" :alt="featuredPost.title"
+                    <router-link v-if="featuredPost.image_path" :to="`/blog/${featuredPost.slug}`"
+                        class="lg:w-2/5 shrink-0 block overflow-hidden" tabindex="-1" aria-hidden="true">
+                        <img :src="featuredPost.image_path" alt="" loading="lazy" decoding="async"
                             class="w-full h-56 lg:h-full object-cover transition-transform duration-500 hover:scale-105" />
                     </router-link>
 

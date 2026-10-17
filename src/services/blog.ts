@@ -42,26 +42,21 @@ export const fetchPostsAll = async (page: number = 1, postsPerPage: number = 10)
 }
 
 /**
- * Busca um post por slug ou por título (fallback)
+ * Busca um post pelo slug
  * @param slug - Slug do post para buscar
- * @returns Promise com dados do post
+ * @returns Promise com o post, ou null se não existir
  */
-
-/** TODO: Refatorar para melhorar a busca por slug */
 export const fetchPostBySlug = async (slug: string) => {
-  try {
-    const { data: allPosts, error: allPostsError } = await supabase
-      .from('posts')
-      .select("*")
-      .eq('slug', slug)
-      .single()
+  const { data, error } = await supabase
+    .from('posts')
+    .select("*")
+    .eq('slug', slug)
+    .maybeSingle()
 
-    if (allPostsError) throw allPostsError
-    if (!allPosts) throw new Error('Nenhum post encontrado no banco de dados')
-
-    return allPosts as Post
-  } catch (err) {
-    console.error('Error fetching post by slug:', err)
+  if (error) {
+    console.error('Error fetching post by slug:', error)
     throw new Error('Erro ao carregar post')
   }
+
+  return data as Post | null
 }

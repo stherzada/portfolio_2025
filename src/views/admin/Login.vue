@@ -35,8 +35,9 @@ const handleLogin = async () => {
       <h1 class="text-2xl font-bold text-primary mb-6 text-center">Admin</h1>
       <form @submit.prevent="handleLogin" class="flex flex-col gap-4">
         <div>
-          <label class="block text-sm font-medium text-primary mb-1">Email</label>
+          <label for="login-email" class="block text-sm font-medium text-primary mb-1">Email</label>
           <input
+            id="login-email"
             v-model="email"
             type="email"
             required
@@ -46,8 +47,9 @@ const handleLogin = async () => {
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-primary mb-1">Senha</label>
+          <label for="login-password" class="block text-sm font-medium text-primary mb-1">Senha</label>
           <input
+            id="login-password"
             v-model="password"
             type="password"
             required

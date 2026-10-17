@@ -30,18 +30,20 @@ interface PostRow {
   updated_at: string | null
 }
 
+// Throws on missing config / network / non-2xx so the caller can tell
+// "post doesn't exist" (null) apart from "couldn't check".
 async function fetchPostBySlug(slug: string): Promise<PostRow | null> {
   const supabaseUrl = process.env.VITE_SUPABASE_URL
   const supabaseKey = process.env.VITE_SUPABASE_KEY
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('Missing Supabase env vars for blog-meta injection')
-    return null
+    throw new Error('Missing Supabase env vars for blog-meta injection')
   }
 
   const response = await fetch(
     `${supabaseUrl}/rest/v1/posts?select=title,description,slug,image_path,created_at,updated_at&slug=eq.${encodeURIComponent(slug)}&limit=1`,
     {
+      signal: AbortSignal.timeout(5000),
       headers: {
         apikey: supabaseKey,
         Authorization: `Bearer ${supabaseKey}`,
@@ -50,8 +52,7 @@ async function fetchPostBySlug(slug: string): Promise<PostRow | null> {
   )
 
   if (!response.ok) {
-    console.error('Failed to fetch post for blog-meta', response.status, await response.text())
-    return null
+    throw new Error(`Failed to fetch post for blog-meta: ${response.status} ${await response.text()}`)
   }
 
   const rows = (await response.json()) as PostRow[]
@@ -78,11 +79,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return
   }
 
-  const post = await fetchPostBySlug(slug)
-  if (!post) {
-    // Untouched passthrough — the client-side router's catch-all route
-    // (NotFound.vue) still handles the 404 UX normally once JS runs.
+  let post: PostRow | null
+  try {
+    post = await fetchPostBySlug(slug)
+  } catch (error) {
+    // Couldn't reach Supabase: serve the plain SPA shell (the client shows
+    // its own error/retry UI) and don't let the edge cache this response.
+    console.error('blog-meta: falling back to plain index.html', error)
+    res.setHeader('Cache-Control', 'no-store')
     res.status(200).send(indexHtml)
+    return
+  }
+
+  if (!post) {
+    // Real 404 status so crawlers don't index a soft-404; the SPA still
+    // boots from this HTML and renders its own "post not found" UI.
+    res.status(404).send(
+      indexHtml.replace('</head>', () => '  <meta name="robots" content="noindex">\n</head>'),
+    )
     return
   }
 
@@ -108,27 +122,40 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
   }
 
-  const html = indexHtml
-    .replace(/<title>.*?<\/title>/, `<title>${escapeHtml(title)}</title>`)
-    .replace(
-      /<meta name="description"[^>]*>/,
-      `<meta name="description" content="${escapeHtml(description)}">`,
-    )
-    .replace(/<link rel="canonical"[^>]*>/, `<link rel="canonical" href="${escapeHtml(canonical)}">`)
+  const meta: Record<string, string> = {
+    'og:type': 'article',
+    'og:title': title,
+    'og:description': description,
+    'og:image': image,
+    'og:url': canonical,
+    'twitter:card': 'summary_large_image',
+    'twitter:title': title,
+    'twitter:description': description,
+    'twitter:image': image,
+  }
 
-  const injected = `
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="${escapeHtml(title)}">
-  <meta property="og:description" content="${escapeHtml(description)}">
-  <meta property="og:image" content="${escapeHtml(image)}">
-  <meta property="og:url" content="${escapeHtml(canonical)}">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${escapeHtml(title)}">
-  <meta name="twitter:description" content="${escapeHtml(description)}">
-  <meta name="twitter:image" content="${escapeHtml(image)}">
-  <script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>
-</head>`
+  // Every replacement goes through a function: a string replacement would
+  // interpret `$&`, `$'` etc. inside post titles/descriptions.
+  let html = indexHtml
+    .replace(/<title>.*?<\/title>/, () => `<title>${escapeHtml(title)}</title>`)
+    .replace(/<meta\s+name="description"[^>]*>/, () => `<meta name="description" content="${escapeHtml(description)}">`)
+    .replace(/<link rel="canonical"[^>]*>/, () => `<link rel="canonical" href="${escapeHtml(canonical)}">`)
+
+  // index.html ships site-wide og:/twitter: defaults; overwrite them in place
+  // (or append if missing) so there's exactly one of each.
+  const appended: string[] = []
+  for (const [key, value] of Object.entries(meta)) {
+    const attr = key.startsWith('og:') ? 'property' : 'name'
+    const tag = `<meta ${attr}="${key}" content="${escapeHtml(value)}">`
+    const pattern = new RegExp(`<meta\\s+${attr}="${key}"[^>]*>`)
+    if (pattern.test(html)) {
+      html = html.replace(pattern, () => tag)
+    } else {
+      appended.push(`  ${tag}`)
+    }
+  }
+  appended.push(`  <script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>`)
 
   res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate=3600')
-  res.status(200).send(html.replace('</head>', injected))
+  res.status(200).send(html.replace('</head>', () => `${appended.join('\n')}\n</head>`))
 }

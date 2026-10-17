@@ -33,6 +33,7 @@ async function fetchPostSlugs(): Promise<PostRow[]> {
   const response = await fetch(
     `${supabaseUrl}/rest/v1/posts?select=slug,created_at,updated_at&order=created_at.desc`,
     {
+      signal: AbortSignal.timeout(5000),
       headers: {
         apikey: supabaseKey,
         Authorization: `Bearer ${supabaseKey}`,
@@ -76,7 +77,13 @@ export default async function handler(_req: VercelRequest, res: VercelResponse) 
     urlEntry(`${SITE_URL}/blog`, today, 'daily', '0.9'),
   ]
 
-  const posts = await fetchPostSlugs()
+  let posts: PostRow[] = []
+  try {
+    posts = await fetchPostSlugs()
+  } catch (error) {
+    // Still serve the static pages rather than a 500 for the whole sitemap.
+    console.error('sitemap: failed to fetch posts', error)
+  }
   for (const post of posts) {
     if (!post.slug) continue
     const lastmod = (post.updated_at || post.created_at || today).slice(0, 10)
