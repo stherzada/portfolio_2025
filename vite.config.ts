@@ -47,7 +47,6 @@ export default defineConfig({
           'utils': ['@vueuse/core'],
           'icons': ['lucide-vue-next'],
           'tiptap-vendor': ['@tiptap/vue-3', '@tiptap/starter-kit', '@tiptap/extension-image'],
-          'three-vendor': ['three'],
           'gsap-vendor': ['gsap'],
         },
         assetFileNames: (assetInfo) => {
@@ -72,9 +71,6 @@ export default defineConfig({
       }
     },
     reportCompressedSize: true,
-    // three-vendor (~510 kB) is a single library that's already lazy-loaded
-    // by the About particle field, so splitting it further buys nothing.
-    chunkSizeWarningLimit: 600,
     assetsInlineLimit: 4096
   }
 })

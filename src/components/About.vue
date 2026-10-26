@@ -7,27 +7,17 @@ import AnimatedCircle from './AnimatedCircle.vue'
 import ScrambleText from './ScrambleText.vue'
 import SpotifyNowPlaying from './SpotifyNowPlaying.vue'
 import TwitchLiveStatus from './TwitchLiveStatus.vue'
-import { useReducedMotion } from '../composables/useReducedMotion'
 
 const { t } = useI18n()
 
-const ParticleField = defineAsyncComponent(() => import('./three/ParticleField.vue'))
-const prefersReducedMotion = useReducedMotion()
-const showParticleField = ref(false)
+const AsciiDragons = defineAsyncComponent(() => import('./AsciiDragons.vue'))
+const showDragons = ref(false)
+const textRef = ref<HTMLElement | null>(null)
+const contentRef = ref<HTMLElement | null>(null)
 
-function hasWebGL(): boolean {
-    try {
-        const canvas = document.createElement('canvas')
-        return !!(canvas.getContext('webgl2') || canvas.getContext('webgl'))
-    } catch {
-        return false
-    }
-}
-
-// Only pay the Three.js bundle/runtime cost when it'll actually render
-// something worthwhile: motion allowed, WebGL available, screen big enough.
+// Mount after first paint so the canvas sizing never holds up the hero.
 onMounted(() => {
-    showParticleField.value = !prefersReducedMotion.value && window.innerWidth >= 480 && hasWebGL()
+    showDragons.value = true
 })
 
 const scrollToNext = () => {
@@ -37,10 +27,10 @@ const scrollToNext = () => {
 
 <template>
     <section id="about" class="relative flex items-center justify-center min-h-[calc(100svh-6rem)] py-16 overflow-hidden">
-        <ParticleField v-if="showParticleField" />
-        <div class="relative z-10 m-6 md:mx-8 md:max-w-4xl w-full">
+        <AsciiDragons v-if="showDragons" :avoid="textRef" :content="contentRef" />
+        <div ref="contentRef" class="relative z-10 m-6 md:mx-8 md:max-w-4xl w-full">
             <div class="flex flex-col lg:flex-row items-center gap-12">
-                <div class="flex-1 text-center lg:text-left order-2 lg:order-1" v-reveal>
+                <div ref="textRef" class="flex-1 text-center lg:text-left order-2 lg:order-1" v-reveal>
                     <h1 class="font-mono font-semibold text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight mb-4 text-primary">
                         <ScrambleText text="Sthefany Sther" :delay="500" /><span class="hero-cursor" aria-hidden="true">_</span>
                     </h1>
