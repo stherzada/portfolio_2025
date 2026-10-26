@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import {
   useElementSize,
   useIntersectionObserver,
@@ -43,7 +44,9 @@ const AVOID_FEATHER = 32
 /** Below this size the hand-drawn head would dwarf the body; draw it procedurally. */
 const SPRITE_MIN_UNIT = 40
 const ROAR_SECONDS = 2.4
-const FIRST_VISIT_DELAY = 3.2
+/** The dragon is a rare visitor: about three minutes before each visit. */
+const FIRST_VISIT_DELAY = 180
+const VISIT_INTERVAL = [150, 210] as const
 const TAU = Math.PI * 2
 
 interface Vec {
@@ -82,46 +85,53 @@ interface Puff {
   ch: string
 }
 
-// Facing right; the neck joins at the back of the head (`anchor`).
+// Traced from the black outlines of "Desenhado à mão dragão oriental" by
+// Suryono Suryono (Vecteezy, https://pt.vecteezy.com/arte-vetorial/7949283-desenhado-a-mao-dragao-oriental-1),
+// credited in the canvas label. Drawn in a smaller font than the body so the
+// detail survives. Faces left.
 const HEAD_ART = [
-  '          _\\    _\\',
-  '           \\\\_   \\\\_',
-  '       ___..\\ \\___\\ \\__',
-  '    _.-~                `~-.__',
-  "  .'  }  }    .--.          `-._",
-  ' /  }  }  }  ( @  )             `-._',
-  "|  }  }  }    `--'        ,-----.__`o.",
-  "|  }  }  }       ___..--''VVVVVVVVV`--'",
-  " \\  }  }    __.-'      \\^^^^^^^^^^^/",
-  "  `-.__.--''            `---------'",
-  '                  __..--~~',
-  '           __..--~~   __..--~~',
-  '    __..--~~   __..--~~',
+  "                                ||        /   |",
+  "                                |||    _/|/ /||",
+  "                                |||   ||_|||/",
+  "                                | | //`         ||",
+  "                           ||\\ /  |/  /||       ||",
+  "                            ||/   |-/|-/        ||  ___-/",
+  "                            |/   /-  `  |\\  __///|",
+  "                            |   |_/|    ||| `   //-``-\\\\_",
+  "                           ---_|  /---` |||   //  _",
+  "                     //```     ||      /     |||.||_",
+  "                   |/ -    ///`'`\\--\\ `\\\\\\/-----/   |\\`-`",
+  " __             /``/      /          \\   \\|    _/ \\-----_",
+  "||``-\\o.______./|     /   __-\\___     ,  /   |         |",
+  "|     |`             | \\/|  /|/   |      /    `-` |   /",
+  "-|o\\  \\                  (@)            |         \\-____.",
+  "  \\|\\_ ____                              |     _    __ /",
+  "    `   `\\/\\/\\/\\/\\/\\/\\/| \\\\             ||    |  ```    -",
+  "              /   ~~~~  || ||           |      \\\\._\\   '",
+  "  _ ._ . |'`__/_/\\_  _/|| |            /        |   \\",
+  " ||--\\/ |/\\/\\/\\/\\/\\/\\//              //         |     `--",
+  " || --\\||-/`     /___            _///  \\, ./",
+  "  \\-\\\\   __--`````````---__----`|_\\     \\\\-___/",
+  "      ```                     -_|\\ \\-- -___-`",
+  "                                 '`",
 ]
-
-const ROAR_ART = [
-  '          _\\    _\\',
-  '           \\\\_   \\\\_',
-  '       ___..\\ \\___\\ \\__',
-  '    _.-~                `~-.__',
-  "  .'  }  }    .--.          `-._",
-  ' /  }  }  }  ( @  )             `-._',
-  "|  }  }  }    `--'        ,-----.__`o.",
-  "|  }  }  }       ___..--''VVVVVVVVV`--'",
-  ' \\  }  }    __.-\'      \\             /',
-  "  `-.__.--''            \\^^^^^^^^^^^/",
-  "                         `---------'",
-  '                  __..--~~',
-  '           __..--~~   __..--~~',
-  '    __..--~~   __..--~~',
-]
+/** Where the neck joins, the front of the open mouth, and the eye. */
+const HEAD_ANCHOR = { x: 45, y: 15 }
+const HEAD_MOUTH = { x: 3, y: 16 }
+const HEAD_EYE = { x: 26, y: 14 }
+/** From this row down the head is solid and hides the body behind it. */
+const HEAD_SOLID_FROM = 9
+const HEAD_FONT_SIZE = 7
+/** Semibold, so the small glyphs hold their own next to the body's. */
+const HEAD_FONT = `600 ${HEAD_FONT_SIZE}px 'IBM Plex Mono', ui-monospace, monospace`
+const HEAD_LINE_HEIGHT = 8
 
 const MIRROR: Record<string, string> = {
   '/': '\\', '\\': '/', '(': ')', ')': '(', '<': '>', '>': '<',
   '{': '}', '}': '{', '[': ']', ']': '[', '`': "'", "'": '`',
 }
-/** Mane and whisker strokes: drawn a little lighter than the outline. */
-const TEXTURE_CHARS = new Set(['{', '}', '~'])
+/** Specks and ticks: drawn a little lighter than the outline. */
+const TEXTURE_CHARS = new Set(['.', ':', '`', "'"])
 
 interface SpriteSide {
   rows: string[]
@@ -129,34 +139,26 @@ interface SpriteSide {
   spans: [number, number][]
   anchor: Vec
   mouth: Vec
+  eye: Vec
 }
 
-interface Sprite {
-  right: SpriteSide
-  left: SpriteSide
-  /** Rows whose whole span is solid head (the rest only mask their own glyphs). */
-  solidFrom: number
-  solidTo: number
-}
-
-function makeSprite(art: string[], solidTo: number): Sprite {
-  const width = Math.max(...art.map(row => row.length))
-  const spansOf = (rows: string[]) =>
-    rows.map(row => [row.search(/\S/), row.length - 1 - [...row].reverse().join('').search(/\S/)] as [number, number])
-  const right = art.map(row => row.padEnd(width))
-  const left = right.map(row => [...row].reverse().map(ch => MIRROR[ch] ?? ch).join(''))
-  const anchor = { x: 1, y: 6 }
-  const mouth = { x: 38, y: 7 }
+function makeSide(rows: string[], mirrored: boolean): SpriteSide {
+  const width = Math.max(...rows.map(row => row.length))
+  const padded = rows.map(row => row.padEnd(width))
+  const flipped = mirrored ? padded.map(row => [...row].reverse().map(ch => MIRROR[ch] ?? ch).join('')) : padded
+  const x = (col: number) => (mirrored ? width - 1 - col : col)
   return {
-    right: { rows: right, spans: spansOf(right), anchor, mouth },
-    left: { rows: left, spans: spansOf(left), anchor: { x: width - 1 - anchor.x, y: anchor.y }, mouth: { x: width - 1 - mouth.x, y: mouth.y } },
-    solidFrom: 3,
-    solidTo,
+    rows: flipped,
+    spans: flipped.map(row => [row.search(/\S/), row.length - 1 - [...row].reverse().join('').search(/\S/)] as [number, number]),
+    anchor: { x: x(HEAD_ANCHOR.x), y: HEAD_ANCHOR.y },
+    mouth: { x: x(HEAD_MOUTH.x), y: HEAD_MOUTH.y },
+    eye: { x: x(HEAD_EYE.x), y: HEAD_EYE.y },
   }
 }
 
-const HEAD = makeSprite(HEAD_ART, 9)
-const HEAD_ROAR = makeSprite(ROAR_ART, 10)
+const HEAD = { left: makeSide(HEAD_ART, false), right: makeSide(HEAD_ART, true) }
+
+const { t } = useI18n()
 
 const containerRef = ref<HTMLElement | null>(null)
 const canvasRef = ref<HTMLCanvasElement | null>(null)
@@ -170,6 +172,7 @@ let ctx: CanvasRenderingContext2D | null = null
 let field: HTMLCanvasElement | null = null
 let fctx: CanvasRenderingContext2D | null = null
 let cellW = 7.2
+let headCellW = 4.2
 let cols = 0
 let rows = 0
 let lum = new Float32Array(0)
@@ -191,6 +194,10 @@ let avoidRect: Rect | null = null
 let bands: Band[] = []
 let puffs: Puff[] = []
 let puffClock = 0
+/** Band of the previous visit, so the next one takes the other. */
+let lastBandSide: Band['side'] | null = null
+let blinkUntil = 0
+let nextBlink = 2
 
 const dragon = {
   head: { x: 0, y: 0 } as Vec,
@@ -257,10 +264,13 @@ function measureLayout() {
     ? { left: avoid.left - container.left, top: avoid.top - container.top, right: avoid.right - container.left, bottom: avoid.bottom - container.top }
     : null
   const content = props.content?.getBoundingClientRect()
+  // The section can run past the bottom of the window; only the part on
+  // screen counts, or the bottom lane ends up half below the fold.
+  const visibleBottom = Math.min(container.height, window.innerHeight - container.top)
   bands = content
     ? [
         { top: 0, bottom: content.top - container.top, side: 'above' },
-        { top: content.bottom - container.top, bottom: container.height, side: 'below' },
+        { top: content.bottom - container.top, bottom: visibleBottom, side: 'below' },
       ]
     : []
 }
@@ -284,6 +294,9 @@ function setup() {
   ctx.font = `${FONT_SIZE}px 'IBM Plex Mono', ui-monospace, monospace`
   ctx.textBaseline = 'top'
   cellW = ctx.measureText('M').width || 7.2
+  ctx.font = HEAD_FONT
+  headCellW = ctx.measureText('M').width || 4.2
+  ctx.font = `${FONT_SIZE}px 'IBM Plex Mono', ui-monospace, monospace`
 
   cols = Math.ceil(w / cellW)
   rows = Math.ceil(h / LINE_HEIGHT)
@@ -315,7 +328,6 @@ function setup() {
       dragon.willRoar = false
       for (let i = 0; i < 900 && Math.abs(dragon.head.x - viewW / 2) > viewW * 0.1; i++) step(1 / FPS)
     } else {
-      // Let the hero's own intro play first; the dragon is the surprise after.
       dragon.away = FIRST_VISIT_DELAY
     }
   }
@@ -328,7 +340,9 @@ function startVisit() {
   // Fly along an empty band so the whole dragon is in view, side-on; with no
   // band roomy enough, anywhere goes.
   const roomy = bands.filter(band => bandHeight(band) >= unit * 2.5)
-  const band = roomy[Math.floor(Math.random() * roomy.length)]
+  // Alternate between the bands so both get visits.
+  const band = roomy.find(b => b.side !== lastBandSide) ?? roomy[0]
+  lastBandSide = band?.side ?? null
   // Keep the lane on the far side of the band's middle, away from the content.
   const laneY = () => {
     if (!band) return viewH * (0.2 + Math.random() * 0.6)
@@ -338,20 +352,27 @@ function startVisit() {
   dragon.banded = !!band
   // The S-waves may only swing as far as the band allows.
   dragon.laneAmp = band ? clamp(bandHeight(band) * 0.45 - unit * 0.7, unit * 0.5, unit * 1.3) : unit * 0.8
-  dragon.head = { x: fromLeft ? -unit * 2 : viewW + unit * 2, y: laneY() }
-  dragon.heading = fromLeft ? 0 : Math.PI
   dragon.facing = fromLeft ? 1 : -1
   dragon.waypoints = [
     { x: viewW * (0.35 + Math.random() * 0.3), y: laneY() },
     { x: fromLeft ? viewW + bodyLength() : -bodyLength(), y: laneY() },
   ]
+  if (band?.side === 'below' && Math.random() < 0.5) {
+    // Rise up from below the section, swinging into the lane on the way.
+    dragon.head = { x: viewW * (fromLeft ? 0.1 : 0.9), y: viewH + unit * 2 }
+    dragon.heading = fromLeft ? -Math.PI / 4 : (-3 * Math.PI) / 4
+    dragon.waypoints.unshift({ x: viewW * (fromLeft ? 0.25 : 0.75), y: laneY() })
+  } else {
+    dragon.head = { x: fromLeft ? -unit * 2 : viewW + unit * 2, y: laneY() }
+    dragon.heading = fromLeft ? 0 : Math.PI
+  }
   dragon.trail = []
   const stepLen = unit * 0.25
   for (let d = bodyLength() + unit * 2; d >= 0; d -= stepLen) {
     dragon.trail.push({ x: dragon.head.x - Math.cos(dragon.heading) * d, y: dragon.head.y - Math.sin(dragon.heading) * d })
   }
   // One pass in three stops to roar; a Konami summon always does.
-  dragon.willRoar = burst > 0.5 || Math.random() < 1 / 3
+  dragon.willRoar = particleBurstActive.value || Math.random() < 1 / 3
   dragon.roar = 0
   dragon.pace = 1
   dragon.visible = true
@@ -362,22 +383,20 @@ function isOffscreen(p: Vec) {
   return p.x < -margin || p.x > viewW + margin || p.y < -margin || p.y > viewH + margin
 }
 
-// Where the sprite's top-left cell lands for the current head position.
+// Where the head's top-left corner lands (px) for the current head position.
 function placeHead() {
-  const sprite = dragon.roar > 0 ? HEAD_ROAR : HEAD
-  const side = dragon.facing === 1 ? sprite.right : sprite.left
+  const side = dragon.facing === 1 ? HEAD.right : HEAD.left
   return {
-    sprite,
     side,
-    col: Math.round(dragon.head.x / cellW) - side.anchor.x,
-    row: Math.round(dragon.head.y / LINE_HEIGHT) - side.anchor.y,
+    x: dragon.head.x - side.anchor.x * headCellW,
+    y: dragon.head.y - side.anchor.y * HEAD_LINE_HEIGHT,
   }
 }
 
 function mouthPosition(): Vec {
   if (useSprite()) {
-    const { side, col, row } = placeHead()
-    return { x: (col + side.mouth.x) * cellW, y: (row + side.mouth.y) * LINE_HEIGHT }
+    const { side, x, y } = placeHead()
+    return { x: x + side.mouth.x * headCellW, y: y + side.mouth.y * HEAD_LINE_HEIGHT }
   }
   return { x: dragon.head.x + Math.cos(dragon.heading) * unit * 2.6, y: dragon.head.y + Math.sin(dragon.heading) * unit * 2.6 }
 }
@@ -388,6 +407,12 @@ function step(dt: number) {
   const burstStarted = particleBurstActive.value && !wasBursting
   wasBursting = particleBurstActive.value
 
+  if (time > nextBlink) {
+    blinkUntil = time + 0.22
+    // Every so often, a quick double blink.
+    nextBlink = Math.random() < 0.3 ? blinkUntil + 0.18 : time + 2.5 + Math.random() * 3
+  }
+
   for (const puff of puffs) {
     puff.x += puff.vx * dt
     puff.y += puff.vy * dt
@@ -397,7 +422,8 @@ function step(dt: number) {
 
   if (!dragon.visible) {
     // The Konami-code burst summons the dragon right away.
-    dragon.away -= dt * (burst > 0.5 ? 20 : 1)
+    if (burstStarted) dragon.away = 0
+    dragon.away -= dt
     if (dragon.away <= 0) startVisit()
     return
   }
@@ -410,7 +436,8 @@ function step(dt: number) {
   const target = dragon.waypoints[0]!
   if (dragon.waypoints.length > 1 && Math.hypot(target.x - dragon.head.x, target.y - dragon.head.y) < unit * 5) {
     dragon.waypoints.shift()
-    if (dragon.willRoar) dragon.roar = ROAR_SECONDS
+    // Roar on reaching the middle of the section (the last waypoint before the exit).
+    if (dragon.willRoar && dragon.waypoints.length === 1) dragon.roar = ROAR_SECONDS
   }
   const desired = Math.atan2(target.y - dragon.head.y, target.x - dragon.head.x)
   dragon.heading += clamp(wrapAngle(desired - dragon.heading), -maxTurn, maxTurn)
@@ -461,7 +488,7 @@ function step(dt: number) {
   // The visit ends once the whole body has left the section.
   if (dragon.waypoints.length === 1 && isOffscreen(dragon.head) && dragon.trail.every(isOffscreen)) {
     dragon.visible = false
-    dragon.away = 7 + Math.random() * 6
+    dragon.away = VISIT_INTERVAL[0] + Math.random() * (VISIT_INTERVAL[1] - VISIT_INTERVAL[0])
   }
 }
 
@@ -771,11 +798,11 @@ function drawGlyphs() {
   const head = dragon.visible && useSprite() ? placeHead() : null
   const underHead = (c: number, r: number) => {
     if (!head) return false
-    const i = r - head.row
+    const i = Math.floor(((r + 0.5) * LINE_HEIGHT - head.y) / HEAD_LINE_HEIGHT)
     if (i < 0 || i >= head.side.rows.length) return false
     const [first, last] = head.side.spans[i]!
-    const j = c - head.col
-    if (i >= head.sprite.solidFrom && i <= head.sprite.solidTo) return j >= first && j <= last
+    const j = Math.floor(((c + 0.5) * cellW - head.x) / headCellW)
+    if (i >= HEAD_SOLID_FROM) return j >= first && j <= last
     return head.side.rows[i]![j] !== undefined && head.side.rows[i]![j] !== ' '
   }
 
@@ -823,7 +850,10 @@ function drawGlyphs() {
         ch = EDGE_GLYPHS[Math.round(a / (Math.PI / 4)) % 4]!
       } else if (inkMode) {
         isLine = false
-        ch = l > 0.9 ? '@' : INK_FILL[Math.min(INK_FILL.length - 1, Math.floor(l * INK_FILL.length))]!
+        // '@' is reserved for the procedural head's eye; with the drawn head
+        // it would just dot the body with stray "eyes".
+        const isEye = l > 0.9 && !head
+        ch = isEye ? '@' : INK_FILL[Math.min(INK_FILL.length - 1, Math.floor(l * INK_FILL.length))]!
       } else {
         isLine = false
         ch = RAMP[Math.min(RAMP.length - 1, Math.floor(Math.pow(l, 0.85) * RAMP.length))]!
@@ -834,29 +864,35 @@ function drawGlyphs() {
       // become the heaviest ink and bury the outline, so lines get the strong
       // ink and the fill stays a light texture (bar the eye).
       const brightness = inkMode
-        ? (isLine || l > 0.9 ? 2 : 0)
+        ? (isLine || (l > 0.9 && !head) ? 2 : 0)
         : (l < 0.3 ? 0 : l < 0.6 ? 1 : 2)
       push(ch, c * cellW, r * LINE_HEIGHT, brightness)
     }
-  }
-
-  if (head) {
-    // Blink every few seconds.
-    const blinking = time % 4.3 < 0.15
-    head.side.rows.forEach((line, i) => {
-      for (let j = 0; j < line.length; j++) {
-        let ch = line[j]!
-        if (ch === ' ') continue
-        if (ch === '@' && blinking) ch = '-'
-        push(ch, (head.col + j) * cellW, (head.row + i) * LINE_HEIGHT, TEXTURE_CHARS.has(ch) ? 1 : 2)
-      }
-    })
   }
 
   buckets.forEach((cells, b) => {
     ctx!.globalAlpha = b < 3 ? ALPHAS[b]! : ALPHAS[b - 3]! * AVOID_DIM
     for (const [ch, x, y] of cells) ctx!.fillText(ch, x, y)
   })
+
+  if (head) {
+    ctx.font = HEAD_FONT
+    // Blinking closes the whole eye: (@) becomes ---.
+    const blinking = time < blinkUntil
+    head.side.rows.forEach((line, i) => {
+      const y = head.y + i * HEAD_LINE_HEIGHT
+      for (let j = 0; j < line.length; j++) {
+        let ch = line[j]!
+        if (ch === ' ') continue
+        if (blinking && i === head.side.eye.y && Math.abs(j - head.side.eye.x) <= 1) ch = '-'
+        const x = head.x + j * headCellW
+        const dim = avoidance(x, y) > 0.5 ? AVOID_DIM : 1
+        ctx!.globalAlpha = (TEXTURE_CHARS.has(ch) ? ALPHAS[1]! : ALPHAS[2]!) * dim
+        ctx!.fillText(ch, x, y)
+      }
+    })
+    ctx.font = `${FONT_SIZE}px 'IBM Plex Mono', ui-monospace, monospace`
+  }
 
   for (const puff of puffs) {
     ctx.globalAlpha = 0.85 * clamp(puff.life, 0, 1) * (avoidance(puff.x, puff.y) > 0.5 ? AVOID_DIM : 1)
@@ -890,12 +926,19 @@ const { pause, resume } = useRafFn(
   { immediate: false }
 )
 
+let pausedAt: number | null = null
+
 function syncLoop() {
   if (!ctx) return
   if (!reducedMotion.value && isInView.value && documentVisibility.value === 'visible') {
+    // The wait between visits keeps counting while the hero is scrolled away,
+    // so coming back after a few minutes can find the dragon on its way.
+    if (pausedAt !== null && !dragon.visible) dragon.away -= (performance.now() - pausedAt) / 1000
+    pausedAt = null
     lastFrame = 0
     resume()
   } else {
+    pausedAt ??= performance.now()
     pause()
     render()
   }
@@ -944,8 +987,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="containerRef" class="ascii-dragons absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-    <canvas ref="canvasRef" class="block h-full w-full" />
+  <div ref="containerRef" class="ascii-dragons absolute inset-0 overflow-hidden pointer-events-none">
+    <canvas ref="canvasRef" class="block h-full w-full" role="img" :aria-label="t('about.dragonAlt')" />
   </div>
 </template>
 

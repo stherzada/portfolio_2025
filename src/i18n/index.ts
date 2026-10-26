@@ -23,7 +23,8 @@ const messages = {
                 twitch: 'Twitch',
                 github: 'Github',
                 linkedin: 'LinkedIn'
-            }
+            },
+            dragonAlt: 'ASCII eastern dragon flying across the page. Head based on an illustration by Suryono Suryono (Vecteezy): https://pt.vecteezy.com/arte-vetorial/7949283-desenhado-a-mao-dragao-oriental-1'
         },
         experience: {
             title: "Where I've worked",
@@ -126,7 +127,8 @@ const messages = {
                 twitch: 'Twitch',
                 github: 'Github',
                 linkedin: 'LinkedIn'
-            }
+            },
+            dragonAlt: 'Dragão oriental em ASCII voando pela página. Cabeça baseada na ilustração de Suryono Suryono (Vecteezy): https://pt.vecteezy.com/arte-vetorial/7949283-desenhado-a-mao-dragao-oriental-1'
         },
         experience: {
             title: 'Onde trabalhei',
