@@ -40,9 +40,10 @@ const isScrolled = ref(false)
 // "Home" doubles as "About" — the hero section they'd both point to is the
 // same place, so a separate About link was redundant (and confusing: two
 // items landing in virtually the same scroll position).
-// Order matches the actual page layout (About → Blog → Projects).
+// Order matches the actual page layout (About → Experience → Blog → Projects).
 const sections = [
   { id: 'home', label: 'nav.home' },
+  { id: 'experience', label: 'nav.experience' },
   { id: 'writing', label: 'nav.writing' },
   { id: 'projects', label: 'nav.projects' },
 ]

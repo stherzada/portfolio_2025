@@ -5,6 +5,7 @@ const messages = {
     en: {
         nav: {
             home: 'Home',
+            experience: 'Career',
             projects: 'Projects',
             writing: 'Blog',
             menu: 'Menu',
@@ -23,6 +24,12 @@ const messages = {
                 github: 'Github',
                 linkedin: 'LinkedIn'
             }
+        },
+        experience: {
+            title: "Where I've worked",
+            present: 'now',
+            years: '{n} yr | {n} yrs',
+            months: '{n} mo | {n} mos'
         },
         footer: {
             rights: 'All rights reserved.'
@@ -101,6 +108,7 @@ const messages = {
     pt: {
         nav: {
             home: 'Início',
+            experience: 'Carreira',
             projects: 'Projetos',
             writing: 'Blog',
             menu: 'Menu',
@@ -119,6 +127,12 @@ const messages = {
                 github: 'Github',
                 linkedin: 'LinkedIn'
             }
+        },
+        experience: {
+            title: 'Onde trabalhei',
+            present: 'atual',
+            years: '{n} ano | {n} anos',
+            months: '{n} mês | {n} meses'
         },
         footer: {
             rights: 'Todos os direitos reservados.'

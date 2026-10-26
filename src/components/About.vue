@@ -31,7 +31,7 @@ onMounted(() => {
 })
 
 const scrollToNext = () => {
-    document.getElementById('writing')?.scrollIntoView({ behavior: 'smooth' })
+    document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' })
 }
 </script>
 

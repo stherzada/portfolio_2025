@@ -2,6 +2,7 @@
 
 import { defineAsyncComponent } from 'vue'
 import About from '../components/About.vue'
+import Experience from '../components/Experience.vue'
 import Blog from '../components/Blog.vue'
 import { useScrollPosition } from '../composables/useScrollPosition'
 
@@ -13,6 +14,7 @@ useScrollPosition()
 <template>
     <main>
       <About />
+      <Experience />
       <Blog />
       <Projects />
     </main>
