@@ -13,16 +13,20 @@ const DestroyMode = defineAsyncComponent(() => import('./components/DestroyMode.
 
 const route = useRoute()
 const isAdminRoute = computed(() => route.path.startsWith('/admin'))
+// The 404 is a standalone full-viewport screen: no nav (its section links
+// only work on the home page) and no footer; `$ cd ~` is the way back.
+const isNotFound = computed(() => route.name === 'NotFound')
+const hideChrome = computed(() => isAdminRoute.value || isNotFound.value)
 
 useKonami()
 useTerminalTrigger()
 </script>
 
 <template>
-  <div :class="isAdminRoute ? 'min-h-screen' : 'mx-auto pt-20 md:pt-24'">
-    <NavBar v-if="!isAdminRoute" />
+  <div :class="hideChrome ? 'min-h-screen' : 'mx-auto pt-20 md:pt-24'">
+    <NavBar v-if="!hideChrome" />
     <RouterView />
-    <Footer v-if="!isAdminRoute" />
+    <Footer v-if="!hideChrome" />
     <TerminalOverlay v-if="isTerminalOpen" />
     <DestroyMode v-if="destroyCharacter" :character="destroyCharacter" />
   </div>

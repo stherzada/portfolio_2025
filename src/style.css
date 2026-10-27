@@ -409,10 +409,6 @@ html {
   border-radius: 4px;
 }
 
-.group:hover img {
-  filter: grayscale(0);
-}
-
 @media (max-width: 1024px) {
   img {
     filter: grayscale(0) !important;

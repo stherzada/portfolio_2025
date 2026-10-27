@@ -7,8 +7,10 @@ import { closeTerminal } from '@/composables/useTerminal'
 import { triggerParticleBurst } from '@/composables/useParticleBurst'
 import { startDestroyMode } from '@/composables/useDestroyMode'
 import { clearSavedScrollPosition } from '@/composables/useScrollPosition'
+import { experiences } from '@/data/experience'
+import { commitHash, formatMonth, sortedExperiences } from '@/utils/career'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
@@ -77,6 +79,17 @@ function goToBlog() {
   }, 300)
 }
 
+// The career section as `git log`: newest first, the current role at HEAD.
+function printCareerLog() {
+  const lang = locale.value === 'pt' ? 'pt' : 'en'
+  for (const xp of sortedExperiences(experiences)) {
+    const head = xp.end ? '' : ` (HEAD -> ${t('experience.present')})`
+    const until = xp.end ? formatMonth(xp.end, lang) : t('experience.present')
+    pushLine('output', `${commitHash(xp)}${head} ${xp.company} — ${xp.role[lang]}`)
+    pushLine('output', `        ${formatMonth(xp.start, lang)} — ${until}`)
+  }
+}
+
 function runCommand(raw: string) {
   const trimmed = raw.trim()
   if (!trimmed) return
@@ -95,6 +108,10 @@ function runCommand(raw: string) {
     pushLine('output', t('about.description'))
   } else if (cmd === 'about') {
     goToSection('about', 'terminal.navigatingAbout')
+  } else if (cmd === 'career' || cmd === 'carreira' || cmd === 'experience') {
+    goToSection('experience', 'terminal.navigatingCareer')
+  } else if (cmd === 'git' && rest[0] === 'log') {
+    printCareerLog()
   } else if (cmd === 'projects' || cmd === 'ls') {
     goToSection('projects', 'terminal.navigatingProjects')
   } else if (cmd === 'blog' || cmd === 'writing' || (cmd === 'cat' && argLine === 'blog')) {

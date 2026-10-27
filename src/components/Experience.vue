@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight, MapPin } from 'lucide-vue-next'
 import ScrambleText from './ScrambleText.vue'
 import { experiences, type Experience } from '../data/experience'
+import { commitHash, formatMonth, parseMonth, sortedExperiences } from '../utils/career'
 import { prefersReducedMotion } from '../composables/useReducedMotion'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -13,19 +14,6 @@ gsap.registerPlugin(ScrollTrigger)
 const { t, locale } = useI18n()
 
 const lang = computed(() => (locale.value === 'pt' ? 'pt' : 'en'))
-
-function parseMonth(value: string) {
-    const [year, month] = value.split('-').map(Number) as [number, number]
-    return { year, month }
-}
-
-function formatMonth(value: string) {
-    const { year, month } = parseMonth(value)
-    const name = new Intl.DateTimeFormat(lang.value === 'pt' ? 'pt-BR' : 'en-US', { month: 'short' })
-        .format(new Date(year, month - 1, 1))
-        .replace('.', '')
-    return `${name} ${year}`
-}
 
 // Inclusive month count, the same way LinkedIn shows tenure.
 function formatDuration(start: string, end?: string) {
@@ -41,25 +29,14 @@ function formatDuration(start: string, end?: string) {
     ].filter(Boolean).join(' ')
 }
 
-// Stable fake commit hash so each role reads like an entry in `git log`.
-function shortHash(seed: string) {
-    let hash = 0x811c9dc5
-    for (const char of seed) {
-        hash ^= char.charCodeAt(0)
-        hash = Math.imul(hash, 0x01000193)
-    }
-    return (hash >>> 0).toString(16).padStart(8, '0').slice(0, 7)
-}
-
 const items = computed(() =>
-    [...experiences]
-        .sort((a, b) => b.start.localeCompare(a.start))
+    sortedExperiences(experiences)
         .map((xp: Experience) => ({
             ...xp,
             key: `${xp.company}-${xp.start}`,
-            hash: shortHash(`${xp.company}${xp.start}`),
+            hash: commitHash(xp),
             current: !xp.end,
-            period: `${formatMonth(xp.start)} — ${xp.end ? formatMonth(xp.end) : t('experience.present')}`,
+            period: `${formatMonth(xp.start, lang.value)} — ${xp.end ? formatMonth(xp.end, lang.value) : t('experience.present')}`,
             duration: formatDuration(xp.start, xp.end)
         }))
 )

@@ -67,7 +67,9 @@ const messages = {
         },
         notFound: {
             title: 'Page not found',
-            backHome: '← Back to home'
+            message: "The path may be broken, but the journey isn't. Let's get you back.",
+            backHome: 'Back to home',
+            comment: 'back to home'
         },
         terminal: {
             windowTitle: 'guest\\@stherzada.com: ~',
@@ -75,9 +77,10 @@ const messages = {
             close: 'Close terminal',
             inputLabel: 'Terminal command',
             open: 'Open terminal',
-            help: 'Available commands: whoami, about, projects, blog, links, clear, sudo hire-me, exit',
+            help: 'Available commands: whoami, about, career, git log, projects, blog, links, clear, sudo hire-me, exit',
             navigatingAbout: 'Opening /about ...',
             navigatingProjects: 'Opening /projects ...',
+            navigatingCareer: 'Opening /career ...',
             navigatingBlog: 'Opening /blog ...',
             linksIntro: 'Find me at:',
             hireMe: 'Permission granted. Opening email client...',
@@ -171,7 +174,9 @@ const messages = {
         },
         notFound: {
             title: 'Página não encontrada',
-            backHome: '← Voltar para o início'
+            message: 'O caminho pode estar quebrado, mas a jornada não. Vamos te levar de volta.',
+            backHome: 'Voltar para o início',
+            comment: 'voltar para o início'
         },
         terminal: {
             windowTitle: 'guest\\@stherzada.com: ~',
@@ -179,9 +184,10 @@ const messages = {
             close: 'Fechar terminal',
             inputLabel: 'Comando do terminal',
             open: 'Abrir terminal',
-            help: 'Comandos disponíveis: whoami, about, projects, blog, links, clear, sudo hire-me, exit',
+            help: 'Comandos disponíveis: whoami, about, career, git log, projects, blog, links, clear, sudo hire-me, exit',
             navigatingAbout: 'Abrindo /about ...',
             navigatingProjects: 'Abrindo /projects ...',
+            navigatingCareer: 'Abrindo /carreira ...',
             navigatingBlog: 'Abrindo /blog ...',
             linksIntro: 'Me encontre em:',
             hireMe: 'Permissão concedida. Abrindo cliente de email...',
