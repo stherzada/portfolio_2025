@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
+import { useResizeObserver } from '@vueuse/core'
 import { Menu, X, ChevronUp, ArrowLeft, Home } from 'lucide-vue-next'
 import ThemeToggle from './ThemeToggle.vue'
 import { clearSavedScrollPosition } from '../composables/useScrollPosition'
@@ -85,6 +86,24 @@ const updateScrollState = () => {
   activeSection.value = current
 }
 
+// Pill that slides behind the active section link (desktop nav).
+const sectionLinksEl = ref<HTMLElement | null>(null)
+const indicator = ref({ x: 0, y: 0, width: 0, height: 0 })
+const indicatorReady = ref(false)
+
+const updateIndicator = () => {
+  const active = sectionLinksEl.value?.querySelector<HTMLElement>('[aria-current="location"]')
+  if (!active || !active.offsetWidth) return
+  indicator.value = { x: active.offsetLeft, y: active.offsetTop, width: active.offsetWidth, height: active.offsetHeight }
+  // First placement snaps; only later moves slide.
+  if (!indicatorReady.value) requestAnimationFrame(() => { indicatorReady.value = true })
+}
+
+// Labels change width with the language, the section links only render on
+// the home route, and the container only gets a size at the lg breakpoint.
+watch([activeSection, locale, () => route.path], () => nextTick(updateIndicator))
+useResizeObserver(sectionLinksEl, updateIndicator)
+
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
@@ -138,7 +157,7 @@ const scrollToSection = (id: string) => {
       </button>
 
 
-      <div class="hidden lg:flex lg:items-center lg:gap-1">
+      <div ref="sectionLinksEl" class="relative hidden lg:flex lg:items-center lg:gap-1">
         <template v-if="isBlogPostPage">
           <button @click="navigateToBlog"
             class="nav-link flex items-center gap-1.5 font-mono text-xs tracking-wider uppercase px-3 py-1.5 rounded-full cursor-pointer text-primary">
@@ -153,9 +172,15 @@ const scrollToSection = (id: string) => {
           </router-link>
         </template>
         <template v-else>
+          <span class="nav-indicator absolute top-0 left-0 rounded-full" :class="{ 'is-ready': indicatorReady }"
+            :style="{
+              width: `${indicator.width}px`,
+              height: `${indicator.height}px`,
+              transform: `translate(${indicator.x}px, ${indicator.y}px)`
+            }" aria-hidden="true" />
           <button v-for="section in sections" :key="section.id" type="button" @click="scrollToSection(section.id)"
             :aria-current="activeSection === section.id ? 'location' : undefined"
-            class="nav-link flex items-center gap-1.5 font-mono text-xs tracking-wider uppercase px-3 py-1.5 rounded-full cursor-pointer text-primary">
+            class="nav-link relative flex items-center gap-1.5 font-mono text-xs tracking-wider uppercase px-3 py-1.5 rounded-full cursor-pointer text-primary">
             <span class="nav-dot rounded-full transition-all duration-300"
               :class="activeSection === section.id ? 'nav-dot-active' : ''" aria-hidden="true" />
             {{ t(section.label) }}
@@ -194,18 +219,18 @@ const scrollToSection = (id: string) => {
   <!-- inert while closed: it's only translated off-screen, so its controls would still be tabbable. -->
   <div v-if="hasMobileMenu" id="mobile-menu" :inert="!isMenuOpen" :aria-hidden="!isMenuOpen" :class="[
     'mobile-menu text-primary fixed top-0 right-0 h-full w-72 shadow-2xl transform transition-transform duration-500 ease-out z-50 lg:hidden border-l',
-    isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+    isMenuOpen ? 'translate-x-0 is-open' : 'translate-x-full'
   ]">
     <div class="flex flex-col gap-2 p-6 pt-24">
-      <button v-for="section in sections" :key="section.id" type="button" @click="scrollToSection(section.id)"
+      <button v-for="(section, i) in sections" :key="section.id" type="button" @click="scrollToSection(section.id)"
         :aria-current="activeSection === section.id ? 'location' : undefined"
-        class="flex items-center gap-3 cursor-pointer group py-2 text-left">
+        class="menu-item flex items-center gap-3 cursor-pointer group py-2 text-left" :style="{ '--i': i }">
         <span class="nav-dot rounded-full transition-all duration-300 shrink-0"
           :class="activeSection === section.id ? 'nav-dot-active' : ''" aria-hidden="true" />
         <span class="font-mono text-2xl tracking-tight">{{ t(section.label) }}</span>
       </button>
 
-      <div class="mt-8 pt-6 card-divider flex items-center gap-4 font-mono text-sm">
+      <div class="menu-item mt-8 pt-6 card-divider flex items-center gap-4 font-mono text-sm" :style="{ '--i': sections.length }">
         <button @click="setLanguage('pt')" class="cursor-pointer transition-opacity"
           lang="pt-BR" aria-label="Português" :aria-pressed="locale === 'pt'"
           :class="locale === 'pt' ? 'opacity-100 font-semibold' : 'opacity-60'">PT</button>
@@ -217,11 +242,13 @@ const scrollToSection = (id: string) => {
     </div>
   </div>
 
-  <button v-show="showScrollTop" @click="scrollToTop"
-    class="text-primary scroll-top-button fixed bottom-6 right-6 w-10 h-10 flex items-center justify-center rounded-full shadow-lg transition-all duration-300 opacity-70 hover:opacity-100 z-50 cursor-pointer"
-    :aria-label="t('nav.backToTop')">
-    <ChevronUp class="h-5 w-5" aria-hidden="true" />
-  </button>
+  <Transition name="scroll-top">
+    <button v-show="showScrollTop" @click="scrollToTop"
+      class="text-primary scroll-top-button fixed bottom-6 right-6 w-10 h-10 flex items-center justify-center rounded-full shadow-lg transition-all duration-300 opacity-70 hover:opacity-100 z-50 cursor-pointer"
+      :aria-label="t('nav.backToTop')">
+      <ChevronUp class="h-5 w-5" aria-hidden="true" />
+    </button>
+  </Transition>
 </template>
 
 <style scoped>
@@ -257,6 +284,55 @@ const scrollToSection = (id: string) => {
 .nav-dot-active {
   opacity: 1;
   background-color: var(--color-primary);
+}
+
+.nav-indicator {
+  background-color: var(--color-base-200);
+}
+
+.nav-indicator.is-ready {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Delay only on open, so closing doesn't wait on the cascade. */
+.menu-item {
+  opacity: 0;
+  transform: translateX(16px);
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.is-open .menu-item {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--i, 0) * 50ms + 150ms);
+}
+
+.scroll-top-enter-active,
+.scroll-top-leave-active {
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-top-enter-from,
+.scroll-top-leave-to {
+  opacity: 0;
+  transform: translateY(8px) scale(0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-indicator.is-ready,
+  .menu-item {
+    transition: none;
+  }
+
+  .menu-item,
+  .scroll-top-enter-from,
+  .scroll-top-leave-to {
+    transform: none;
+  }
+
+  .menu-item {
+    opacity: 1;
+  }
 }
 
 </style>

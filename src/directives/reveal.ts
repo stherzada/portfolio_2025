@@ -13,6 +13,8 @@ export interface RevealOptions {
   duration?: number
   /** ScrollTrigger `start` value. */
   start?: string
+  /** Reveal the element's children one after another (seconds between each). */
+  stagger?: number
 }
 
 type RevealValue = RevealOptions | number | undefined
@@ -44,7 +46,8 @@ function scheduleRefresh() {
  */
 export const reveal: Directive<HTMLElement, RevealValue> = {
   mounted(el, binding) {
-    const { delay = 0, y = 24, duration = 0.8, start = 'top 85%' } = resolveOptions(binding.value)
+    const { delay = 0, y = 24, duration = 0.8, start = 'top 85%', stagger } = resolveOptions(binding.value)
+    const targets = stagger ? Array.from(el.children) : el
 
     // Prevent the global CSS `fadeIn` keyframe (see style.css) from also
     // driving opacity on this element.
@@ -56,18 +59,19 @@ export const reveal: Directive<HTMLElement, RevealValue> = {
       return
     }
 
-    gsap.set(el, { opacity: 0, y })
+    gsap.set(targets, { opacity: 0, y })
 
     const trigger = ScrollTrigger.create({
       trigger: el,
       start,
       once: true,
       onEnter: () => {
-        gsap.to(el, {
+        gsap.to(targets, {
           opacity: 1,
           y: 0,
           duration,
           delay,
+          stagger,
           ease: 'power3.out',
         })
       },

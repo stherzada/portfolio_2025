@@ -63,7 +63,8 @@ const links: Link[] = [
 </script>
 
 <template>
-    <nav class="flex flex-wrap justify-center lg:justify-start gap-2 mt-4" aria-label="Links de redes sociais">
+    <nav class="flex flex-wrap justify-center lg:justify-start gap-2 mt-4" aria-label="Links de redes sociais"
+        v-reveal="{ stagger: 0.05, delay: 0.4, y: 10, duration: 0.6 }">
         <a v-for="link in links" :key="link.href" :href="link.href"
             :title="link.alt === 'Twitch' && twitchLiveStatus.isLive ? 'Ao vivo agora na Twitch' : link.title"
             :rel="link.rel" target="_blank" v-magnetic="{ strength: 0.4 }"

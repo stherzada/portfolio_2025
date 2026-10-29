@@ -3,6 +3,7 @@ import store from '../store'
 import { useRoute } from 'vue-router'
 import type { Post } from '../types'
 import { ref, computed, watch } from 'vue'
+import { useElementBounding, useWindowSize } from '@vueuse/core'
 import { fetchPostBySlug } from '../services/blog'
 import { useI18n } from 'vue-i18n'
 import { formatDateWithI18n } from '../utils/dateFormat'
@@ -69,6 +70,17 @@ const fetchPost = async (slug: string) => {
   }
 }
 
+// Reading progress: 0 when the post's top reaches the viewport top, 1 when
+// its bottom reaches the viewport bottom.
+const postEl = ref<HTMLElement | null>(null)
+const { top: postTop, height: postHeight } = useElementBounding(postEl)
+const { height: viewportHeight } = useWindowSize()
+const readProgress = computed(() => {
+  const scrollable = postHeight.value - viewportHeight.value
+  if (scrollable <= 0) return 1
+  return Math.min(1, Math.max(0, -postTop.value / scrollable))
+})
+
 // immediate: also covers /blog/a -> /blog/b, where the component is reused.
 watch(() => route.params.slug, (slug) => {
   if (typeof slug === 'string') fetchPost(slug)
@@ -93,7 +105,12 @@ watch(() => route.params.slug, (slug) => {
         </button>
       </div>
 
-      <div v-else-if="post" class="w-full max-w-3xl">
+      <div v-else-if="post" ref="postEl" class="w-full max-w-3xl">
+        <!-- Teleported so the page's enter transform can't pin it to the page. -->
+        <Teleport to="body">
+          <div class="read-progress fixed top-0 inset-x-0 h-0.5 z-[60] origin-left pointer-events-none"
+            :style="{ transform: `scaleX(${readProgress})` }" aria-hidden="true" />
+        </Teleport>
         <div v-if="post.image_path" class="mb-8 overflow-hidden rounded-2xl">
           <img :src="post.image_path" :alt="post.title" class="w-full h-48 md:h-72 object-cover" />
         </div>
@@ -126,6 +143,10 @@ watch(() => route.params.slug, (slug) => {
 <style scoped>
 .text-muted {
     color: var(--color-neutral);
+}
+
+.read-progress {
+    background-color: var(--color-primary);
 }
 
 .retry-chip {

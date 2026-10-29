@@ -25,7 +25,14 @@ useTerminalTrigger()
 <template>
   <div :class="hideChrome ? 'min-h-screen' : 'mx-auto pt-20 md:pt-24'">
     <NavBar v-if="!hideChrome" />
-    <RouterView />
+    <!-- Enter-only (no leave styles): the old page is dropped right away, so
+         the router's scroll reset never plays out on a page still on screen.
+         out-in keeps the two from stacking for the frame or two that takes. -->
+    <RouterView v-slot="{ Component }">
+      <Transition name="page" mode="out-in">
+        <component :is="Component" />
+      </Transition>
+    </RouterView>
     <Footer v-if="!hideChrome" />
     <TerminalOverlay v-if="isTerminalOpen" />
     <DestroyMode v-if="destroyCharacter" :character="destroyCharacter" />

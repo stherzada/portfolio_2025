@@ -57,7 +57,7 @@ const scrollToNext = () => {
         <AsciiDragons v-if="showDragons" :avoid="textRef" :content="contentRef" />
         <div ref="contentRef" class="relative z-10 m-6 md:mx-8 md:max-w-4xl w-full">
             <div class="flex flex-col lg:flex-row items-center gap-12">
-                <div ref="textRef" class="flex-1 text-center lg:text-left order-2 lg:order-1" v-reveal>
+                <div ref="textRef" class="flex-1 text-center lg:text-left order-2 lg:order-1" v-reveal="{ stagger: 0.1 }">
                     <h1 class="font-mono font-semibold text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight mb-4 text-primary">
                         <ScrambleText text="Sthefany Sther" :delay="500" /><span class="hero-cursor" aria-hidden="true">_</span>
                     </h1>
@@ -69,7 +69,7 @@ const scrollToNext = () => {
                     </p>
                     <Links />
                 </div>
-                <div class="flex flex-col items-center gap-5 order-1 lg:order-2" v-reveal="{ delay: 0.15 }">
+                <div class="flex flex-col items-center gap-5 order-1 lg:order-2" v-reveal="{ delay: 0.2 }">
                     <div class="relative w-56 h-56 lg:w-72 lg:h-72 rounded-3xl overflow-hidden">
                         <AnimatedCircle />
                         <img src="/src/assets/photo-no-bg.png" alt="Sthefany Sther" fetchpriority="high" width="288" height="288"

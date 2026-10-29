@@ -89,7 +89,7 @@ function trackPointer(event: PointerEvent) {
 <template>
     <section id="experience" class="flex items-center justify-center py-16 scroll-mt-24">
         <div class="m-6 md:mx-8 md:max-w-4xl w-full">
-            <div class="mb-12">
+            <div class="mb-12" v-reveal="{ stagger: 0.08 }">
                 <p class="eyebrow mb-3">/{{ t('nav.experience') }}</p>
                 <h2 class="font-mono font-semibold text-3xl lg:text-4xl tracking-tight text-primary">
                     <ScrambleText :text="t('experience.title')" :scramble-speed="60" :iteration-speed="3" />

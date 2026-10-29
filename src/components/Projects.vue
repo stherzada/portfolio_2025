@@ -55,13 +55,20 @@ const fetchReposWithRetry = async () => {
 onMounted(() => {
     fetchReposWithRetry()
 })
+
+// Leaving rows go `position: absolute` so the rest can slide up; pin each one
+// where it was, or the stacked leavers would all jump to the top of the list.
+const pinLeavingRow = (el: Element) => {
+    const row = el as HTMLElement
+    row.style.top = `${row.offsetTop}px`
+}
 </script>
 
 <template>
     <section id="projects" class="flex items-center justify-center py-16 scroll-mt-24">
         <div class="m-6 md:mx-8 md:max-w-4xl w-full">
             <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
-                <div>
+                <div v-reveal="{ stagger: 0.08 }">
                     <p class="eyebrow mb-3">/{{ t('nav.projects') }}</p>
                     <h2 class="font-mono font-semibold text-3xl lg:text-4xl tracking-tight text-primary">
                         <ScrambleText :text="t('projects.projects')" :scramble-speed="60" :iteration-speed="3" />
@@ -102,7 +109,10 @@ onMounted(() => {
                 </button>
             </div>
 
-            <div v-else class="project-list border-t">
+            <!-- Filtering: rows that drop out fade away while the rest slide
+                 into place; rows that come back get the usual v-reveal. -->
+            <TransitionGroup v-else tag="div" name="project" class="project-list relative border-t"
+                @before-leave="pinLeavingRow">
                 <article v-for="(repo, index) in filteredRepos" :key="repo.url"
                     v-reveal="{ delay: Math.min(index, 8) * 0.05 }"
                     class="project-row group border-b -mx-3 sm:-mx-4 px-3 sm:px-4 py-8 rounded-xl">
@@ -140,7 +150,7 @@ onMounted(() => {
                         </div>
                     </div>
                 </article>
-            </div>
+            </TransitionGroup>
         </div>
     </section>
 </template>
@@ -162,6 +172,30 @@ onMounted(() => {
 
 .project-row:hover {
     background-color: var(--color-base-100);
+}
+
+/* The slide waits a beat so rows on their way out are mostly gone first. */
+.project-move {
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.12s, background-color 0.25s ease;
+}
+
+.project-leave-active {
+    position: absolute;
+    left: 0;
+    right: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* !important: v-reveal leaves an inline `opacity: 1` on each row. */
+.project-leave-to {
+    opacity: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .project-move,
+    .project-leave-active {
+        transition: none;
+    }
 }
 
 .lang-chip {

@@ -44,7 +44,7 @@ onMounted(async () => {
 <template>
     <div class="px-8">
         <main class="mx-auto  w-full pb-16">
-            <div class="mb-10">
+            <div class="mb-10" v-reveal="{ stagger: 0.08 }">
                 <p class="eyebrow mb-3">/{{ t('nav.writing') }}</p>
                 <h1 class="font-mono font-semibold text-3xl lg:text-4xl tracking-tight text-primary mb-3">
                     {{ t('blog.title') }}

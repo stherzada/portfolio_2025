@@ -23,7 +23,7 @@ onMounted(async () => {
 <template>
     <section id="writing" class="flex items-center justify-center py-16 scroll-mt-24">
         <div class="md:mx-8 mx-4 md:max-w-4xl w-full">
-            <div class="mb-10">
+            <div class="mb-10" v-reveal="{ stagger: 0.08 }">
                 <p class="eyebrow mb-3">/{{ t('nav.writing') }}</p>
                 <router-link to="/blog" class="inline-flex items-center gap-2">
                     <h2 class="link-hover font-mono font-semibold text-3xl lg:text-4xl tracking-tight text-primary">
