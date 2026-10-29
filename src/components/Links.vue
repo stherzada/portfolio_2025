@@ -1,80 +1,45 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Mail, Twitter, FileText, Twitch, Github, Linkedin } from 'lucide-vue-next'
 import { useTwitchLiveStatus } from '../composables/useTwitchLiveStatus'
 
 interface Link {
+    /** Key under `about.links` / `about.linkTitles` in the i18n messages. */
+    key: 'email' | 'linkedin' | 'github' | 'twitter' | 'midiaKit' | 'twitch'
     href: string
     icon: Component
-    alt: string
-    title: string
     rel: string
 }
 
+const { t } = useI18n()
 const { twitchLiveStatus } = useTwitchLiveStatus()
 
 const links: Link[] = [
-    {
-        href: 'mailto:contatostherzada@gmail.com',
-        icon: Mail,
-        alt: 'Email',
-        title: 'Entre em contato por email',
-        rel: 'nofollow'
-    },
-
-    {
-        href: 'https://www.linkedin.com/in/sthefany-sther/',
-        icon: Linkedin,
-        alt: 'LinkedIn',
-        title: 'Conecte-se comigo no LinkedIn',
-        rel: 'me noopener'
-    },
-
-    {
-        href: 'https://github.com/stherzada',
-        icon: Github,
-        alt: 'GitHub',
-        title: 'Veja meus projetos no GitHub',
-        rel: 'me noopener'
-    },
-    
-    {
-        href: 'https://twitter.com/stherzada',
-        icon: Twitter,
-        alt: 'Twitter',
-        title: 'Siga-me no Twitter',
-        rel: 'me noopener'
-    },
-    {
-        href: 'https://beacons.ai/stherzada/mediakit?origin=lib',
-        icon: FileText,
-        alt: 'Media Kit',
-        title: 'Acesse meu Media Kit',
-        rel: 'noopener'
-    },
-    {
-        href: 'https://twitch.tv/stherzada',
-        icon: Twitch,
-        alt: 'Twitch',
-        title: 'Assista minhas lives na Twitch',
-        rel: 'me noopener'
-    },
+    { key: 'email', href: 'mailto:contatostherzada@gmail.com', icon: Mail, rel: 'nofollow' },
+    { key: 'linkedin', href: 'https://www.linkedin.com/in/sthefany-sther/', icon: Linkedin, rel: 'me noopener' },
+    { key: 'github', href: 'https://github.com/stherzada', icon: Github, rel: 'me noopener' },
+    { key: 'twitter', href: 'https://twitter.com/stherzada', icon: Twitter, rel: 'me noopener' },
+    { key: 'midiaKit', href: 'https://beacons.ai/stherzada/mediakit?origin=lib', icon: FileText, rel: 'noopener' },
+    { key: 'twitch', href: 'https://twitch.tv/stherzada', icon: Twitch, rel: 'me noopener' },
 ]
+
+const isLive = (link: Link) => link.key === 'twitch' && twitchLiveStatus.value.isLive
 </script>
 
 <template>
-    <nav class="flex flex-wrap justify-center lg:justify-start gap-2 mt-4" aria-label="Links de redes sociais"
+    <nav class="flex flex-wrap justify-center lg:justify-start gap-2 mt-4" :aria-label="t('about.socialLinks')"
         v-reveal="{ stagger: 0.05, delay: 0.4, y: 10, duration: 0.6 }">
         <a v-for="link in links" :key="link.href" :href="link.href"
-            :title="link.alt === 'Twitch' && twitchLiveStatus.isLive ? 'Ao vivo agora na Twitch' : link.title"
+            :title="isLive(link) ? t('about.twitchLiveTitle') : t(`about.linkTitles.${link.key}`)"
             :rel="link.rel" target="_blank" v-magnetic="{ strength: 0.4 }"
             class="social-chip flex items-center gap-2 pl-2.5 pr-3 py-2 rounded-full transition-colors duration-200 border"
-            :aria-label="link.alt === 'Twitch' && twitchLiveStatus.isLive ? `${link.alt}, ao vivo agora` : link.alt">
+            :aria-label="isLive(link) ? `${t(`about.links.${link.key}`)}, ${t('about.liveNow')}` : t(`about.links.${link.key}`)">
             <span class="relative inline-flex">
                 <component :is="link.icon" class="w-4 h-4" aria-hidden="true" />
-                <span v-if="link.alt === 'Twitch' && twitchLiveStatus.isLive" class="live-badge" aria-hidden="true" />
+                <span v-if="isLive(link)" class="live-badge" aria-hidden="true" />
             </span>
-            <span class="font-mono text-xs tracking-wide uppercase">{{ link.alt }}</span>
+            <span class="font-mono text-xs tracking-wide uppercase">{{ t(`about.links.${link.key}`) }}</span>
         </a>
     </nav>
 </template>

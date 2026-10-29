@@ -42,8 +42,8 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="px-8">
-        <main class="mx-auto  w-full pb-16">
+    <div class="px-4 md:px-8">
+        <main class="mx-auto w-full max-w-5xl pb-16">
             <div class="mb-10" v-reveal="{ stagger: 0.08 }">
                 <p class="eyebrow mb-3">/{{ t('nav.writing') }}</p>
                 <h1 class="font-mono font-semibold text-3xl lg:text-4xl tracking-tight text-primary mb-3">
@@ -66,7 +66,7 @@ onMounted(async () => {
                 </button>
             </div>
 
-            <div v-else class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div v-else class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <article v-for="(post, index) in store.posts" :key="post.id"
                     v-reveal="{ delay: Math.min(index, 8) * 0.05 }"
                     class="post-card relative rounded-2xl border overflow-hidden transition-all duration-300 hover:shadow-lg flex flex-col">

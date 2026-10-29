@@ -21,9 +21,23 @@ const messages = {
                 twitter: 'Twitter',
                 midiaKit: 'Media Kit',
                 twitch: 'Twitch',
-                github: 'Github',
+                github: 'GitHub',
                 linkedin: 'LinkedIn'
             },
+            linkTitles: {
+                email: 'Get in touch by email',
+                twitter: 'Follow me on Twitter',
+                midiaKit: 'See my media kit',
+                twitch: 'Watch my streams on Twitch',
+                github: 'See my projects on GitHub',
+                linkedin: 'Connect with me on LinkedIn'
+            },
+            socialLinks: 'Social links',
+            liveNow: 'live now',
+            twitchLiveTitle: 'Live on Twitch now',
+            twitchLiveBadge: 'LIVE ON TWITCH',
+            spotifyPlaying: 'Listening now on Spotify',
+            spotifyIdle: "Not listening to anything right now",
             dragonAlt: 'ASCII eastern dragon flying across the page. Head based on an illustration by Suryono Suryono (Vecteezy): https://pt.vecteezy.com/arte-vetorial/7949283-desenhado-a-mao-dragao-oriental-1'
         },
         experience: {
@@ -128,9 +142,23 @@ const messages = {
                 twitter: 'Twitter',
                 midiaKit: 'Mídia Kit',
                 twitch: 'Twitch',
-                github: 'Github',
+                github: 'GitHub',
                 linkedin: 'LinkedIn'
             },
+            linkTitles: {
+                email: 'Entre em contato por email',
+                twitter: 'Siga-me no Twitter',
+                midiaKit: 'Acesse meu Mídia Kit',
+                twitch: 'Assista minhas lives na Twitch',
+                github: 'Veja meus projetos no GitHub',
+                linkedin: 'Conecte-se comigo no LinkedIn'
+            },
+            socialLinks: 'Links de redes sociais',
+            liveNow: 'ao vivo agora',
+            twitchLiveTitle: 'Ao vivo na Twitch agora',
+            twitchLiveBadge: 'AO VIVO NA TWITCH',
+            spotifyPlaying: 'Ouvindo agora no Spotify',
+            spotifyIdle: 'Não estou ouvindo nada agora',
             dragonAlt: 'Dragão oriental em ASCII voando pela página. Cabeça baseada na ilustração de Suryono Suryono (Vecteezy): https://pt.vecteezy.com/arte-vetorial/7949283-desenhado-a-mao-dragao-oriental-1'
         },
         experience: {

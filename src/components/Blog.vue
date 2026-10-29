@@ -2,7 +2,6 @@
 import { useI18n } from 'vue-i18n'
 import { ArrowRight, Calendar, Clock } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
-import { fetchPostsAll  } from '../services/blog'
 import type { Post } from '../types/Post';
 import { formatReadingTime } from '../utils/readingTime'
 import { formatDateWithI18n } from '../utils/dateFormat'
@@ -12,6 +11,8 @@ const featuredPost = ref<Post | undefined>(undefined)
 
 onMounted(async () => {
     try {
+        // Loaded on demand so supabase-js stays off the home page's critical path.
+        const { fetchPostsAll } = await import('../services/blog')
         const { posts } = await fetchPostsAll(1, 1)
         featuredPost.value = posts[0]
     } catch {

@@ -1,17 +1,19 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { useTwitchLiveStatus } from '../composables/useTwitchLiveStatus'
 import { useReducedMotion } from '../composables/useReducedMotion'
 
 const { twitchLiveStatus } = useTwitchLiveStatus()
 const prefersReducedMotion = useReducedMotion()
+const { t } = useI18n()
 </script>
 
 <template>
     <a v-if="twitchLiveStatus.isLive" :href="twitchLiveStatus.streamUrl" target="_blank" rel="noopener"
         class="flex items-center gap-2 w-fit px-3 py-2.5 rounded-2xl border transition-colors duration-200 twitch-card"
-        title="Ao vivo na Twitch agora">
+        :title="t('about.twitchLiveTitle')">
         <span class="live-dot" :class="{ 'live-dot-paused': prefersReducedMotion }" aria-hidden="true" />
-        <span class="font-mono text-xs font-bold tracking-wide text-primary">AO VIVO NA TWITCH</span>
+        <span class="font-mono text-xs font-bold tracking-wide text-primary">{{ t('about.twitchLiveBadge') }}</span>
     </a>
 </template>
 

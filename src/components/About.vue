@@ -7,6 +7,8 @@ import AnimatedCircle from './AnimatedCircle.vue'
 import ScrambleText from './ScrambleText.vue'
 import SpotifyNowPlaying from './SpotifyNowPlaying.vue'
 import TwitchLiveStatus from './TwitchLiveStatus.vue'
+import photoAvif from '../assets/photo-no-bg.avif'
+import photoPng from '../assets/photo-no-bg.png'
 
 const { t } = useI18n()
 
@@ -72,10 +74,14 @@ const scrollToNext = () => {
                 <div class="flex flex-col items-center gap-5 order-1 lg:order-2" v-reveal="{ delay: 0.2 }">
                     <div class="relative w-56 h-56 lg:w-72 lg:h-72 rounded-3xl overflow-hidden">
                         <AnimatedCircle />
-                        <img src="/src/assets/photo-no-bg.png" alt="Sthefany Sther" fetchpriority="high" width="288" height="288"
-                            @load="loadPhotoAlpha" @mousemove="onPhotoMove" @mouseleave="photoColored = false"
-                            class="w-full h-full object-cover transition-all duration-300 ease-in-out filter relative z-20"
-                            :class="photoColored ? 'grayscale-0' : 'grayscale'" />
+                        <!-- AVIF is ~21 KB vs ~155 KB for the PNG fallback. -->
+                        <picture class="contents">
+                            <source :srcset="photoAvif" type="image/avif" />
+                            <img :src="photoPng" alt="Sthefany Sther" fetchpriority="high" width="288" height="288"
+                                @load="loadPhotoAlpha" @mousemove="onPhotoMove" @mouseleave="photoColored = false"
+                                class="w-full h-full object-cover transition-all duration-300 ease-in-out filter relative z-20"
+                                :class="photoColored ? 'grayscale-0' : 'grayscale'" />
+                        </picture>
                     </div>
                     <SpotifyNowPlaying />
                     <TwitchLiveStatus />

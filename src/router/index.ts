@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useMeta } from "@/composables/useMeta";
-import { useAuth } from "@/composables/useAuth";
-import supabase from "@/supabase";
 import { SITE_URL, DEFAULT_OG_IMAGE } from "@/config";
 
 const pageMeta = (title: string, description: string, path: string) => {
@@ -99,6 +97,13 @@ router.beforeEach(async (to, _from, next) => {
     next();
     return;
   }
+
+  // Carregados só aqui: o supabase-js é grande e as páginas públicas não
+  // precisam dele pra montar.
+  const [{ default: supabase }, { useAuth }] = await Promise.all([
+    import("@/supabase"),
+    import("@/composables/useAuth"),
+  ]);
 
   // getSession() é local (lê o JWT guardado) e barato — filtra quem não tem
   // sessão nenhuma antes de gastar um RPC.
