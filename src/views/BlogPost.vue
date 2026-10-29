@@ -20,6 +20,15 @@ const post = ref<Post | null>(null)
 const error = ref<string | null>(null)
 const loading = ref(false)
 
+// Images in the body are usually below the fold: don't let them compete
+// with the cover for bandwidth.
+DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+  if (node.tagName === 'IMG') {
+    node.setAttribute('loading', 'lazy')
+    node.setAttribute('decoding', 'async')
+  }
+})
+
 const sanitizedContent = computed(() =>
   post.value?.content ? DOMPurify.sanitize(post.value.content) : ''
 )
@@ -112,7 +121,7 @@ watch(() => route.params.slug, (slug) => {
             :style="{ transform: `scaleX(${readProgress})` }" aria-hidden="true" />
         </Teleport>
         <div v-if="post.image_path" class="mb-8 overflow-hidden rounded-2xl">
-          <img :src="post.image_path" :alt="post.title" class="w-full h-48 md:h-72 object-cover" />
+          <img :src="post.image_path" :alt="post.title" fetchpriority="high" class="w-full h-48 md:h-72 object-cover" />
         </div>
         <div class="mb-10">
           <p class="eyebrow mb-3">/{{ t('nav.writing') }}</p>
@@ -130,7 +139,7 @@ watch(() => route.params.slug, (slug) => {
             </span>
           </div>
         </div>
-        <article v-html="sanitizedContent" class="prose prose-sm md:prose-lg max-w-none"></article>
+        <article v-html="sanitizedContent" class="animate-fade-in prose prose-sm md:prose-lg max-w-none"></article>
       </div>
 
       <div v-else class="text-center py-16">

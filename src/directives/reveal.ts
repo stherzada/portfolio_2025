@@ -41,8 +41,8 @@ function scheduleRefresh() {
 /**
  * `v-reveal` — Apple-style scroll reveal (fade + rise) driven by
  * GSAP ScrollTrigger, matching the codebase's existing `fadeIn` easing.
- * Honors `prefers-reduced-motion` and cancels the global `.animate-fade-in`
- * / `article` CSS keyframe so the two don't fight over `opacity`.
+ * Honors `prefers-reduced-motion` and cancels the `.animate-fade-in` CSS
+ * keyframe (if the element has it) so the two don't fight over `opacity`.
  */
 export const reveal: Directive<HTMLElement, RevealValue> = {
   mounted(el, binding) {

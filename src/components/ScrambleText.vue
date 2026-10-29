@@ -82,7 +82,7 @@ onMounted(() => {
 
 <template>
     <!-- Screen readers get the real text; the scrambling span is visual only. -->
-    <span class="text-primary inline-block cursor-pointer select-none transition-colors duration-300"
+    <span class="text-primary inline-block cursor-default select-none transition-colors duration-300"
         :class="{ 'hover:text-primary': !isHovering }" @mouseenter="startScramble">
         <span class="sr-only">{{ text }}</span>
         <span aria-hidden="true">{{ scrambledText }}</span>
