@@ -18,7 +18,7 @@ interface VercelResponse {
   send(body: string): void
 }
 
-const SITE_URL = 'https://stherzada.com'
+const SITE_URL = 'https://www.stherzada.com'
 const FALLBACK_IMAGE = `${SITE_URL}/Logo.png`
 
 interface PostRow {
@@ -27,7 +27,6 @@ interface PostRow {
   slug: string
   image_path: string | null
   created_at: string
-  updated_at: string | null
 }
 
 // Throws on missing config / network / non-2xx so the caller can tell
@@ -41,7 +40,7 @@ async function fetchPostBySlug(slug: string): Promise<PostRow | null> {
   }
 
   const response = await fetch(
-    `${supabaseUrl}/rest/v1/posts?select=title,description,slug,image_path,created_at,updated_at&slug=eq.${encodeURIComponent(slug)}&limit=1`,
+    `${supabaseUrl}/rest/v1/posts?select=title,description,slug,image_path,created_at&slug=eq.${encodeURIComponent(slug)}&limit=1`,
     {
       signal: AbortSignal.timeout(5000),
       headers: {
@@ -112,7 +111,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     description,
     image,
     datePublished: post.created_at,
-    dateModified: post.updated_at || post.created_at,
+    dateModified: post.created_at,
     author: { '@type': 'Person', name: 'Sthefany Sther', url: SITE_URL },
     publisher: {
       '@type': 'Organization',

@@ -2,21 +2,26 @@
 import { useI18n } from 'vue-i18n'
 import { ArrowRight, Calendar, Clock } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
+import { store } from '../store'
 import type { Post } from '../types/Post';
 import { formatReadingTime } from '../utils/readingTime'
 import { formatDateWithI18n } from '../utils/dateFormat'
 
 const { t, locale } = useI18n()
 const featuredPost = ref<Post | undefined>(undefined)
+const recentPosts = ref<Post[]>([])
 
 onMounted(async () => {
     try {
         // Loaded on demand so supabase-js stays off the home page's critical path.
         const { fetchPostsAll } = await import('../services/blog')
-        const { posts } = await fetchPostsAll(1, 1)
+        const { posts } = await fetchPostsAll(1, 4)
         featuredPost.value = posts[0]
+        recentPosts.value = posts.slice(1)
+        // BlogPost looks here before fetching, so these open instantly.
+        if (!store.posts.length) store.posts = posts
     } catch {
-        // The featured card is optional; the section still links to /blog.
+        // The posts are optional; the section still links to /blog.
     }
 })
 </script>
@@ -75,6 +80,27 @@ onMounted(async () => {
                     </div>
                 </div>
             </div>
+
+            <div v-if="recentPosts.length" class="recent-list mt-8 border-t">
+                <router-link v-for="(post, index) in recentPosts" :key="post.id" :to="`/blog/${post.slug}`"
+                    v-reveal="{ delay: index * 0.05 }"
+                    class="recent-row group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-6 border-b -mx-3 sm:-mx-4 px-3 sm:px-4 py-4 rounded-xl">
+                    <span class="flex items-center gap-1.5 min-w-0 font-semibold text-primary">
+                        <span class="sm:truncate">{{ post.title }}</span>
+                        <ArrowRight class="w-4 h-4 shrink-0 opacity-0 -translate-x-1 group-hover:opacity-70 group-hover:translate-x-0 transition-all duration-300" aria-hidden="true" />
+                    </span>
+                    <span class="flex items-center gap-3 shrink-0 font-mono text-xs text-muted">
+                        <span>{{ formatDateWithI18n(post.created_at, locale) }}</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{{ formatReadingTime(post.content || '') }}</span>
+                    </span>
+                </router-link>
+            </div>
+
+            <router-link v-if="featuredPost" to="/blog"
+                class="link-fade mt-6 inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wide text-primary">
+                {{ t('blog.allPosts') }} <ArrowRight class="h-3.5 w-3.5" aria-hidden="true" />
+            </router-link>
         </div>
     </section>
 </template>
@@ -87,6 +113,19 @@ onMounted(async () => {
 .featured-post {
     background-color: var(--color-base-100);
     border-color: var(--color-base-300);
+}
+
+.recent-list,
+.recent-row {
+    border-color: var(--color-base-300);
+}
+
+.recent-row {
+    transition: background-color 0.25s ease;
+}
+
+.recent-row:hover {
+    background-color: var(--color-base-100);
 }
 
 .featured-tag {

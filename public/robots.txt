@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /admin
 
-Sitemap: https://stherzada.com/sitemap.xml
+Sitemap: https://www.stherzada.com/sitemap.xml

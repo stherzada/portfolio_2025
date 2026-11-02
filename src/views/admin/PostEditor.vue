@@ -126,7 +126,7 @@ const handleSubmit = async () => {
     const payload: PostInput = {
       title: form.title,
       description: form.description,
-      slug: form.slug,
+      slug: form.slug.trim(),
       content: form.content,
       image_path: form.image_path,
     }
