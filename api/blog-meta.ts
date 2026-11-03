@@ -7,6 +7,7 @@
 
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import { db } from './_lib/db.js'
 
 interface VercelRequest {
   query: { slug?: string | string[] }
@@ -26,37 +27,21 @@ interface PostRow {
   description: string | null
   slug: string
   image_path: string | null
-  created_at: string
+  created_at: Date | string
 }
 
-// Throws on missing config / network / non-2xx so the caller can tell
+// Throws on missing config / network errors so the caller can tell
 // "post doesn't exist" (null) apart from "couldn't check".
 async function fetchPostBySlug(slug: string): Promise<PostRow | null> {
-  const supabaseUrl = process.env.VITE_SUPABASE_URL
-  const supabaseKey = process.env.VITE_SUPABASE_KEY
-
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Missing Supabase env vars for blog-meta injection')
-  }
-
-  const response = await fetch(
-    `${supabaseUrl}/rest/v1/posts?select=title,description,slug,image_path,created_at&slug=eq.${encodeURIComponent(slug)}&limit=1`,
-    {
-      signal: AbortSignal.timeout(5000),
-      headers: {
-        apikey: supabaseKey,
-        Authorization: `Bearer ${supabaseKey}`,
-      },
-    },
-  )
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch post for blog-meta: ${response.status} ${await response.text()}`)
-  }
-
-  const rows = (await response.json()) as PostRow[]
-  return rows[0] ?? null
+  const [post] = await db()`
+    select title, description, slug, image_path, created_at from posts where slug = ${slug} limit 1
+  `
+  return (post as PostRow | undefined) ?? null
 }
+
+// Images uploaded through the admin are stored as /blog-images/<name>;
+// og:image and JSON-LD need an absolute URL.
+const absolute = (path: string) => (path.startsWith('/') ? `${SITE_URL}${path}` : path)
 
 function escapeHtml(value: string): string {
   return value
@@ -82,7 +67,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     post = await fetchPostBySlug(slug)
   } catch (error) {
-    // Couldn't reach Supabase: serve the plain SPA shell (the client shows
+    // Couldn't reach the database: serve the plain SPA shell (the client shows
     // its own error/retry UI) and don't let the edge cache this response.
     console.error('blog-meta: falling back to plain index.html', error)
     res.setHeader('Cache-Control', 'no-store')
@@ -102,7 +87,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const title = `${post.title} - Sthefany Sther`
   const description = post.description || 'Leia mais sobre este post no blog da Sthefany Sther'
   const canonical = `${SITE_URL}/blog/${post.slug}`
-  const image = post.image_path || FALLBACK_IMAGE
+  const image = post.image_path ? absolute(post.image_path) : FALLBACK_IMAGE
 
   const jsonLd = {
     '@context': 'https://schema.org',

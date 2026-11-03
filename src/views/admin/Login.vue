@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 
 const { signIn } = useAuth()
 const router = useRouter()
-const route = useRoute()
 
 const email = ref('')
 const password = ref('')
-const error = ref(
-  route.query.denied === '1' ? 'Esta conta não tem permissão de administrador.' : ''
-)
+const error = ref('')
 const loading = ref(false)
 
 const handleLogin = async () => {

@@ -8,8 +8,7 @@ import { useDebounceFn } from '@vueuse/core'
 import { ArrowLeft, ImagePlus } from 'lucide-vue-next'
 import EditorToolbar from '@/components/admin/EditorToolbar.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
-import { fetchPostById } from '@/services/blog'
-import { createPost, updatePost, uploadImage, IMAGE_ACCEPT, type PostInput } from '@/services/admin'
+import { createPost, fetchAdminPost, updatePost, uploadImage, IMAGE_ACCEPT, type PostInput } from '@/services/admin'
 import { slugify } from '@/utils/slugify'
 import store from '@/store'
 
@@ -81,7 +80,7 @@ const revokePreview = () => {
 const loadPost = async (id: string) => {
   isLoading.value = true
   try {
-    const post = await fetchPostById(id)
+    const post = await fetchAdminPost(id)
     form.id = post.id
     form.title = post.title
     form.description = post.description
