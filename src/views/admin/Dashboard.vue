@@ -2,8 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { PenLine, Trash2, Plus, LogOut } from 'lucide-vue-next'
-import { fetchPostsAll } from '@/services/blog'
-import { deletePost } from '@/services/admin'
+import { deletePost, fetchAdminPosts } from '@/services/admin'
 import { useAuth } from '@/composables/useAuth'
 import { useI18n } from 'vue-i18n'
 import store from '@/store'
@@ -30,7 +29,7 @@ const loadPosts = async () => {
   loading.value = true
   errorMessage.value = null
   try {
-    const result = await fetchPostsAll(page.value, PAGE_SIZE)
+    const result = await fetchAdminPosts(page.value, PAGE_SIZE)
     posts.value = result.posts
     total.value = result.total ?? 0
     if (posts.value.length === 0 && page.value > 1) page.value--

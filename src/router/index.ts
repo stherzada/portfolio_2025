@@ -98,42 +98,19 @@ router.beforeEach(async (to, _from, next) => {
     return;
   }
 
-  // Carregados só aqui: o supabase-js é grande e as páginas públicas não
-  // precisam dele pra montar.
-  const [{ default: supabase }, { useAuth }] = await Promise.all([
-    import("@/supabase"),
-    import("@/composables/useAuth"),
-  ]);
+  // Quem diz se é admin é o servidor (api/auth.ts lê o cookie HttpOnly da
+  // sessão): não dá para forjar isso no client.
+  const { useAuth } = await import("@/composables/useAuth");
+  const isAdmin = await useAuth().checkIsAdmin();
 
-  // getSession() é local (lê o JWT guardado) e barato — filtra quem não tem
-  // sessão nenhuma antes de gastar um RPC.
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (requiresAuth && !session) {
+  if (requiresAuth && !isAdmin) {
     next({ name: "AdminLogin" });
     return;
   }
 
-  // Sessão válida não é permissão. checkIsAdmin() chama o RPC `is_admin`,
-  // que é validado no servidor (RLS na tabela admin_users) — não dá para
-  // forjar isso no client. Sem isso, qualquer conta autenticada entrava.
-  if (requiresAuth && session) {
-    const { checkIsAdmin, signOut } = useAuth();
-    const isAdmin = await checkIsAdmin();
-    if (!isAdmin) {
-      await signOut();
-      next({ name: "AdminLogin", query: { denied: "1" } });
-      return;
-    }
-  }
-
-  if (isLoginRoute && session) {
-    const { checkIsAdmin } = useAuth();
-    const isAdmin = await checkIsAdmin();
-    if (isAdmin) {
-      next({ name: "AdminDashboard" });
-      return;
-    }
+  if (isLoginRoute && isAdmin) {
+    next({ name: "AdminDashboard" });
+    return;
   }
 
   next();

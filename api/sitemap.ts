@@ -3,6 +3,8 @@
 // see vercel.json for the /sitemap.xml -> /api/sitemap rewrite, and
 // public/robots.txt for the Sitemap: directive pointing at it.
 
+import { db } from './_lib/db.js'
+
 interface VercelRequest {
   method?: string
 }
@@ -17,35 +19,11 @@ const SITE_URL = 'https://www.stherzada.com'
 
 interface PostRow {
   slug: string
-  created_at: string
+  created_at: Date | string | null
 }
 
 async function fetchPostSlugs(): Promise<PostRow[]> {
-  const supabaseUrl = process.env.VITE_SUPABASE_URL
-  const supabaseKey = process.env.VITE_SUPABASE_KEY
-
-  if (!supabaseUrl || !supabaseKey) {
-    console.error('Missing Supabase env vars for sitemap generation')
-    return []
-  }
-
-  const response = await fetch(
-    `${supabaseUrl}/rest/v1/posts?select=slug,created_at&order=created_at.desc`,
-    {
-      signal: AbortSignal.timeout(5000),
-      headers: {
-        apikey: supabaseKey,
-        Authorization: `Bearer ${supabaseKey}`,
-      },
-    },
-  )
-
-  if (!response.ok) {
-    console.error('Failed to fetch posts for sitemap', response.status, await response.text())
-    return []
-  }
-
-  return (await response.json()) as PostRow[]
+  return (await db()`select slug, created_at from posts order by created_at desc`) as PostRow[]
 }
 
 function escapeXml(value: string): string {
@@ -66,7 +44,7 @@ function urlEntry(loc: string, lastmod: string, changefreq: string, priority: st
 export default async function handler(_req: VercelRequest, res: VercelResponse) {
   res.setHeader('Content-Type', 'application/xml; charset=utf-8')
   // Cached at the edge; a new post shows up within the hour instead of
-  // hitting Supabase on every crawler request.
+  // hitting the database on every crawler request.
   res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400')
 
   const today = new Date().toISOString().slice(0, 10)
@@ -85,7 +63,7 @@ export default async function handler(_req: VercelRequest, res: VercelResponse) 
   }
   for (const post of posts) {
     if (!post.slug) continue
-    const lastmod = (post.created_at || today).slice(0, 10)
+    const lastmod = post.created_at ? new Date(post.created_at).toISOString().slice(0, 10) : today
     entries.push(urlEntry(`${SITE_URL}/blog/${post.slug}`, lastmod, 'monthly', '0.7'))
   }
 

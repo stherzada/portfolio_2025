@@ -13,7 +13,7 @@ const recentPosts = ref<Post[]>([])
 
 onMounted(async () => {
     try {
-        // Loaded on demand so supabase-js stays off the home page's critical path.
+        // Loaded on demand so the blog service stays off the home page's critical path.
         const { fetchPostsAll } = await import('../services/blog')
         const { posts } = await fetchPostsAll(1, 4)
         featuredPost.value = posts[0]

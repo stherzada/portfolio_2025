@@ -1,42 +1,28 @@
-import supabase from '@/supabase'
+import { api, sendJson } from '@/services/http'
 
-// Auth state isn't mirrored into the app: the router guard asks Supabase
-// directly (getSession + is_admin RPC) on admin routes, so public pages
-// don't wait on auth before mounting.
+// A sessão é um cookie HttpOnly que só o servidor lê (api/auth.ts), então
+// quem diz se a pessoa é admin é sempre o servidor, nunca o navegador.
 const checkIsAdmin = async (): Promise<boolean> => {
-  const { data, error } = await supabase.rpc('is_admin')
-  if (error) return false
-  return data === true
+  try {
+    const { admin } = await api<{ admin: boolean }>('/api/auth')
+    return admin
+  } catch {
+    return false
+  }
 }
 
 export function useAuth() {
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) throw error
-
-    const isAdmin = await checkIsAdmin()
-    if (!isAdmin) {
-      await supabase.auth.signOut()
-      throw new Error('Esta conta não tem permissão de administrador.')
-    }
-
-    return data
+    await api('/api/auth', sendJson('POST', { email, password }))
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
-  }
-
-  const getSession = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    return session
+    await api('/api/auth', { method: 'DELETE' })
   }
 
   return {
     signIn,
     signOut,
-    getSession,
     checkIsAdmin,
   }
 }

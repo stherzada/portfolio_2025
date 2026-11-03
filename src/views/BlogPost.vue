@@ -37,7 +37,8 @@ const applyPostMeta = (data: Post) => {
   const title = `${data.title} - Sthefany Sther`
   const description = data.description || 'Leia mais sobre este post no blog da Sthefany Sther'
   const canonical = `${SITE_URL}/blog/${data.slug}`
-  const image = data.image_path || DEFAULT_OG_IMAGE
+  // imagens do admin vêm como /blog-images/<nome>; og:image precisa do endereço completo
+  const image = data.image_path ? new URL(data.image_path, SITE_URL).href : DEFAULT_OG_IMAGE
 
   setMeta({
     title,
