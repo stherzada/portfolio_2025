@@ -6,6 +6,7 @@ import { fetchPinnedRepos, type Repository } from '../services/github'
 import ScrambleText from './ScrambleText.vue'
 import SearchBar from './SearchBar.vue'
 import { useLocalStorageCache, createCacheKey } from '../utils/cache'
+import posthog from 'posthog-js'
 
 const { t } = useI18n()
 
@@ -13,6 +14,14 @@ const pinnedRepos = ref<Repository[]>([])
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 const searchQuery = ref('')
+const posthogConfigured = Boolean(
+    import.meta.env.VITE_POSTHOG_PROJECT_TOKEN && import.meta.env.VITE_POSTHOG_HOST,
+)
+
+const trackProjectLink = (destination: 'repository' | 'homepage') => {
+    if (!posthogConfigured) return
+    posthog.capture('project_link_opened', { destination })
+}
 
 const filteredRepos = computed(() => {
     if (!searchQuery.value) return pinnedRepos.value
@@ -120,7 +129,7 @@ const pinLeavingRow = (el: Element) => {
                         <div class="min-w-0">
                             <h3 class="flex items-center gap-1.5 font-mono text-lg font-semibold text-primary">
                                 <a :href="repo.url" target="_blank" rel="noopener noreferrer"
-                                    class="link-fade">
+                                    class="link-fade" @click="trackProjectLink('repository')">
                                     {{ repo.name }}
                                 </a>
                                 <ArrowUpRight class="w-4 h-4 shrink-0 opacity-0 -translate-x-1 group-hover:opacity-70 group-hover:translate-x-0 transition-all duration-300" />
@@ -130,7 +139,7 @@ const pinLeavingRow = (el: Element) => {
                             </p>
                             <div v-if="repo.homepage" class="mt-1.5">
                                 <a :href="repo.homepage" target="_blank" rel="noopener noreferrer"
-                                    class="font-mono text-xs link-fade text-muted">
+                                    class="font-mono text-xs link-fade text-muted" @click="trackProjectLink('homepage')">
                                     {{ repo.homepage.replace(/^https?:\/\//, '') }}
                                 </a>
                             </div>

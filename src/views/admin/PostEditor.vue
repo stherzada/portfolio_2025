@@ -11,6 +11,8 @@ import ThemeToggle from '@/components/ThemeToggle.vue'
 import { createPost, fetchAdminPost, updatePost, uploadImage, IMAGE_ACCEPT, type PostInput } from '@/services/admin'
 import { slugify } from '@/utils/slugify'
 import store from '@/store'
+import { posthogAppLogger } from '@/services/posthogLogs'
+import posthog from 'posthog-js'
 
 const route = useRoute()
 const router = useRouter()
@@ -35,6 +37,9 @@ const coverImagePreview = ref<string | null>(null)
 const isSaving = ref(false)
 const isLoading = ref(false)
 const error = ref('')
+const posthogConfigured = Boolean(
+  import.meta.env.VITE_POSTHOG_PROJECT_TOKEN && import.meta.env.VITE_POSTHOG_HOST,
+)
 
 const editor = useEditor({
   extensions: [
@@ -132,13 +137,22 @@ const handleSubmit = async () => {
 
     if (isEditMode.value && form.id) {
       await updatePost(form.id, payload)
+      if (posthogConfigured) {
+        posthog.capture('blog_post_updated', { has_cover_image: Boolean(form.image_path) })
+      }
+      posthogAppLogger.info('blog post saved', { operation: 'update' })
     } else {
       await createPost(payload)
+      if (posthogConfigured) {
+        posthog.capture('blog_post_created', { has_cover_image: Boolean(form.image_path) })
+      }
+      posthogAppLogger.info('blog post saved', { operation: 'create' })
     }
 
     store.posts = []
     router.push({ name: 'AdminDashboard', query: { saved: '1' } })
   } catch (err: unknown) {
+    posthogAppLogger.warn('blog post save failed')
     error.value = err instanceof Error ? err.message : 'Erro ao salvar'
   } finally {
     isSaving.value = false

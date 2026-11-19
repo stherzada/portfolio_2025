@@ -1,6 +1,6 @@
 // Login do /admin.
 //
-//   GET    /api/auth → { admin: boolean }
+//   GET    /api/auth → { admin: boolean, adminId?: "admin" }
 //   POST   /api/auth { email, password } → entra (cookie de sessão)
 //   DELETE /api/auth → sai
 
@@ -15,8 +15,13 @@ const MAX_TOTAL = 30
 const clientIp = (request: Request) =>
   request.headers.get('x-real-ip') ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'desconhecido'
 
+// This deployment has one admin account. This stable resource name is safe to
+// expose after authentication and lets browser analytics avoid using the email.
+const ADMIN_DISTINCT_ID = 'admin'
+
 export async function GET(request: Request): Promise<Response> {
-  return json(200, { admin: isAdmin(request) })
+  const admin = isAdmin(request)
+  return json(200, admin ? { admin, adminId: ADMIN_DISTINCT_ID } : { admin })
 }
 
 export async function POST(request: Request): Promise<Response> {
@@ -52,7 +57,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   await sql`delete from login_attempts where ip = ${ip}`
-  return json(200, { admin: true }, { 'set-cookie': sessionCookie() })
+  return json(200, { admin: true, adminId: ADMIN_DISTINCT_ID }, { 'set-cookie': sessionCookie() })
 }
 
 export async function DELETE(request: Request): Promise<Response> {
