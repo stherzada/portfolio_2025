@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { posthogAppLogger } from '@/services/posthogLogs'
+import posthog from 'posthog-js'
 
 const { signIn } = useAuth()
 const router = useRouter()
@@ -10,6 +12,9 @@ const email = ref('')
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
+const posthogConfigured = Boolean(
+  import.meta.env.VITE_POSTHOG_PROJECT_TOKEN && import.meta.env.VITE_POSTHOG_HOST,
+)
 
 const handleLogin = async () => {
   if (loading.value) return
@@ -17,8 +22,12 @@ const handleLogin = async () => {
   loading.value = true
   try {
     await signIn(email.value, password.value)
+    if (posthogConfigured) posthog.capture('admin_login_succeeded')
+    posthogAppLogger.info('admin login succeeded')
     router.push({ name: 'AdminDashboard' })
   } catch (err: unknown) {
+    if (posthogConfigured) posthog.capture('admin_login_failed')
+    posthogAppLogger.warn('admin login failed')
     error.value = err instanceof Error ? err.message : 'Erro ao fazer login'
   } finally {
     loading.value = false

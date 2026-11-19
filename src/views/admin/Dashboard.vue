@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n'
 import store from '@/store'
 import type { Post } from '@/types'
 import ThemeToggle from '@/components/ThemeToggle.vue'
+import posthog from 'posthog-js'
 
 const { t } = useI18n()
 const { signOut } = useAuth()
@@ -22,6 +23,9 @@ const totalPages = computed(() => Math.ceil(total.value / PAGE_SIZE))
 const loading = ref(true)
 const errorMessage = ref<string | null>(null)
 const showSavedToast = ref(route.query.saved === '1')
+const posthogConfigured = Boolean(
+  import.meta.env.VITE_POSTHOG_PROJECT_TOKEN && import.meta.env.VITE_POSTHOG_HOST,
+)
 
 let toastTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -48,6 +52,7 @@ const handleDelete = async (id: string, title: string) => {
     errorMessage.value = `Não foi possível excluir "${title}".`
     return
   }
+  if (posthogConfigured) posthog.capture('blog_post_deleted')
   store.posts = []
   await loadPosts()
 }

@@ -3,6 +3,7 @@ import type { Component } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Mail, Twitter, FileText, Twitch, Github, Linkedin } from 'lucide-vue-next'
 import { useTwitchLiveStatus } from '../composables/useTwitchLiveStatus'
+import posthog from 'posthog-js'
 
 interface Link {
     /** Key under `about.links` / `about.linkTitles` in the i18n messages. */
@@ -25,12 +26,23 @@ const links: Link[] = [
 ]
 
 const isLive = (link: Link) => link.key === 'twitch' && twitchLiveStatus.value.isLive
+const posthogConfigured = Boolean(
+    import.meta.env.VITE_POSTHOG_PROJECT_TOKEN && import.meta.env.VITE_POSTHOG_HOST,
+)
+
+const trackSocialLink = (link: Link) => {
+    if (!posthogConfigured) return
+    posthog.capture('social_link_opened', {
+        destination: link.key,
+        twitch_live: isLive(link),
+    })
+}
 </script>
 
 <template>
     <nav class="flex flex-wrap justify-center lg:justify-start gap-2 mt-4" :aria-label="t('about.socialLinks')"
         v-reveal="{ stagger: 0.05, delay: 0.4, y: 10, duration: 0.6 }">
-        <a v-for="link in links" :key="link.href" :href="link.href"
+        <a v-for="link in links" :key="link.href" :href="link.href" @click="trackSocialLink(link)"
             :title="isLive(link) ? t('about.twitchLiveTitle') : t(`about.linkTitles.${link.key}`)"
             :rel="link.rel" target="_blank" v-magnetic="{ strength: 0.4 }"
             class="social-chip flex items-center gap-2 pl-2.5 pr-3 py-2 rounded-full transition-colors duration-200 border"
