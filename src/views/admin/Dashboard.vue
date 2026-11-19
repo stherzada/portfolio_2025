@@ -58,6 +58,7 @@ const handleDelete = async (id: string, title: string) => {
 }
 
 const handleSignOut = async () => {
+  if (posthogConfigured) posthog.capture('admin_signed_out')
   await signOut()
   router.push({ name: 'AdminLogin' })
 }

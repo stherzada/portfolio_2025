@@ -4,6 +4,7 @@
 import { useTheme, ThemeAnimationType } from '../composables/useTheme'
 import type { ComponentPublicInstance } from 'vue'
 import { Sun, Moon } from 'lucide-vue-next'
+import posthog from 'posthog-js'
 
 const { buttonRef, toggleSwitchTheme, isDarkMode } = useTheme({
   onDarkModeChange: (isDark: boolean) => {
@@ -18,15 +19,26 @@ const { buttonRef, toggleSwitchTheme, isDarkMode } = useTheme({
   duration: 500,
 })
 
+const posthogConfigured = Boolean(
+  import.meta.env.VITE_POSTHOG_PROJECT_TOKEN && import.meta.env.VITE_POSTHOG_HOST,
+)
+
 const setButtonRef = (el: Element | ComponentPublicInstance | null) => {
   buttonRef.value = el instanceof HTMLElement ? el : null
+}
+
+const handleThemeToggle = async () => {
+  await toggleSwitchTheme()
+  if (posthogConfigured) {
+    posthog.capture('theme_changed', { theme: isDarkMode.value ? 'dark' : 'light' })
+  }
 }
 </script>
 
 <template>
   <button
     :ref="setButtonRef"
-    @click="toggleSwitchTheme"
+    @click="handleThemeToggle"
     aria-label="Dark mode"
     :aria-pressed="isDarkMode"
     class="theme-toggle-button w-9 h-9 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ease-out hover:scale-110 active:scale-95 cursor-pointer relative overflow-hidden"
